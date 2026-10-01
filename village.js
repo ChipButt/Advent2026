@@ -150,9 +150,9 @@
 
   function resize() {
     const rect = stage.getBoundingClientRect();
-    const scale = Math.max(1, Math.floor(Math.min(rect.width / VIEW_W, rect.height / VIEW_H)));
-    canvas.style.width = (VIEW_W * scale) + 'px';
-    canvas.style.height = (VIEW_H * scale) + 'px';
+    const scale = Math.max(.45, Math.min(rect.width / VIEW_W, rect.height / VIEW_H));
+    canvas.style.width = Math.round(VIEW_W * scale) + 'px';
+    canvas.style.height = Math.round(VIEW_H * scale) + 'px';
   }
 
   const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
