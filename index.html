@@ -2,104 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#10243d">
-  <meta name="description" content="Advent 2026">
-  <title>Advent 2026</title>
-  <link rel="stylesheet" href="styles.css?v=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#10291f">
+  <meta name="description" content="Advent 2026 Christmas village">
+  <title>Advent Village · Advent 2026</title>
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
   <div class="appShell">
     <header class="appHeader">
       <div>
         <p class="eyebrow">DECEMBER 2026</p>
-        <h1>Advent 2026</h1>
+        <h1>Advent Village</h1>
       </div>
-      <div class="headerMark" aria-hidden="true">✦</div>
+      <div class="headerBadge" aria-hidden="true">
+        <span class="badgeSnow">✦</span>
+        <span>24</span>
+      </div>
     </header>
 
     <main class="viewHost" id="viewHost">
-      <section class="view" data-view="calendar" aria-labelledby="calendarTitle">
-        <div class="viewHeading">
-          <p class="sectionKicker">HOME</p>
-          <h2 id="calendarTitle">Calendar</h2>
-          <p>This is where the Advent calendar and daily unlocks will live.</p>
-        </div>
-        <div class="placeholderPanel" aria-hidden="true">
-          <div class="placeholderIcon">24</div>
-          <strong>Calendar space ready</strong>
-          <span>No doors or games have been added yet.</span>
+      <section class="view calendarView" data-view="calendar" aria-label="Advent village">
+        <div id="villageStage" class="villageStage">
+          <canvas id="villageCanvas" width="480" height="320" aria-label="Snowy Advent village with 24 numbered houses"></canvas>
+
+          <div id="housePrompt" class="housePrompt"></div>
+
+          <div class="villageControls" aria-label="Village controls">
+            <div id="villageJoystick" class="joystick" aria-label="Move elf">
+              <div class="joyRing"><div id="villageJoyKnob" class="joyKnob"></div></div>
+              <span>MOVE</span>
+            </div>
+            <button id="houseEnterButton" class="enterButton" type="button" disabled>
+              <strong>A</strong><span>ENTER</span>
+            </button>
+          </div>
+
+          <div id="houseInteriorHud" class="interiorHud" hidden>
+            <div class="dialogueCard">
+              <p id="insideHouseNumber" class="dialogueKicker">HOUSE 1</p>
+              <p id="insideElfGreeting" class="elfGreeting">Hello!</p>
+              <h2 id="insideActivityTitle">Snowball Toss</h2>
+              <p id="insideActivityText">Hit the moving snow targets before the timer runs out.</p>
+              <div class="dialogueActions">
+                <span class="comingSoon">ACTIVITY COMING SOON</span>
+                <button id="leaveHouseButton" type="button">LEAVE HOUSE</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="view" data-view="playroom" aria-labelledby="playroomTitle" hidden>
-        <div class="viewHeading">
-          <p class="sectionKicker">COLLECTION</p>
-          <h2 id="playroomTitle">Playroom</h2>
-          <p>Unlocked toys, activities and games will collect here through December.</p>
-        </div>
-        <div class="placeholderPanel" aria-hidden="true">
-          <div class="placeholderIcon">★</div>
-          <strong>Playroom space ready</strong>
-          <span>Nothing has been unlocked yet.</span>
+      <section class="view collectionView" data-view="playroom" hidden>
+        <div class="pixelPanel">
+          <p class="sectionKicker">YOUR COLLECTION</p>
+          <h2>Playroom</h2>
+          <p>Every activity you unlock in the village will live here so you can come back and play it again.</p>
+          <div class="roomShelf" aria-hidden="true">
+            <div class="shelfToy gift"></div><div class="shelfToy star"></div><div class="shelfToy ball"></div>
+          </div>
+          <div class="emptyState">The shelves will fill as you visit houses through December.</div>
         </div>
       </section>
 
-      <section class="view" data-view="scores" aria-labelledby="scoresTitle" hidden>
-        <div class="viewHeading">
+      <section class="view collectionView" data-view="scores" hidden>
+        <div class="pixelPanel">
           <p class="sectionKicker">FAMILY RESULTS</p>
-          <h2 id="scoresTitle">Scores</h2>
-          <p>Game leaderboards, personal bests and Advent progress will appear here.</p>
-        </div>
-        <div class="placeholderPanel" aria-hidden="true">
-          <div class="placeholderIcon">1</div>
-          <strong>Scoreboard space ready</strong>
-          <span>No scores have been recorded yet.</span>
+          <h2>Scores</h2>
+          <p>Personal bests and family leaderboards will appear here once the Advent games are connected.</p>
+          <div class="scoreBoard" aria-hidden="true">
+            <div><span>1</span><strong>—</strong></div>
+            <div><span>2</span><strong>—</strong></div>
+            <div><span>3</span><strong>—</strong></div>
+          </div>
         </div>
       </section>
 
-      <section class="view" data-view="profile" aria-labelledby="profileTitle" hidden>
-        <div class="viewHeading">
-          <p class="sectionKicker">YOUR ACCOUNT</p>
-          <h2 id="profileTitle">Profile</h2>
-          <p>Sign-in, display name, avatar and account settings will be added here.</p>
-        </div>
-        <div class="placeholderPanel" aria-hidden="true">
-          <div class="placeholderIcon">☺</div>
-          <strong>Profile space ready</strong>
-          <span>Account features are not connected yet.</span>
+      <section class="view collectionView" data-view="profile" hidden>
+        <div class="pixelPanel">
+          <p class="sectionKicker">YOUR ELF</p>
+          <h2>Profile</h2>
+          <p>Your account, display name, saved elf and Advent progress will be connected here later.</p>
+          <div class="profileElf" aria-hidden="true">☺</div>
         </div>
       </section>
     </main>
 
     <nav class="bottomNav" aria-label="Main navigation">
       <a class="navItem" href="#calendar" data-route="calendar" aria-current="page">
-        <span class="navIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M5 4.5h14v15H5zM8 2.8v3.4M16 2.8v3.4M5 8.3h14M8.3 11.5h2.2v2.2H8.3zM13.5 11.5h2.2v2.2h-2.2zM8.3 15.5h2.2v2.2H8.3zM13.5 15.5h2.2v2.2h-2.2z"/></svg>
-        </span>
-        <span>Calendar</span>
+        <span class="navIcon houseIcon" aria-hidden="true"></span><span>Calendar</span>
       </a>
       <a class="navItem" href="#playroom" data-route="playroom">
-        <span class="navIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M4 10.2 12 4l8 6.2v9.3H4zM8 13.2h3.2v6.3H8zM14.4 12.4h2.8v2.8h-2.8z"/></svg>
-        </span>
-        <span>Playroom</span>
+        <span class="navIcon toyIcon" aria-hidden="true"></span><span>Playroom</span>
       </a>
       <a class="navItem" href="#scores" data-route="scores">
-        <span class="navIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M6 19.5v-6h3.2v6H6zM10.5 19.5v-10h3.2v10h-3.2zM15 19.5v-14h3.2v14H15zM4 19.5h16"/></svg>
-        </span>
-        <span>Scores</span>
+        <span class="navIcon trophyIcon" aria-hidden="true"></span><span>Scores</span>
       </a>
       <a class="navItem" href="#profile" data-route="profile">
-        <span class="navIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M12 12.2a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4zM4.8 20.2c.6-4 3.3-6.2 7.2-6.2s6.6 2.2 7.2 6.2"/></svg>
-        </span>
-        <span>Profile</span>
+        <span class="navIcon elfIcon" aria-hidden="true"></span><span>Profile</span>
       </a>
     </nav>
   </div>
 
-  <script src="app.js?v=1"></script>
+  <script src="assets/elf/elf-data-1.js?v=1"></script>
+  <script src="assets/elf/elf-data-2.js?v=1"></script>
+  <script src="assets/elf/elf-data-3.js?v=1"></script>
+  <script src="assets/elf/elf-data-4.js?v=1"></script>
+  <script src="assets/elf/elf-data-5a.js?v=1"></script>
+  <script src="assets/elf/elf-data-5b.js?v=1"></script>
+  <script src="assets/elf/elf-data-5c.js?v=1"></script>
+  <script src="assets/elf/elf-data-6a.js?v=1"></script>
+  <script src="assets/elf/elf-data-6b.js?v=1"></script>
+  <script src="assets/elf/elf-data-6c.js?v=1"></script>
+  <script src="assets/elf/elf-data-7a.js?v=1"></script>
+  <script src="assets/elf/elf-data-7b.js?v=1"></script>
+  <script src="assets/elf/elf-data-7c.js?v=1"></script>
+  <script src="assets/elf/elf-data-8a.js?v=1"></script>
+  <script src="assets/elf/elf-data-8b.js?v=1"></script>
+  <script src="assets/elf/elf-data-8c.js?v=1"></script>
+  <script src="assets/elf/elf-data-9a.js?v=1"></script>
+  <script src="assets/elf/elf-data-9b.js?v=1"></script>
+  <script src="assets/elf/elf-sprite.js?v=1"></script>
+  <script src="app.js?v=2"></script>
+  <script src="village.js?v=1"></script>
 </body>
 </html>
