@@ -1,46 +1,61 @@
-# Advent 2026
+# Advent 2026 — Christmas RPG Village
 
-Mobile-first, explorable Christmas village with 24 numbered houses. The project remains independent of GameBox.
+A mobile-first Advent calendar presented as a top-down Game Boy Color–inspired Christmas adventure.
 
-## Current integration
+## Current world
 
-- Walk through the existing Christmas village, approach a house, and press A / Enter.
-- Doors follow the Europe/London calendar. Door 1 opens on 1 December 2026, continuing through door 24 on 24 December. Past doors remain accessible.
-- Development testing: visit [the test URL](https://chipbutt.github.io/Advent2026/?test=1#calendar) to unlock all houses for the current browser session. An explicit testing indicator appears at the top. Leave test mode in Profile, or add '?test=0' to the URL.
-- The Playroom displays games from unlocked days. In test mode it displays all six approved game copies for QA even before any day assignments are made.
-- The village's original movement, elf, snow-map and interior remain in place.
+- **Christmas Town:** houses 1–12, a central plaza and festive tree.
+- **Northern Snow Trail:** houses 13–18, snowy woodland paths and cottages.
+- **Eastern Pine Route:** houses 19–24, snow trails, river crossing and wooded cottages.
+- **24 interactive numbered Advent doors**, with date locks following the Europe/London calendar.
+- **Four-direction overworld character** (no diagonal movement), keyboard arrows/WASD and mobile D-pad/A controls.
+- Camera follows the character through the continuous overworld. The player can use the **Map** to jump to any numbered doorstep.
+- Entered houses have a warm, pixel-art RPG interior with Play Game / Leave House actions.
+- Visited houses and the player location persist in local storage.
+- The original GameBox games have *not* been modified.
 
-## Approved games copied from GameBox
+The world renderer uses the **existing Gherwit Winter Tiles atlas** already used in GameBox Workshop Watch for snow ground, route edges and fir trees. Original buildings and extra village furnishings are pixel-drawn with the same restricted colour language. Gameplay UI uses a retro handheld style. The environment assets are intentionally separate from the actual Advent day assignment map.
 
-Source snapshot: \`ChipButt/GameBox@fab0ae98fd86c888ff1bd470ade52f698ed2b82b\`.
+## How to test
 
-| Game | Advent copy |
-| --- | --- |
-| Tiny Ski Run | \`games/tiny-ski-run/\` |
-| Jigsaw | \`games/jigsaw/\` |
-| Workshop Watch | \`games/workshop-watch/\` |
-| Block Breaker | \`games/block-breaker/\` |
-| Santa Invaders | \`games/santa-invaders/\` |
-| Festive Blocks | \`games/festive-blocks/\` |
+Normal version: https://chipbutt.github.io/Advent2026/
 
-Gameplay JavaScript and HTML/CSS live in this Advent repository. Some large media packs still use their verified asset URLs at \`chipbutt.github.io/GameBox/\` or \`chipbutt.github.io/ToolBox/\` instead of duplicating vendor binaries; consequently a production asset-migration pass may be needed before GameBox or ToolBox is removed. The source GameBox files are unchanged.
+Test version: https://chipbutt.github.io/Advent2026/?test=1#calendar
 
-## Day assignments: awaiting approval
+Testing mode unlocks all houses and surfaces all six approved game copies through the Playroom. The banner indicates testing mode. Exit in the Profile tab.
 
-**No dates have been assigned yet.** This is intentional: do not choose the six dates, reuse games, or fill the other 18 doors without confirmation.
+Date locks: day 1 starts 1 December 2026 and day 24 starts 24 December 2026, UK time. Already-unlocked days stay available.
 
-Set \`days\` in \`advent-calendar.js\` to a game ID for each approved date (e.g. \`'tiny-ski-run'\`), keeping all other dates \`null\`. The current file generates 24 \`null\` entries explicitly to make this decision visible. A door with no assigned game shows a polite 'surprise being prepared' message, never a fictitious game.
+## Games staged in Advent2026/games
 
-## Files
+Approved copies fixed to GameBox commit `fab0ae98fd86c888ff1bd470ade52f698ed2b82b`:
 
-- \`index.html\` – app shell, village and four original tabs
-- \`styles.css\` – existing pixel-style UI plus Playroom cards
-- \`advent-calendar.js\` – approved game registry, date locking and testing mode
-- \`village.js\` – original village, movement, house interactions and game launching
-- \`app.js\` – navigation and unlocked Playroom
-- \`games/\` – six copied GameBox games
-- \`assets/elf/\`, \`assets/village/\` – existing Christmas sprite data
+1. Tiny Ski Run
+2. Jigsaw
+3. Workshop Watch
+4. Block Breaker
+5. Santa Invaders
+6. Festive Blocks
 
-## Live site
+**Day assignments are deliberately blank** in `advent-calendar.js`. Each of the 24 doors works, but an unassigned day correctly shows “Your surprise is being prepared” rather than launching an unapproved or arbitrary game. Game copies can be launched from Playroom in testing mode. The user must choose their December dates before assigning games to houses.
 
-https://chipbutt.github.io/Advent2026/
+Some game artwork loads from original GameBox and ToolBox GitHub Pages URLs, so those asset URLs must remain available. The live winter tile atlas likewise comes from GameBox. Before decommissioning GameBox, migrate and retest any dependencies.
+
+## Project structure
+
+- `index.html` – Advent RPG screen, D-pad, A button, map, house interior, Playroom, Scores and Profile
+- `styles.css` – handheld-inspired interface and responsive layout
+- `village.js` – world generation, tile renderer, cottages, four-direction character, camera, movement, collision, doors and interiors
+- `advent-calendar.js` – approved game registry, day assignments, UK-date locks and testing mode
+- `app.js` – navigation and unlocked Playroom
+- `games/` – approved copies of six games
+
+Original `assets/elf/` and `assets/village/` files are retained as historical resources but are no longer loaded by the new runtime.
+
+## Asset sources
+
+- Gherwit Winter Tiles, already in GameBox under `workshop-watch/assets/vendor/gherwit/winter/`.
+- Approved GameBox Kenney and Admurin artwork used by game thumbnails and individual games.
+- See GameBox `workshop-watch/assets/CREDITS.md` for Winter Tiles and Admurin attribution/licence notes.
+
+This is a functional RPG-themed rebuild, not a pixel-for-pixel copy of any AI concept illustration. The house arrangements and external sprite sheets should be reviewed visually on both phone and desktop after deployment.

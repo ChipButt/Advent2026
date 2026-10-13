@@ -3,42 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <meta name="theme-color" content="#10291f">
+  <meta name="theme-color" content="#1d324c">
   <meta name="description" content="Advent 2026 Christmas village">
   <title>Advent Village · Advent 2026</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <div class="appShell">
     <header class="appHeader">
       <div>
-        <p class="eyebrow">DECEMBER 2026</p>
-        <h1>Advent Village</h1>
+        <p class="eyebrow">A CHRISTMAS ADVENT ADVENTURE</p>
+        <h1>ADVENT <span>2026</span></h1>
       </div>
       <span id="testModeBadge" class="testModeBadge" hidden>TEST MODE</span>
-      <div class="headerBadge" aria-hidden="true">
-        <span class="badgeSnow">✦</span>
-        <span>24</span>
-      </div>
+      <div class="headerBadge" aria-label="24 Advent doors"><span>24</span><small>DOORS</small></div>
     </header>
 
     <main class="viewHost" id="viewHost">
       <section class="view calendarView" data-view="calendar" aria-label="Advent village">
         <div id="villageStage" class="villageStage">
-          <canvas id="villageCanvas" width="480" height="320" aria-label="Snowy Advent village with 24 numbered houses"></canvas>
-
-          <div id="housePrompt" class="housePrompt"></div>
-
-          <div class="villageControls" aria-label="Village controls">
-            <div id="villageJoystick" class="joystick" aria-label="Move elf">
-              <div class="joyRing"><div id="villageJoyKnob" class="joyKnob"></div></div>
-              <span>MOVE</span>
-            </div>
-            <button id="houseEnterButton" class="enterButton" type="button" disabled>
-              <strong>A</strong><span>ENTER</span>
-            </button>
+          <div class="gameScreenHeading">
+            <div class="areaName"><span class="areaDot" aria-hidden="true"></span><strong id="zoneLabel">CHRISTMAS TOWN</strong><small id="dayCounter">24 DOORS</small></div>
+            <button id="mapButton" class="mapToggle" type="button" aria-label="Open Advent day finder"><span class="mapTile" aria-hidden="true">▦</span> MAP</button>
           </div>
-
+          <div class="screenBezel"><canvas id="villageCanvas" width="320" height="416" aria-label="Game Boy Color-style snowy Advent village. Use arrow keys or the directional pad to move."></canvas></div>
+          <div id="housePrompt" class="housePrompt" aria-live="polite"></div>
+          <div class="villageControls" aria-label="RPG game controls">
+            <div class="dpad" aria-label="Four directional movement">
+              <button type="button" class="dpadUp" data-direction="up" aria-label="Walk north">▲</button>
+              <button type="button" class="dpadLeft" data-direction="left" aria-label="Walk west">◀</button>
+              <div class="dpadCenter" aria-hidden="true"></div>
+              <button type="button" class="dpadRight" data-direction="right" aria-label="Walk east">▶</button>
+              <button type="button" class="dpadDown" data-direction="down" aria-label="Walk south">▼</button>
+            </div>
+            <div class="actionArea"><button id="houseEnterButton" class="enterButton" type="button" disabled><strong>A</strong><span>ENTER</span></button><span class="controlLegend">INTERACT</span></div>
+          </div>
+          <div id="mapOverlay" class="mapOverlay" hidden>
+            <section class="mapPanel" role="dialog" aria-modal="true" aria-labelledby="mapHeading">
+              <div class="mapTitle"><div><small>CHRISTMAS TOWN / SNOW TRAILS</small><h2 id="mapHeading">ADVENT HOUSES</h2></div><button id="mapClose" type="button" aria-label="Close Advent map">×</button></div>
+              <p>Choose a number to locate that house. Grey doors are still locked by date.</p>
+              <div class="mapKey"><span>■ LOCKED</span><span>■ UNLOCKED</span><span>■ VISITED</span></div>
+              <div id="mapDays" class="mapDays" aria-label="Advent day finder"></div>
+              <div class="mapFooter">Find a door to jump to its doorstep, then press A to enter.</div>
+            </section>
+          </div>
           <div id="houseInteriorHud" class="interiorHud" hidden>
             <div class="dialogueCard">
               <p id="insideHouseNumber" class="dialogueKicker">HOUSE 1</p>
@@ -81,7 +89,7 @@
         <div class="pixelPanel">
           <p class="sectionKicker">YOUR ELF</p>
           <h2>Profile</h2>
-          <p>Your account, display name, saved elf and Advent progress will be connected here later.</p>
+          <p>Your advent progress and testing options live here.</p>
           <div id="testTools" class="testTools" hidden><h3>Testing mode</h3><p>All numbered doors are accessible for testing. Game previews are listed in Playroom even before their dates are assigned.</p><button type="button" id="exitTestMode">Leave testing mode</button></div>
         </div>
       </section>
@@ -103,28 +111,8 @@
     </nav>
   </div>
 
-  <script src="assets/elf/elf-data-1.js?v=1"></script>
-  <script src="assets/elf/elf-data-2.js?v=1"></script>
-  <script src="assets/elf/elf-data-3.js?v=1"></script>
-  <script src="assets/elf/elf-data-4.js?v=1"></script>
-  <script src="assets/elf/elf-data-5a.js?v=1"></script>
-  <script src="assets/elf/elf-data-5b.js?v=1"></script>
-  <script src="assets/elf/elf-data-5c.js?v=1"></script>
-  <script src="assets/elf/elf-data-6a.js?v=1"></script>
-  <script src="assets/elf/elf-data-6b.js?v=1"></script>
-  <script src="assets/elf/elf-data-6c.js?v=1"></script>
-  <script src="assets/elf/elf-data-7a.js?v=1"></script>
-  <script src="assets/elf/elf-data-7b.js?v=1"></script>
-  <script src="assets/elf/elf-data-7c.js?v=1"></script>
-  <script src="assets/elf/elf-data-8a.js?v=1"></script>
-  <script src="assets/elf/elf-data-8b.js?v=1"></script>
-  <script src="assets/elf/elf-data-8c.js?v=1"></script>
-  <script src="assets/elf/elf-data-9a.js?v=1"></script>
-  <script src="assets/elf/elf-data-9b.js?v=1"></script>
-  <script src="assets/elf/elf-sprite.js?v=1"></script>
-  <script src="assets/village/village-assets.js?v=1"></script>
   <script src="advent-calendar.js?v=1"></script>
-  <script src="village.js?v=2"></script>
-  <script src="app.js?v=3"></script>
+  <script src="village.js?v=4"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

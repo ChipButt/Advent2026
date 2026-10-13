@@ -242,3 +242,132 @@ button{cursor:pointer}
 .testTools h3{margin:0 0 7px;font-size:14px}
 .testTools p{margin:0 0 10px;font-size:10px;line-height:1.6}
 .testTools button{min-height:44px;padding:9px 14px;border:2px solid #243f2f;border-radius:5px;color:#fff;background:#28593c;font-weight:900}
+
+
+/* CHRISTMAS RPG — GAME BOY COLOR-INSPIRED OVERWORLD */
+:root{--gb-outline:#1c2e42;--gb-red:#a63d4c;--gb-gold:#f8df96;--gb-night:#172942;--gb-paper:#fff2d4;}
+html,body{background:#101d30;color:#fdf0d4}
+.appShell{background:#1e344e;box-shadow:0 0 0 3px #112237}
+.appHeader{min-height:66px;padding:calc(9px + env(safe-area-inset-top)) 14px 10px;
+ background:linear-gradient(180deg,#294864,#182e4a);border-bottom:4px solid #d7aa6a;box-shadow:inset 0 -2px #0c1a2d;}
+.appHeader h1{font:bold clamp(20px,4.7vw,28px) ui-monospace,monospace;letter-spacing:.045em;text-shadow:2px 3px #0e1f36}
+.appHeader h1 span{color:#f9cf75}
+.appHeader .eyebrow{color:#f7d89a;font-size:8px;letter-spacing:.1em}
+.headerBadge{display:flex;flex-direction:column;gap:1px;background:#263c52;border:2px solid #eac681;border-radius:5px;width:55px;height:43px;color:#ffedd1;font-size:19px;box-shadow:3px 3px 0 #102032;}
+.headerBadge small{font-size:7px;color:#f2c87b;letter-spacing:.09em}
+.testModeBadge{background:#a73b48;color:#fff3c9;border-color:#fad189;border-radius:4px;font-size:8px}
+.calendarView{height:calc(100dvh - 142px);min-height:440px;background:#1b334f}
+.villageStage{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+ padding:0 7px 7px;min-height:440px;height:100%;overflow:hidden;
+ background:linear-gradient(#284d69,#1b344f 78%,#1a2b46);}
+.gameScreenHeading{width:100%;max-width:650px;min-height:47px;display:flex;justify-content:space-between;align-items:center;
+ padding:5px 8px;color:#fff1d4;gap:6px;}
+.areaName{display:flex;align-items:center;gap:6px;min-width:0;font-size:11px;text-shadow:1px 2px #11283f;}
+.areaName strong{max-width:205px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.areaName small{font-size:8px;color:#e1bb7b;white-space:nowrap;margin-left:5px}
+.areaDot{width:9px;height:9px;background:#77bc9d;border:2px solid #e5f4d8;box-shadow:1px 1px #092236;flex-shrink:0}
+.mapToggle{min-width:64px;min-height:35px;border:2px solid #e0bb7d;border-radius:4px;
+ background:linear-gradient(#a34750,#812d40);color:#fff4d4;
+ box-shadow:0 3px 0 #11253d;display:flex;align-items:center;justify-content:center;gap:5px;font-size:10px;font-weight:900;}
+.mapTile{font-size:18px;color:#ffe9ae}
+.screenBezel{flex:1;min-height:0;max-height:calc(100% - 177px);width:100%;display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(115deg,#0d1929,#1a3049 75%,#243b54);border:4px solid #112338;
+ border-radius:11px;box-shadow:inset 0 0 0 3px #45617a,0 5px 0 #102338;padding:5px;overflow:hidden;}
+#villageCanvas{display:block;flex:0 0 auto;max-width:100%;max-height:100%;width:auto;height:auto;
+ image-rendering:pixelated;image-rendering:crisp-edges;background:#dce9f4;
+ box-shadow:0 0 0 2px #0a1b2b;touch-action:none;}
+.villageControls{position:relative;inset:auto;width:100%;max-width:550px;height:137px;flex-shrink:0;
+ display:flex;align-items:center;justify-content:space-between;padding:9px 22px 2px;pointer-events:auto;}
+.villageControls[hidden]{display:none}
+.dpad{display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);
+ filter:drop-shadow(2px 4px 0 #0d1d2d);transform:rotate(-1deg);}
+.dpad button,.dpadCenter{border:0;border-radius:0;background:#0e2339;color:#b8cadd;
+ font-size:15px;display:grid;place-items:center;user-select:none;touch-action:none;
+ box-shadow:inset 0 2px #4e6982,inset 0 -3px #061623}
+.dpad button{cursor:pointer}
+.dpad button:active{background:#496d88;color:#fff;box-shadow:inset 0 3px #183149}
+.dpadUp{grid-area:1/2}.dpadLeft{grid-area:2/1}.dpadCenter{grid-area:2/2}.dpadRight{grid-area:2/3}.dpadDown{grid-area:3/2}
+.dpadUp{border-radius:5px 5px 0 0!important}.dpadLeft{border-radius:5px 0 0 5px!important}
+.dpadRight{border-radius:0 5px 5px 0!important}.dpadDown{border-radius:0 0 5px 5px!important}
+.dpadCenter:after{content:"";width:17px;height:17px;border:2px solid #344f69;border-radius:50%}
+.actionArea{display:flex;flex-direction:column;align-items:center;gap:8px;padding-right:14px}
+.enterButton,.enterButton.ready{position:static;right:auto;bottom:auto;width:70px;height:70px;
+ border-radius:50%;background:#a44050;border:4px solid #6b2435;color:#fff3d9;
+ box-shadow:inset 0 3px #e58b91,inset 0 -6px #782b39,2px 6px 0 #102137;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transform:rotate(-12deg);}
+.enterButton strong{font-size:26px;line-height:1;text-shadow:2px 2px #703044}
+.enterButton span{font-size:8px;margin:0;letter-spacing:.07em}
+.enterButton.ready{background:#c74754;border-color:#8f2736;box-shadow:inset 0 3px #ff9da5,inset 0 -6px #8f2e3e,2px 6px 0 #102137}
+.enterButton:disabled{background:#665465;border-color:#3c384a;color:#b0a9ad;box-shadow:inset 0 -5px #443a4f,2px 6px 0 #102137}
+.enterButton.ready:active{transform:rotate(-12deg) translateY(3px);box-shadow:inset 0 -2px #8f2e3e,1px 2px 0 #102137}
+.controlLegend{font-size:8px;color:#d6bc8d;font-weight:900;letter-spacing:.18em}
+.housePrompt{top:53px;z-index:3;min-width:160px;width:max-content;max-width:90%;
+ padding:8px 12px;border:3px solid #253b4c;border-radius:3px;
+ background:#fff4d4;color:#283849;font-size:10px;letter-spacing:.02em;
+ box-shadow:3px 4px 0 #142738;transition:opacity .12s ease;}
+.housePrompt.visible{transform:translate(-50%,0)}
+.mapOverlay{position:absolute;z-index:18;inset:0;display:flex;align-items:center;justify-content:center;
+ padding:14px;background:#071a2ee3;pointer-events:auto;}
+.mapOverlay[hidden]{display:none}
+.mapPanel{width:min(100%,470px);max-height:96%;overflow:auto;background:#fff2d1;color:#1f3346;
+ border:5px solid #f0c67f;outline:3px solid #263c4d;
+ box-shadow:7px 8px 0 #0b1827;padding:12px}
+.mapTitle{display:flex;align-items:center;justify-content:space-between;gap:9px;
+ border-bottom:3px solid #2a4152;padding-bottom:7px}
+.mapTitle h2{font-size:19px;margin:3px 0 0;color:#223b50;line-height:1.05}
+.mapTitle small{font-size:7px;letter-spacing:.08em;color:#976244;font-weight:900}
+.mapTitle button{width:37px;height:37px;flex:none;border:3px solid #263a4b;background:#ac4251;color:#fff;font-size:24px;font-weight:900;box-shadow:2px 3px #6e3b3d}
+.mapPanel>p{font-size:10px;line-height:1.6;margin:11px 0;color:#4b5c67}
+.mapKey{display:flex;justify-content:space-between;gap:5px;font-size:7px;font-weight:900;margin-bottom:9px}
+.mapKey span:nth-child(1){color:#6d7786}.mapKey span:nth-child(2){color:#b27c2f}.mapKey span:nth-child(3){color:#247353}
+.mapDays{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.mapDay{min-height:44px;border:3px solid #3a4855;border-radius:2px;
+ background:#8d97a5;color:#fff;box-shadow:2px 3px #263b4e;
+ font-weight:900;font-size:14px;touch-action:manipulation}
+.mapDay.unlocked{background:#dfad4d;border-color:#8b613a;color:#2f3443}
+.mapDay.visited{background:#448766;border-color:#276447;color:#fff}
+.mapDay:active{transform:translateY(2px);box-shadow:0 1px #263b4e}
+.mapFooter{border-top:2px solid #b8a17b;margin-top:12px;padding-top:10px;font-size:9px;color:#536375;line-height:1.5}
+.interiorHud{z-index:10;align-items:flex-end;padding:10px 10px 151px;background:#14203519}
+.interiorHud[hidden]{display:none}
+.dialogueCard{border-radius:2px;background:#fff2d5;color:#223446;border:4px solid #253c4c;
+ box-shadow:inset 0 0 0 3px #b78e63,5px 5px 0 #13263b;padding:14px;max-width:560px}
+.dialogueKicker{color:#a43e4d;font-size:9px}
+.elfGreeting{color:#415269;font-size:10px}
+.dialogueCard h2{color:#243e55;font-size:17px;margin-top:5px}
+.dialogueCard>p:last-of-type{color:#485b66;font-size:11px}
+.dialogueActions{margin-top:13px}
+.playHouseGame,.dialogueActions #leaveHouseButton{border-radius:2px;min-height:43px;font-size:10px}
+.playHouseGame{background:#3b8b72;border-color:#204a45;box-shadow:inset 0 -4px #28654e}
+.dialogueActions #leaveHouseButton{background:#a5464b;border-color:#632e39}
+.bottomNav{background:#162c46;border-top:3px solid #d3a464;box-shadow:0 -3px #0d2237}
+.navItem{color:#b4c4d1;border-radius:4px;font-size:8px}
+.navItem[aria-current=page]{background:#314c67;border-color:#bb985f;color:#fbe7be;box-shadow:inset 0 -4px #1d354f}
+.collectionView{background:linear-gradient(#2d4b68,#162b44);padding:16px}
+.pixelPanel{background:#fff0ce;color:#213445;border:4px solid #c9a776;border-radius:4px;
+ box-shadow:inset 0 0 0 3px #e8cd9a,6px 7px #152b43}
+.pixelPanel h2{color:#203e55;font-family:ui-monospace,monospace;font-size:23px}
+.pixelPanel>p:last-of-type{color:#516576}
+.gameCard{border-radius:3px;border-color:#2d4353;background:linear-gradient(#ffefcc,#ecd3aa);
+ box-shadow:3px 4px #253c4c;color:#253b4c}
+.gameCardText strong{color:#25485e}
+.gameCardOrnament{border-radius:2px}
+.testTools button{background:#a44150;border-radius:2px;border-color:#7c3541}
+@media(max-width:400px){
+ .appHeader h1{font-size:20px}
+ .appHeader .eyebrow{font-size:7px}
+ .areaName{font-size:9px}
+ .areaName small{font-size:7px}
+ .villageControls{padding:8px 6px 2px 12px}
+ .screenBezel{padding:3px;border-width:3px}
+ .mapDays{gap:5px}
+ .mapDay{min-height:40px;font-size:13px}
+}
+@media(max-height:700px){
+ .calendarView{height:calc(100dvh - 124px)}
+ .gameScreenHeading{min-height:40px}
+ .villageControls{height:118px}
+ .dpad{grid-template-columns:repeat(3,31px);grid-template-rows:repeat(3,31px)}
+ .enterButton,.enterButton.ready{width:60px;height:60px}
+ .interiorHud{padding-bottom:124px}
+}
