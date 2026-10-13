@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#10291f">
   <meta name="description" content="Advent 2026 Christmas village">
   <title>Advent Village · Advent 2026</title>
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <div class="appShell">
@@ -15,6 +15,7 @@
         <p class="eyebrow">DECEMBER 2026</p>
         <h1>Advent Village</h1>
       </div>
+      <span id="testModeBadge" class="testModeBadge" hidden>TEST MODE</span>
       <div class="headerBadge" aria-hidden="true">
         <span class="badgeSnow">✦</span>
         <span>24</span>
@@ -42,10 +43,10 @@
             <div class="dialogueCard">
               <p id="insideHouseNumber" class="dialogueKicker">HOUSE 1</p>
               <p id="insideElfGreeting" class="elfGreeting">Hello!</p>
-              <h2 id="insideActivityTitle">Snowball Toss</h2>
-              <p id="insideActivityText">Hit the moving snow targets before the timer runs out.</p>
+              <h2 id="insideActivityTitle">Your Advent surprise</h2>
+              <p id="insideActivityText">Visit a numbered door to see what is inside.</p>
               <div class="dialogueActions">
-                <span class="comingSoon">ACTIVITY COMING SOON</span>
+                <button id="playHouseGame" class="playHouseGame" type="button" hidden>PLAY GAME</button>
                 <button id="leaveHouseButton" type="button">LEAVE HOUSE</button>
               </div>
             </div>
@@ -58,10 +59,8 @@
           <p class="sectionKicker">YOUR COLLECTION</p>
           <h2>Playroom</h2>
           <p>Every activity you unlock in the village will live here so you can come back and play it again.</p>
-          <div class="roomShelf" aria-hidden="true">
-            <div class="shelfToy gift"></div><div class="shelfToy star"></div><div class="shelfToy ball"></div>
-          </div>
-          <div class="emptyState">The shelves will fill as you visit houses through December.</div>
+          <div id="gameShelf" class="gameShelf" aria-live="polite"></div>
+          <div id="playroomMessage" class="emptyState">Unlocked games will appear here as December progresses.</div>
         </div>
       </section>
 
@@ -83,7 +82,7 @@
           <p class="sectionKicker">YOUR ELF</p>
           <h2>Profile</h2>
           <p>Your account, display name, saved elf and Advent progress will be connected here later.</p>
-          <div class="profileElf" aria-hidden="true">☺</div>
+          <div id="testTools" class="testTools" hidden><h3>Testing mode</h3><p>All numbered doors are accessible for testing. Game previews are listed in Playroom even before their dates are assigned.</p><button type="button" id="exitTestMode">Leave testing mode</button></div>
         </div>
       </section>
     </main>
@@ -123,7 +122,9 @@
   <script src="assets/elf/elf-data-9a.js?v=1"></script>
   <script src="assets/elf/elf-data-9b.js?v=1"></script>
   <script src="assets/elf/elf-sprite.js?v=1"></script>
-  <script src="assets/village/village-assets.js?v=1"></script>\n  <script src="village.js?v=1"></script>
-  <script src="app.js?v=2"></script>
+  <script src="assets/village/village-assets.js?v=1"></script>
+  <script src="advent-calendar.js?v=1"></script>
+  <script src="village.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

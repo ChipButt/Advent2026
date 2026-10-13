@@ -1,0 +1,53 @@
+:root{--ink:#123d55;--muted:#55778a;--ice:#d8edf5;--green:#2f9a63;--red:#d85653;--blue:#184b66}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#d8edf5;color:var(--ink);font-family:"Arial Rounded MT Bold",ui-rounded,system-ui,-apple-system,sans-serif}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,a{-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer}
+.arcade{display:flex;align-items:center;justify-content:center;width:100%;height:100dvh;overflow:hidden}
+.gameFrame{height:100dvh;width:min(100vw,430px);max-height:850px;display:grid;grid-template-rows:52px minmax(0,1fr) 95px;position:relative;overflow:hidden;background:#eaf8fc}
+.hud{position:relative;z-index:12;display:grid;grid-template-columns:40px minmax(0,1.5fr) minmax(0,.8fr) minmax(0,1.08fr) 40px;gap:5px;align-items:center;padding:5px;background:#184b66;border-bottom:3px solid #0e3549;color:#fff}
+.iconButton{width:38px;height:38px;border:0;border-radius:9px;background:#2f7697;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);display:grid;place-items:center;padding:9px;text-decoration:none}
+.iconButton:active{transform:translateY(2px)}
+.iconButton img{width:100%;height:100%;object-fit:contain}
+.hudStat{text-align:center;min-width:0;line-height:1}
+.hudStat span{display:block;font-size:8px;letter-spacing:.45px;opacity:.77;margin-bottom:5px;white-space:nowrap}
+.hudStat strong{display:block;font-size:14px;white-space:nowrap;letter-spacing:.035em;font-variant-numeric:tabular-nums}
+.hudWave strong{color:#ffe097}.hudLives strong{color:#ffd3ce}
+.playfield{position:relative;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#e5f5fa;border-bottom:3px solid #a7d1de}
+#game{display:block;width:100%;height:100%;object-fit:contain;touch-action:none;image-rendering:pixelated;image-rendering:crisp-edges}
+.waveBanner{position:absolute;top:19px;left:50%;transform:translate(-50%,-10px);z-index:3;opacity:0;pointer-events:none;color:#123d55;background:#fff;border:3px solid #184b66;border-radius:13px;padding:9px 16px;font-size:12px;font-weight:900;letter-spacing:.05em;white-space:nowrap;box-shadow:0 5px 0 rgba(19,61,85,.18);transition:transform .2s,opacity .2s}
+.waveBanner.on{transform:translate(-50%,0);opacity:1}
+.assetStatus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;color:#285f7b;font-weight:900;font-size:12px;text-align:center;background:#fff;border:2px solid #a9d2df;border-radius:10px;padding:12px 16px;box-shadow:0 5px 0 #91c2d2;white-space:nowrap}
+.assetStatus[hidden]{display:none}
+.controls{z-index:4;display:grid;grid-template-columns:1fr 1fr 1.55fr;gap:8px;align-items:center;padding:9px 13px calc(9px + env(safe-area-inset-bottom));background:#f7fcff}
+.control{border:2px solid #a9d2df;border-radius:11px;background:#fff;color:#123d55;box-shadow:0 4px 0 #b7d7e3;touch-action:none;display:flex;align-items:center;justify-content:center;min-height:58px;font-weight:900}
+.control.move{font-size:25px}
+.control.fire{background:#d95355;border-color:#b83a3f;box-shadow:0 4px 0 #8f2e33;color:#fff;gap:9px;font-size:13px;letter-spacing:.08em}
+.control.down{transform:translateY(3px);box-shadow:0 1px 0 #9abfce;background:#e3f5fa}
+.control.fire.down{background:#b43842;box-shadow:0 1px 0 #7e2732}
+.snowballIcon{display:block;width:20px;height:20px;border:3px solid #9ecddd;border-radius:50%;background:#fff;box-shadow:inset -3px -3px 0 #d8eff7}
+.overlay{position:absolute;inset:0;z-index:20;display:none;justify-content:center;align-items:center;padding:14px;background:rgba(15,53,73,.43);backdrop-filter:blur(3px)}
+.overlay.show{display:flex}
+.menuCard{width:min(100%,340px);max-height:calc(100dvh - 30px);overflow-y:auto;background:#fff;border:4px solid #184b66;border-radius:18px;padding:13px 15px 14px;text-align:center;box-shadow:0 7px 0 rgba(15,53,73,.24)}
+.heroScene{height:120px;position:relative;margin-bottom:11px;border:3px solid #173b4d;border-radius:9px;overflow:hidden;background:linear-gradient(#d8f3fc,#ecf9ff);image-rendering:pixelated}
+.heroScene canvas{display:block;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;image-rendering:crisp-edges}
+.eyebrow{color:#43809d;font-weight:900;letter-spacing:1.4px;font-size:9px;margin:4px 0 6px}
+h1{font-size:30px;line-height:1.04;margin:0;color:#123d55}h1 em{font-style:normal;color:var(--red)}
+.tagline{max-width:285px;margin:10px auto 11px;color:var(--muted);font-size:11px;line-height:1.45}
+.kenneyButton{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:8px;border:0;border-radius:11px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.19);font-weight:900;font-size:12px;letter-spacing:.02em}
+.kenneyButton:active:not(:disabled){transform:translateY(2px)}
+.kenneyButton.primary{background:#2f9a63;color:#fff}.kenneyButton.secondary{background:#d8edf4;color:#184b66}
+.kenneyButton:disabled{opacity:.5;cursor:not-allowed}
+.kenneyButton.soundButton{min-height:34px;font-size:10px}
+.kenneyButton[hidden]{display:none}
+.menuCard .controlHint{font-size:10px;line-height:1.5;color:#648596;margin:12px auto 6px}
+.homeLink{display:inline-block;margin-top:5px;font-size:10px;text-decoration:none;color:#416f88;font-weight:900}
+.resultStrip{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.resultStrip[hidden]{display:none}
+.resultStrip>div{background:#eaf8fc;border-radius:11px;padding:8px 5px;color:#56788c;font-size:9px;font-weight:900}
+.resultStrip strong{display:block;font-size:24px;color:#d65150;font-variant-numeric:tabular-nums}
+.srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:380px){.hud{grid-template-columns:35px minmax(0,1.5fr) minmax(0,.75fr) minmax(0,1fr) 35px;gap:3px;padding:4px}.iconButton{width:34px;height:34px}.hudStat span{font-size:7px}.hudStat strong{font-size:11px}.controls{gap:6px;padding-left:8px;padding-right:8px}.heroScene{height:105px}}
+@media(max-height:680px){.gameFrame{grid-template-rows:48px minmax(0,1fr) 74px}.controls{padding-top:5px;padding-bottom:calc(6px + env(safe-area-inset-bottom))}.control{min-height:46px}.menuCard{padding:10px 12px;max-height:calc(100dvh - 24px)}.heroScene{height:78px}.tagline{margin:7px auto}.kenneyButton{min-height:39px;margin-top:6px}.controlHint{margin:7px auto}}
+@media(prefers-reduced-motion:reduce){.waveBanner{transition:none}}

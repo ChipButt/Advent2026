@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1">
+<meta name="theme-color" content="#b8d9ea">
+<title>Tiny Ski Run · Advent 2026</title>
+<link rel="stylesheet" href="style.css?v=21">
+</head>
+<body>
+<main class="skiApp">
+  <section class="gameFrame" aria-label="Tiny Ski Run">
+    <canvas id="gameCanvas" width="360" height="720" aria-label="Endless downhill ski slope"></canvas>
+
+    <header class="hud">
+      <a class="hudIcon" href="../../#calendar" aria-label="Return to Advent calendar">
+        <img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/home.png" alt="">
+      </a>
+      <div class="hudBox"><span>DISTANCE</span><strong><b id="distance">0000</b>m</strong></div>
+      <div class="hudBox compact"><span>GATES</span><strong id="gates">00</strong></div>
+      <div class="hudBox"><span>BEST SCORE</span><strong><b id="best">0000</b></strong></div>
+      <button id="pauseButton" class="hudIcon" type="button" aria-label="Pause">
+        <img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/gear.png" alt="">
+      </button>
+    </header>
+
+    <div id="speedBadge" class="speedBadge"><span id="speedLabel">CRUISE</span></div>
+    <div id="assetStatus" class="assetStatus" aria-live="polite">Loading mountain…</div>
+
+    <section id="startOverlay" class="overlay show" aria-label="Start Tiny Ski Run">
+      <div class="menuCard">
+        <div class="scenePreview" aria-hidden="true">
+          <span class="scenePiste"></span>
+          <img class="sceneTree sceneTreeA" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0030.png" alt="">
+          <img class="sceneTree sceneTreeB" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0006.png" alt="">
+          <img class="sceneFlag sceneFlagA" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0008.png" alt="">
+          <img class="sceneFlag sceneFlagB" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0009.png" alt="">
+          <img class="sceneSkier" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0070.png" alt="">
+          <img class="sceneRock" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0081.png" alt="">
+        </div>
+        <p class="eyebrow">ADVENT</p>
+        <h1>TINY SKI <em>RUN</em></h1>
+        <p class="tagline">Stay on the piste. Thread the gates. Dodge the mountain.</p>
+        <button id="startButton" class="kenneyButton" type="button" disabled>HIT THE SLOPE</button>
+        <div class="startStats">BEST SCORE <strong><span id="startBest">0000</span></strong></div>
+        <div class="controlStrip" aria-label="Controls">
+          <img src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/ui/Mobile%20Controls/Sprites/Style%20C/direction_left.png" alt="">
+          <span>HOLD LEFT / RIGHT SIDE<br>OR DRAG TO CARVE</span>
+          <img src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/ui/Mobile%20Controls/Sprites/Style%20C/direction_right.png" alt="">
+        </div>
+        <small>Desktop: ← → or A / D</small>
+      </div>
+    </section>
+
+    <section id="gameOverOverlay" class="overlay" aria-label="Run over">
+      <div class="menuCard gameOverCard">
+        <div class="crashScene" aria-hidden="true">
+          <img src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0069.png" alt="">
+          <img class="crashedSkier" src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0070.png" alt="">
+          <img src="https://chipbutt.github.io/ToolBox/assets/gamebox/kenney/2d/Tiny%20Ski/Tiles/tile_0081.png" alt="">
+        </div>
+        <p class="eyebrow danger">WIPEOUT</p>
+        <p class="eyebrow">FINAL SCORE</p>
+        <h2><span id="finalScore">0</span></h2>
+        <p id="runBreakdown">0 distance + 0 gates × 25 = +0 · 0 near misses</p>
+        <p id="recordText">Best score: 0</p>
+        <button id="againButton" class="kenneyButton" type="button">SKI AGAIN</button>
+        <a class="kenneyButton mutedButton" href="../../#calendar">ADVENT</a>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="pauseSheet" class="sheet" aria-hidden="true">
+  <div class="sheetBackdrop"></div>
+  <section class="menuCard pauseCard" role="dialog" aria-modal="true" aria-label="Pause menu">
+    <div class="pauseTitle">
+      <strong>RUN PAUSED</strong>
+      <button id="closePause" class="hudIcon" type="button" aria-label="Resume">
+        <img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/cross.png" alt="">
+      </button>
+    </div>
+    <button id="resumeButton" class="kenneyButton" type="button">RESUME</button>
+    <button id="restartButton" class="kenneyButton" type="button">RESTART RUN</button>
+    <button id="soundButton" class="kenneyButton iconLine" type="button">
+      <img id="soundIcon" src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/audioOn.png" alt="">
+      <span>SOUND ON</span>
+    </button>
+    <a class="kenneyButton mutedButton iconLine" href="../../#calendar">
+      <img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/home.png" alt="">
+      <span>ADVENT</span>
+    </a>
+  </section>
+</div>
+
+<script src="game.js?v=24"></script>
+</body>
+</html>

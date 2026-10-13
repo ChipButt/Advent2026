@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#11191e">
+<title>Jigsaw · Advent 2026</title>
+<link rel="stylesheet" href="style.css?v=15">
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <a class="roundAsset hudButton backButtonAsset" href="../../#calendar" aria-label="Back to Advent calendar"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/arrowLeft.png" alt=""></a>
+    <div class="titleStack" aria-label="Jigsaw puzzle"><span class="titleEdition">CHRISTMAS EDITION</span><h1>JIGSAW</h1><strong id="puzzleTitle" class="puzzleName">Christmas Test</strong></div>
+    <button id="menuButton" class="roundAsset hudButton settingsButtonAsset" type="button" aria-label="Puzzle settings"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/gear.png" alt=""></button>
+  </header>
+
+  <main id="puzzleStage" class="stage" aria-label="Jigsaw puzzle"><div class="boardBackdrop" aria-hidden="true"></div><canvas id="puzzleCanvas"></canvas></main>
+</div>
+
+<div id="menuSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+  <section class="optionsPanel festivePanel">
+    <img class="panelChristmasMark" src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <button id="closeMenu" class="roundAsset closeButton backButtonAsset" type="button" aria-label="Close settings"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/cross.png" alt=""></button>
+    <header class="panelHeading"><span>CHRISTMAS PUZZLE</span><h2 id="menuTitle">Settings</h2></header>
+
+    <div class="sectionLabel"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/menuGrid.png" alt=""><div><small>DIFFICULTY</small><strong>Choose your challenge</strong></div></div>
+    <div class="difficultyScale" aria-hidden="true"><span>EASIER</span><span>HARDER</span></div>
+    <div class="pieceChoices" id="pieceChoices" role="group" aria-label="Number of puzzle pieces">
+      <button type="button" data-piece-grid="2" aria-pressed="false"><span>4</span></button>
+      <button type="button" data-piece-grid="3" aria-pressed="false"><span>9</span></button>
+      <button type="button" data-piece-grid="4" aria-pressed="false"><span>16</span></button>
+      <button type="button" data-piece-grid="5" aria-pressed="false"><span>25</span></button>
+      <button type="button" data-piece-grid="6" class="selected" aria-pressed="true"><span>36</span></button>
+      <button type="button" data-piece-grid="7" aria-pressed="false"><span>49</span></button>
+      <button type="button" data-piece-grid="8" aria-pressed="false"><span>64</span></button>
+      <button type="button" data-piece-grid="9" aria-pressed="false"><span>81</span></button>
+      <button type="button" data-piece-grid="10" aria-pressed="false"><span>100</span></button>
+      <button type="button" data-piece-grid="11" aria-pressed="false"><span>121</span></button>
+      <button type="button" data-piece-grid="12" aria-pressed="false"><span>144</span></button>
+      <button type="button" data-piece-grid="13" aria-pressed="false"><span>169</span></button>
+    </div>
+
+    <div class="optionRows">
+      <button id="guideButton" class="settingButton guideButton" type="button" data-guide="off">
+        <span class="settingIcon"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/target.png" alt=""></span>
+        <span class="settingText"><small>PICTURE GUIDE</small><strong id="guideState">Off</strong></span>
+        <span class="guideStates" aria-hidden="true"><span data-guide-label="off" class="active">Off</span><span data-guide-label="faint">Faint</span><span data-guide-label="strong">Strong</span></span>
+      </button>
+      <button id="soundButton" class="settingButton soundButton" type="button">
+        <span class="settingIcon"><img id="soundIcon" src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/audioOn.png" alt=""></span>
+        <span class="settingText"><small>SOUND</small><strong id="soundState">On</strong></span>
+        <img id="soundCheck" class="stateCheck" src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/ui/UI Pack/Green/Double/check_square_color_checkmark.png" alt="">
+      </button>
+    </div>
+
+    <div class="actionGrid">
+      <button id="restartButton" class="assetAction dangerAction" type="button"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/return.png" alt=""><span>Restart</span></button>
+      <button id="chooseImage" class="assetAction primaryAction" type="button"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/import.png" alt=""><span>New image</span></button>
+    </div>
+    <input id="imageFile" type="file" accept="image/*" hidden>
+    <button id="howToButton" class="assetAction secondaryAction howToAction" type="button"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/target.png" alt=""><span>How to Play</span></button>
+    <a class="assetAction secondaryAction homeAction" href="../../#calendar"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/home.png" alt=""><span>Back to Advent calendar</span></a>
+  </section>
+</div>
+
+<div id="howToSheet" class="sheet show" role="dialog" aria-modal="true" aria-labelledby="howToTitle">
+  <section class="howToPanel festivePanel">
+    <img class="howToChristmasMark" src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <button id="closeHowTo" class="roundAsset closeButton backButtonAsset" type="button" aria-label="Close How to Play"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/cross.png" alt=""></button>
+    <header class="howToHeading">
+      <span>CHRISTMAS JIGSAW</span>
+      <h2 id="howToTitle">How to Play</h2>
+    </header>
+    <div class="howToCopy">
+      <p><strong>1. Move the pieces</strong><span>Drag the loose puzzle pieces around the table.</span></p>
+      <p><strong>2. Find the right place</strong><span>Drop a piece near its correct position and it will snap into place.</span></p>
+      <p><strong>3. Complete the picture</strong><span>Place every piece to finish the puzzle.</span></p>
+      <p><strong>Need a hand?</strong><span>Open Settings to change the difficulty, turn on the picture Guide, or load your own image.</span></p>
+    </div>
+    <button id="startPuzzleButton" class="assetAction primaryAction howToStart" type="button"><span>Start Puzzle</span></button>
+  </section>
+</div>
+
+<div id="winOverlay" class="winOverlay" role="dialog" aria-modal="true" aria-labelledby="completeTitle">
+  <section class="completePanel festivePanel">
+    <img class="completeChristmasMark" src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <span class="completeKicker">MERRY CHRISTMAS</span><h1 id="completeTitle">Puzzle complete</h1>
+    <p>All <strong id="winPieceCount">36</strong> pieces are in place.</p>
+    <div class="winActions">
+      <button id="winRestart" class="assetAction primaryAction" type="button"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/return.png" alt=""><span>Play again</span></button>
+      <button id="winChooseImage" class="assetAction highlightAction" type="button"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/import.png" alt=""><span>New image</span></button>
+    </div>
+    <button id="winHome" class="assetAction secondaryAction winHomeAction" type="button"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/home.png" alt=""><span>Advent</span></button>
+  </section>
+</div>
+
+<script src="jigsaw-engine.js?v=14"></script>
+<script src="game.js?v=9"></script>
+</body>
+</html>

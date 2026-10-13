@@ -17,6 +17,8 @@
   const activityTitleEl = document.getElementById('insideActivityTitle');
   const activityTextEl = document.getElementById('insideActivityText');
   const leaveButton = document.getElementById('leaveHouseButton');
+  const playButton = document.getElementById('playHouseGame');
+  const calendar = window.AdventCalendar;
 
   const VIEW_W = 480;
   const VIEW_H = 320;
@@ -49,33 +51,6 @@
     windowGlow:'#ffe6a3',
     night:'#10291f'
   };
-
-  const ACTIVITIES = [
-    ['Snowball Toss','Hit the moving snow targets before the timer runs out.'],
-    ['Christmas Memory','Turn over festive cards and find every matching pair.'],
-    ['Parcel Sort','Sort the workshop parcels into the correct coloured sleigh bags.'],
-    ['Reindeer Dash','Guide a reindeer through the snowy course without clipping the markers.'],
-    ['Carol Quiz','Listen to clues and work out which Christmas song the elf means.'],
-    ['Tree Lights','Repeat the growing sequence of coloured Christmas lights.'],
-    ['Gingerbread Builder','Copy the elf’s gingerbread-house design using the right pieces.'],
-    ['Present Stack','Balance the presents and build the tallest stable stack you can.'],
-    ['Festive Words','Find the hidden Christmas words before the clock reaches zero.'],
-    ['Sleigh Maze','Find the quickest route through the snowy maze to Santa’s sleigh.'],
-    ['Bauble Balance','Keep the baubles balanced while the branch moves underneath them.'],
-    ['Christmas Trivia','Answer a quick round of festive questions and chase a perfect score.'],
-    ['Snowman Builder','Choose the right parts to recreate the snowman shown by the elf.'],
-    ['Stocking Match','Match each stocking to its owner using the clues on the mantle.'],
-    ['Bell Rhythm','Copy the elf’s bell rhythm without missing a beat.'],
-    ['North Pole Code','Crack the short code using the symbols and clues around the room.'],
-    ['Gift Wrap Puzzle','Fold and place the wrapping pieces so the present is completely covered.'],
-    ['Candy Cane Catch','Catch the good candy canes and dodge everything that should stay in the box.'],
-    ['Christmas Movie Quiz','Identify the festive films from visual and written clues.'],
-    ['Chimney Drop','Time each present so it lands safely down the correct chimney.'],
-    ['Reindeer Roll Call','Match the reindeer names to the clues the stable elf gives you.'],
-    ['Toy Workshop Rush','Complete a short chain of toy-making jobs before the workshop bell rings.'],
-    ['Santa Route','Plan Santa’s route so every stop is visited without wasting moves.'],
-    ['Christmas Eve Challenge','A final mixed challenge using skills from across the Advent village.']
-  ];
 
   const houseColours = [
     ['#a9363f','#762832','#ead9b6'],
@@ -186,10 +161,13 @@
     }
     nearbyHouse=best;
     if (scene !== 'village') return;
-    enterButton.disabled=!nearbyHouse;
-    enterButton.classList.toggle('ready',!!nearbyHouse);
+    const unlocked=!!nearbyHouse&&calendar.isUnlocked(nearbyHouse.day);
+    enterButton.disabled=!unlocked;
+    enterButton.classList.toggle('ready',unlocked);
     prompt.classList.toggle('visible',!!nearbyHouse);
-    prompt.textContent=nearbyHouse ? 'House '+nearbyHouse.day+' · Press A to visit' : '';
+    prompt.textContent=nearbyHouse
+      ? unlocked ? 'Door '+nearbyHouse.day+' · Press A to visit' : 'Door '+nearbyHouse.day+' · Opens '+nearbyHouse.day+' December'
+      : '';
   }
 
   function update(dt,now) {
@@ -422,12 +400,14 @@
   }
 
   function enterHouse(h=nearbyHouse) {
-    if(!h)return;
-    insideHouse=h;scene='interior';visited.add(h.day);saveState();
-    houseNumberEl.textContent='HOUSE '+h.day;
-    elfGreetingEl.textContent='Hello! Come in — I’ve been waiting for you.';
-    activityTitleEl.textContent=ACTIVITIES[h.day-1][0];
-    activityTextEl.textContent=ACTIVITIES[h.day-1][1];
+    if(!h||!calendar.isUnlocked(h.day))return;
+    const game=calendar.gameForDay(h.day);
+    insideHouse=h;scene='interior';
+    houseNumberEl.textContent='DOOR '+h.day;
+    elfGreetingEl.textContent='Merry Christmas! Welcome inside.';
+    activityTitleEl.textContent=game ? game.title : 'A surprise is being prepared';
+    activityTextEl.textContent=game ? game.description : 'This day has not yet been assigned a game.';
+    playButton.hidden=!game;
     interiorHud.hidden=false;
     prompt.classList.remove('visible');
     enterButton.disabled=true;
@@ -465,6 +445,14 @@
 
   enterButton.addEventListener('click',()=>enterHouse());
   leaveButton.addEventListener('click',leaveHouse);
+  playButton.addEventListener('click',()=>{
+    if(!insideHouse||!calendar.isUnlocked(insideHouse.day))return;
+    const game=calendar.gameForDay(insideHouse.day);
+    if(!game)return;
+    visited.add(insideHouse.day);
+    saveState();
+    location.href=game.url;
+  });
 
   function loop(now) {
     const dt=Math.min(.05,(now-last)/1000);last=now;

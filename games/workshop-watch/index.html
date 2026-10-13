@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1">
+<meta name="theme-color" content="#eaf7fb">
+<title>Workshop Watch · Advent 2026</title>
+<link rel="stylesheet" href="style.css?v=8">
+</head>
+<body>
+<main class="wwApp">
+  <section class="gameFrame" aria-label="Workshop Watch Christmas tower defence">
+    <header class="hud">
+      <a class="hudIcon" href="../../#calendar" aria-label="Return to Advent calendar"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/home.png" alt=""></a>
+      <div class="hudStat"><span>LEVEL · WAVE</span><strong id="waveHud">01 · 1/5</strong></div>
+      <div class="hudStat"><span>BAUBLES</span><strong id="moneyHud">190</strong></div>
+      <div class="hudStat"><span>PRESENTS</span><strong id="livesHud">10</strong></div>
+      <div class="hudStat"><span>SCORE</span><strong id="scoreHud">0000</strong></div>
+      <button id="pauseButton" class="hudIcon" type="button" aria-label="Pause"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/gear.png" alt=""></button>
+    </header>
+
+    <section class="boardWrap">
+      <canvas id="gameCanvas" width="336" height="480" aria-label="Snowy tower defence map"></canvas>
+      <div id="waveBanner" class="waveBanner" aria-live="polite"></div>
+      <div id="towerPanel" class="towerPanel" aria-live="polite">
+        <div>
+          <strong id="towerPanelName">SNOWBALLER</strong>
+          <small id="towerPanelStats">LEVEL 1</small>
+        </div>
+        <button id="upgradeButton" type="button">UPGRADE <span id="upgradeCost">0</span></button>
+        <button id="sellButton" class="muted" type="button">SELL <span id="sellValue">0</span></button>
+      </div>
+    </section>
+
+    <section class="buildBar" aria-label="Defence controls">
+      <div class="buildHeader">
+        <div class="levelCard" aria-live="polite">
+          <span id="levelLabel">LEVEL 1/12</span>
+          <small id="levelName">FROST GATE</small>
+        </div>
+        <button id="startWaveButton" class="startWave" type="button">START WAVE 1/5</button>
+      </div>
+
+      <div class="towerChoices" id="towerChoices">
+        <button class="towerChoice" type="button" data-tower="snowA" aria-label="Snowballer">
+          <span class="towerSpriteThumb snowAThumb" aria-hidden="true"></span>
+          <span>BALLER<small>65</small></span>
+        </button>
+        <button class="towerChoice" type="button" data-tower="snowB" aria-label="Double Toss">
+          <span class="towerSpriteThumb snowGThumb" aria-hidden="true"></span>
+          <span>DOUBLE<small>90</small></span>
+        </button>
+        <button class="towerChoice" type="button" data-tower="snowC" aria-label="Rapid Snow">
+          <span class="towerSpriteThumb snowCThumb" aria-hidden="true"></span>
+          <span>RAPID<small>95</small></span>
+        </button>
+        <button class="towerChoice" type="button" data-tower="snowD" aria-label="Frost Throw">
+          <span class="towerSpriteThumb snowDThumb" aria-hidden="true"></span>
+          <span>FROST<small>110</small></span>
+        </button>
+        <button class="towerChoice" type="button" data-tower="snowE" aria-label="Heavy Snow">
+          <span class="towerSpriteThumb snowEThumb" aria-hidden="true"></span>
+          <span>HEAVY<small>145</small></span>
+        </button>
+        <button class="towerChoice" type="button" data-tower="snowF" aria-label="Long Shot">
+          <span class="towerSpriteThumb snowFThumb" aria-hidden="true"></span>
+          <span>LONG<small>130</small></span>
+        </button>
+      </div>
+      <p id="buildHint" class="buildHint">Choose a snowman, then tap any clear snow to place it.</p>
+    </section>
+
+    <section id="startOverlay" class="overlay show" aria-label="Start Workshop Watch">
+      <div class="menuCard introCard">
+        <div class="heroScene pixelHero" aria-hidden="true">
+          <span class="heroSnowman"></span>
+          <span class="heroGingerbread"></span>
+          <span class="heroSlime"></span>
+          <span class="heroSnowball"></span>
+        </div>
+        <p class="eyebrow">ADVENT 2026</p>
+        <h1>WORKSHOP <em>WATCH</em></h1>
+        <p class="tagline">Deploy Christmas defenders, throw snowballs and stop the monsters reaching Santa's presents.</p>
+        <button id="playButton" class="kenneyButton primary" type="button" disabled>LOADING CHRISTMAS…</button>
+        <button id="introHowButton" class="kenneyButton secondary" type="button">HOW TO PLAY</button>
+        <div class="bestLine">BEST SCORE <strong id="bestStart">0000</strong></div>
+      </div>
+    </section>
+
+    <section id="gameOverOverlay" class="overlay" aria-label="Workshop Watch result">
+      <div class="menuCard resultCard">
+        <span class="resultSprite snowEThumb" aria-hidden="true"></span>
+        <p id="resultEyebrow" class="eyebrow danger">WORKSHOP BREACHED</p>
+        <h2 id="resultTitle">RUN OVER</h2>
+        <div class="finalScore"><span>FINAL SCORE</span><strong id="finalScore">0</strong></div>
+        <p id="finalBreakdown">0 waves · 0 perfect · 0 presents safe</p>
+        <p id="recordText">Best score: 0</p>
+        <button id="againButton" class="kenneyButton primary" type="button">PLAY AGAIN</button>
+        <a class="kenneyButton secondary" href="../../#calendar">ADVENT</a>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="pauseSheet" class="sheet" aria-hidden="true">
+  <div class="sheetBackdrop"></div>
+  <section class="menuCard pauseCard" role="dialog" aria-modal="true" aria-label="Pause menu">
+    <div class="sheetTitle"><strong>WORKSHOP PAUSED</strong><button id="closePause" class="hudIcon" type="button" aria-label="Resume"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/cross.png" alt=""></button></div>
+    <button id="resumeButton" class="kenneyButton primary" type="button">RESUME</button>
+    <button id="pauseHowButton" class="kenneyButton secondary" type="button">HOW TO PLAY</button>
+    <button id="restartButton" class="kenneyButton secondary" type="button">RESTART</button>
+    <button id="soundButton" class="kenneyButton secondary" type="button">SOUND ON</button>
+    <a class="kenneyButton secondary" href="../../#calendar">ADVENT</a>
+  </section>
+</div>
+
+<div id="howSheet" class="sheet" aria-hidden="true">
+  <div class="sheetBackdrop"></div>
+  <section class="menuCard howCard" role="dialog" aria-modal="true" aria-label="How to play Workshop Watch">
+    <div class="sheetTitle"><strong>HOW TO PLAY</strong><button id="closeHow" class="hudIcon" type="button" aria-label="Close"><img src="https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game%20Icons/White/2x/cross.png" alt=""></button></div>
+    <div class="howGrid">
+      <div><b>1</b><p><strong>BUILD</strong><span>Pick a snowman, then tap clear snow to place it. You can build during a wave.</span></p></div>
+      <div><b>2</b><p><strong>DEFEND</strong><span>Six snowmen cover basic, double, rapid, frost, heavy and long-range attacks.</span></p></div>
+      <div><b>3</b><p><strong>LEVELS</strong><span>There are 12 different tracks. Survive five increasingly hard waves on each one.</span></p></div>
+      <div><b>4</b><p><strong>UPGRADE</strong><span>Tower prices rise on later levels. Tap a snowman to upgrade it or sell it.</span></p></div>
+    </div>
+    <p class="howFooter">Clear all 12 levels — 60 waves in total. Presents carry across the full run, so leaks matter.</p>
+    <button id="closeHowButton" class="kenneyButton primary" type="button">GOT IT</button>
+  </section>
+</div>
+
+<script src="game.js?v=19"></script>
+</body>
+</html>

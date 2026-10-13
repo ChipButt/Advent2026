@@ -198,3 +198,47 @@ button{cursor:pointer}
   .bottomNav .navItem{min-height:52px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+
+/* Advent game integration — same compact pixel-game shell as the village. */
+.testModeBadge{
+  padding:5px 7px; border:2px solid var(--gold); border-radius:4px;
+  background:#5c372a;color:#fff3d3;letter-spacing:.1em;font-size:9px;font-weight:900;
+  white-space:nowrap;
+}
+.testModeBadge[hidden],.playHouseGame[hidden],.emptyState[hidden],.testTools[hidden]{display:none}
+.playHouseGame{
+  flex:1;min-height:40px;border:2px solid #183024;border-radius:6px;
+  color:#fff;background:#276442;box-shadow:inset 0 -4px #163c27;
+  font-size:11px;font-weight:900;letter-spacing:.04em;
+}
+.playHouseGame:active{transform:translateY(2px);box-shadow:inset 0 -2px #163c27}
+.dialogueActions #leaveHouseButton{padding:0 14px;min-height:40px}
+.gameShelf{display:grid;gap:12px;margin-top:18px}
+.gameShelf:empty{display:none}
+.gameCard{
+  display:flex;align-items:center;gap:12px;min-height:86px;
+  border:3px solid #23382b;border-radius:9px;padding:10px;
+  text-decoration:none;color:#17241d;
+  background:linear-gradient(145deg,#f6e9ca 0%,#e3d1aa 65%,#d6bf96 100%);
+  box-shadow:0 5px 0 #14271c,inset 0 2px rgba(255,255,255,.4);
+  transition:transform .14s ease,box-shadow .14s ease;
+}
+.gameCard:active{transform:translateY(3px);box-shadow:0 2px 0 #14271c}
+.gameCard:focus-visible{outline:3px solid #e4b34e;outline-offset:3px}
+.gameCardOrnament{
+  width:44px;height:44px;flex:none;border:3px solid #193326;border-radius:5px;
+  background:linear-gradient(135deg,#bb4650 0 44%,#e7b85b 44% 55%,#a9363f 55% 100%);
+  box-shadow:inset 0 -6px rgba(0,0,0,.15),3px 3px 0 #6b4934;
+}
+.gameCard:nth-child(3n+2) .gameCardOrnament{background:linear-gradient(135deg,#428257 0 44%,#e7b85b 44% 55%,#24543b 55% 100%)}
+.gameCard:nth-child(3n) .gameCardOrnament{background:linear-gradient(135deg,#41677b 0 44%,#e7b85b 44% 55%,#294958 55% 100%)}
+.gameCardText{display:grid;gap:4px;flex:1;min-width:0}
+.gameCardText small{font-size:8px;font-weight:900;color:#985236;letter-spacing:.08em}
+.gameCardText strong{font-size:15px;line-height:1.15;color:#193e2a}
+.gameCardText>span{font-size:10px;line-height:1.4;color:#526253}
+.gameCardArrow{color:#1e5835;font-size:28px;font-weight:900}
+.testTools{margin-top:16px;border-top:2px solid #b7a47d;padding-top:14px}
+.testTools h3{margin:0 0 7px;font-size:14px}
+.testTools p{margin:0 0 10px;font-size:10px;line-height:1.6}
+.testTools button{min-height:44px;padding:9px 14px;border:2px solid #243f2f;border-radius:5px;color:#fff;background:#28593c;font-weight:900}

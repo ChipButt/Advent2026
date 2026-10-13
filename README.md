@@ -1,38 +1,46 @@
 # Advent 2026
 
-A mobile-first digital Advent calendar presented as an explorable Christmas elf village.
+Mobile-first, explorable Christmas village with 24 numbered houses. The project remains independent of GameBox.
 
-## Current experience
+## Current integration
 
-- **Calendar** is now a low-down top-view snowy village rather than a grid of doors.
-- The player controls a smaller version of the coded **Classic Elf** and walks around the village.
-- There are **24 numbered houses**, one for each Advent day.
-- Walking up to a house enables the **A / Enter** control.
-- Entering a house moves into a detailed pixel interior where a resident elf greets the player and explains that house's planned game or puzzle.
-- Visited houses are remembered locally.
-- **Playroom / Scores / Profile** remain as the main navigation areas for later Firebase, collection and leaderboard work.
+- Walk through the existing Christmas village, approach a house, and press A / Enter.
+- Doors follow the Europe/London calendar. Door 1 opens on 1 December 2026, continuing through door 24 on 24 December. Past doors remain accessible.
+- Development testing: visit [the test URL](https://chipbutt.github.io/Advent2026/?test=1#calendar) to unlock all houses for the current browser session. An explicit testing indicator appears at the top. Leave test mode in Profile, or add '?test=0' to the URL.
+- The Playroom displays games from unlocked days. In test mode it displays all six approved game copies for QA even before any day assignments are made.
+- The village's original movement, elf, snow-map and interior remain in place.
 
-## Visual direction
+## Approved games copied from GameBox
 
-The Classic Elf sprite is the reference for the whole app's coded pixel-art language:
+Source snapshot: \`ChipButt/GameBox@fab0ae98fd86c888ff1bd470ade52f698ed2b82b\`.
 
-- compact detailed sprites rather than simple geometric placeholders;
-- dark pixel outlines;
-- muted Christmas green, red, cream and brown;
-- multiple light/dark shades per material;
-- warm wood and window-light accents;
-- chunky snow and trim with deliberately stepped pixel edges.
+| Game | Advent copy |
+| --- | --- |
+| Tiny Ski Run | \`games/tiny-ski-run/\` |
+| Jigsaw | \`games/jigsaw/\` |
+| Workshop Watch | \`games/workshop-watch/\` |
+| Block Breaker | \`games/block-breaker/\` |
+| Santa Invaders | \`games/santa-invaders/\` |
+| Festive Blocks | \`games/festive-blocks/\` |
 
-The player sprite is still reconstructed entirely from coded sprite data. No elf PNG is required at runtime.
+Gameplay JavaScript and HTML/CSS live in this Advent repository. Some large media packs still use their verified asset URLs at \`chipbutt.github.io/GameBox/\` or \`chipbutt.github.io/ToolBox/\` instead of duplicating vendor binaries; consequently a production asset-migration pass may be needed before GameBox or ToolBox is removed. The source GameBox files are unchanged.
 
-## Structure
+## Day assignments: awaiting approval
 
-- `index.html` — app shell, village controls and four primary views
-- `styles.css` — pixel-game shell and mobile controls
-- `app.js` — hash navigation
-- `village.js` — village map, movement, houses, interiors and resident-elf dialogue
-- `assets/elf/` — coded Classic Elf sprite data/runtime
+**No dates have been assigned yet.** This is intentional: do not choose the six dates, reuse games, or fill the other 18 doors without confirmation.
 
-## Live app
+Set \`days\` in \`advent-calendar.js\` to a game ID for each approved date (e.g. \`'tiny-ski-run'\`), keeping all other dates \`null\`. The current file generates 24 \`null\` entries explicitly to make this decision visible. A door with no assigned game shows a polite 'surprise being prepared' message, never a fictitious game.
+
+## Files
+
+- \`index.html\` – app shell, village and four original tabs
+- \`styles.css\` – existing pixel-style UI plus Playroom cards
+- \`advent-calendar.js\` – approved game registry, date locking and testing mode
+- \`village.js\` – original village, movement, house interactions and game launching
+- \`app.js\` – navigation and unlocked Playroom
+- \`games/\` – six copied GameBox games
+- \`assets/elf/\`, \`assets/village/\` – existing Christmas sprite data
+
+## Live site
 
 https://chipbutt.github.io/Advent2026/
