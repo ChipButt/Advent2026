@@ -371,3 +371,6 @@ html,body{background:#101d30;color:#fdf0d4}
  .enterButton,.enterButton.ready{width:60px;height:60px}
  .interiorHud{padding-bottom:124px}
 }
+
+/* Real game preview images; never stretch cropped sprite sheets to fill the card. */
+img.gameCardOrnament{display:block;object-fit:contain;image-rendering:pixelated;background:#d7e4df;padding:4px;}

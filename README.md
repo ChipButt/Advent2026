@@ -59,3 +59,7 @@ Original `assets/elf/` and `assets/village/` files are retained as historical re
 - See GameBox `workshop-watch/assets/CREDITS.md` for Winter Tiles and Admurin attribution/licence notes.
 
 This is a functional RPG-themed rebuild, not a pixel-for-pixel copy of any AI concept illustration. The house arrangements and external sprite sheets should be reviewed visually on both phone and desktop after deployment.
+
+## Design and testing notes
+
+The world art now follows the approved full-colour Game Boy Color-style brief, using reused GameBox winter assets instead of the old code-drawn snow scene. The cottages and player sprite are newly authored in code because a complete matching overworld-building/player tileset is not present in the inspected GameBox assets. The generated reference concept is an art-direction target, not the exported playable level. JavaScript syntax and a simulated 24-house flow have been checked; visual QA in real mobile browsers is still needed.
