@@ -13,7 +13,7 @@ const W=320,H=416,T=16,WORLD_W=1488,WORLD_H=1136,PLAYER_SPEED=102;
 canvas.width=W;canvas.height=H;
 ctx.imageSmoothingEnabled=false;
 const GB='https://chipbutt.github.io/GameBox/';
-const TILE_URL=GB+'workshop-watch/assets/vendor/gherwit/winter/Winter-Download/Winter-tiles.png';
+const TILE_URL='assets/winter/Winter-tiles.png';
 const WINTER_TREE=[[9,6],[10,6],[11,6],[9,7],[10,7],[11,7],[9,8],[10,8],[11,8]];
 const c={snow:'#deeafa',snowDeep:'#bfd8ed',snowShadow:'#98bcd5',ink:'#20344b',gold:'#fbe39e',pine:'#286449',wood:'#9b6549',cream:'#fff1cc'};
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -104,185 +104,156 @@ const signs=[{x:848,y:373,label:'CHRISTMAS TOWN'},{x:826,y:200,label:'SNOW TRAIL
 const benches=[[590,739],[889,743],[476,810],[1000,805]];
 const palette=['#a23b4b','#2f7468','#98613f','#365c87','#865471','#a66e37'];
 const atlas=new Image();
-atlas.onload=()=>{image=atlas;ready=true;buildTerrainCache();};
-atlas.onerror=()=>{ready=false;buildTerrainCache();};
-atlas.src=TILE_URL;
 let terrain=null;
+let atlasReadyResolve,atlasReadyReject;
+const atlasReady=new Promise((resolve,reject)=>{atlasReadyResolve=resolve;atlasReadyReject=reject;});
+atlas.onload=()=>{image=atlas;ready=true;atlasReadyResolve();};
+atlas.onerror=()=>{ready=false;atlasReadyReject(new Error('Original Gherwit winter tiles failed to load'));};
+atlas.src=TILE_URL;
 function atlasTile(col,row,dx,dy,w=16,h=16){
  if(!image)return false;
  ctx.drawImage(image,col*16,row*16,16,16,Math.round(dx),Math.round(dy),w,h);
  return true;
 }
-function drawGroundTile(gx,gy){
- const x=gx*T,y=gy*T,p=paths.has(key(gx,gy));
- if(ready){
-   atlasTile(p?7:12,1,x,y);
-   if(!p&&hash(gx,gy)>.89)atlasTile(hash(gx+30,gy)>0.5?1:0,1,x,y);
-   if(p){
-     const n=paths.has(key(gx,gy-1)),s=paths.has(key(gx,gy+1)),w=paths.has(key(gx-1,gy)),e=paths.has(key(gx+1,gy));
-     // Ground-edge cells from the verified Gherwit 9-slice path atlas.
-     const col=w?(e?7:8):6,row=n?(s?1:2):0;
-     if(!n||!s||!w||!e)atlasTile(col,row,x,y);
-   }
- }else{
-   ctx.fillStyle=p?'#d8c4a8':(hash(gx,gy)>.82?'#c5dbe9':'#deeaf5');ctx.fillRect(x,y,T,T);
-   if(!p&&hash(gx+7,gy)>.78){ctx.fillStyle='#f6fcff';ctx.fillRect(x+4,y+5,5,2);ctx.fillRect(x+8,y+9,3,2)}
- }
-}
 function buildTerrainCache(){
- terrain=document.createElement('canvas');terrain.width=WORLD_W;terrain.height=WORLD_H;
- const old=ctx;
+ if(!ready||!image)throw new Error('Winter atlas must be ready before drawing world terrain');
+ terrain=document.createElement('canvas');
+ terrain.width=WORLD_W;terrain.height=WORLD_H;
  const ground=terrain.getContext('2d');ground.imageSmoothingEnabled=false;
- // Draw once at world resolution, never recreate every game frame.
  for(let gy=0;gy<gridY;gy++)for(let gx=0;gx<gridX;gx++){
    const x=gx*T,y=gy*T,p=paths.has(key(gx,gy));
-   if(ready){
-     let col=p?7:12,row=1;
-     if(!p&&hash(gx,gy)>.9){col=hash(gx+30,gy)>.5?1:0;row=1}
-     if(p){
-       const n=paths.has(key(gx,gy-1)),s=paths.has(key(gx,gy+1)),w=paths.has(key(gx-1,gy)),e=paths.has(key(gx+1,gy));
-       col=w?(e?7:8):6;row=n?(s?1:2):0;
-     }
-     ground.drawImage(image,col*16,row*16,16,16,x,y,T,T);
-   }else{ground.fillStyle=p?'#ddc5a4':'#d8e9f4';ground.fillRect(x,y,T,T)}
- }
- // Winter creek: water with an icy shore, later covered by bridges.
- ground.fillStyle='#91d5ec';ground.fillRect(river.x,river.y,river.w,river.h);
- ground.fillStyle='#66b8da';ground.fillRect(river.x+2,river.y+9,river.w-4,river.h-18);
- for(let n=0;n<62;n++){const x=river.x+hash(n,41)*river.w,y=river.y+12+hash(83,n)*54;ground.fillStyle=n%3===0?'#e8ffff':'#9cdeee';ground.fillRect(Math.floor(x),Math.floor(y),7,2);}
- for(let edge of [river.y,river.y+river.h-5]){ground.fillStyle='#effaff';for(let x=river.x;x<river.x+river.w;x+=16)ground.fillRect(x,edge+Math.round(hash(x,edge)*4),13,4);}
- // Proper wooden bridge instead of a clear route painted across the water.
- ground.fillStyle='#293b48';ground.fillRect(bridge.x-2,bridge.y-4,bridge.w+4,bridge.h+8);
- ground.fillStyle='#94674c';ground.fillRect(bridge.x,bridge.y,bridge.w,bridge.h);
- for(let xx=bridge.x;xx<bridge.x+bridge.w;xx+=13){ground.fillStyle='#b9895d';ground.fillRect(xx,bridge.y,10,bridge.h);ground.fillStyle='#634635';ground.fillRect(xx+10,bridge.y,2,bridge.h)}
- ground.fillStyle='#e8f3ec';ground.fillRect(bridge.x,bridge.y,bridge.w,4);ground.fillRect(bridge.x,bridge.y+bridge.h-4,bridge.w,4);
- // Main town square: cobbled plaza with tiny alternating stone pixels.
- for(let yy=690;yy<773;yy+=10)for(let xx=665;xx<818;xx+=13){
-   ground.fillStyle=hash(xx,yy)>.5?'#dac2a6':'#ebd8b9';ground.fillRect(xx+(yy%20?4:0),yy,10,7);
- }
-}
-function pixel(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),w,h)}
-function outlineRect(x,y,w,h,fill,stroke=c.ink,thick=2){
- pixel(x-thick,y-thick,w+2*thick,h+2*thick,stroke);pixel(x,y,w,h,fill);
-}
-function treeAt(t){
- const sx=Math.round(t.x-camera.x),sy=Math.round(t.y-camera.y),size=48;
- if(sx< -55||sy< -60||sx>W+45||sy>H+40)return;
- if(ready){
-   for(let n=0;n<9;n++){const m=WINTER_TREE[n],cx=n%3,cy=(n/3)|0;atlasTile(m[0],m[1],sx+cx*16,sy+cy*16)}
- }else{
-   pixel(sx+20,sy+33,8,13,'#75543d');
-   for(const [y,w] of [[3,18],[13,28],[24,40]]){
-     pixel(sx+(48-w)/2-2,sy+y-1,w+4,14,'#233e3b');
-     pixel(sx+(48-w)/2,sy+y,w,11,'#2d7864');
-     pixel(sx+(48-w)/2+4,sy+y,w-10,3,'#edf9fb');
+   let col=p?7:12,row=1;
+   if(!p&&hash(gx,gy)>.9){col=hash(gx+30,gy)>.5?1:0;row=1}
+   if(p){
+     const n=paths.has(key(gx,gy-1)),s=paths.has(key(gx,gy+1)),w=paths.has(key(gx-1,gy)),e=paths.has(key(gx+1,gy));
+     col=w?(e?7:8):6;row=n?(s?1:2):0;
    }
+   ground.drawImage(image,col*16,row*16,16,16,x,y,T,T);
  }
+}
+// Approved existing Christmas Village pack: 34 genuine source sprites, not code-rendered substitutes.
+// Player 'character.png' is the original 16-cell 4-direction walk sheet (4 frames per direction).
+let villageArt=null,christmasNPCs=null,artError=null;
+const frameCache=new Map();
+function sourceFrame(provider,name,index){
+ const k=(provider===villageArt?'v:':'t:')+name+':'+index;
+ if(frameCache.has(k))return frameCache.get(k);
+ const frame=index==null?provider.canvas(name):provider.frame(name,index);
+ frameCache.set(k,frame);return frame;
+}
+function drawSource(provider,name,x,y,w=null,h=null,frame=null){
+ if(!provider||!provider.names.includes(name))return false;
+ const src=sourceFrame(provider,name,frame);
+ if(!src)return false;
+ ctx.drawImage(src,Math.round(x),Math.round(y),Math.round(w??src.width),Math.round(h??src.height));
+ return true;
+}
+function base(name,x,y,w=null,h=null,frame=null){
+ if(!villageArt)return false;
+ const virtual={
+  'couch-horizontal':['couch.png',0,0,32,16],
+  'couch-vertical':['couch.png',32,0,16,32],
+  'fence-horizontal':['fence.png',0,0,32,16],
+  'fence-vertical':['fence.png',32,0,16,32]
+ };
+ if(virtual[name]){
+   const [source,sx,sy,sw,sh]=virtual[name],im=villageArt.canvas(source);
+   ctx.drawImage(im,sx,sy,sw,sh,Math.round(x),Math.round(y),Math.round(w??sw),Math.round(h??sh));
+   return true;
+ }
+ return drawSource(villageArt,name,x,y,w,h,frame);
+}
+function extra(name,x,y,w=null,h=null,frame=null){return drawSource(christmasNPCs,name,x,y,w,h,frame)}
+function treeAt(t){
+ const sx=Math.round(t.x-camera.x),sy=Math.round(t.y-camera.y);
+ if(sx<-55||sy<-60||sx>W+55||sy>H+50)return;
+ if(ready)for(let n=0;n<9;n++){
+   const cell=WINTER_TREE[n];atlasTile(cell[0],cell[1],sx+(n%3)*16,sy+Math.floor(n/3)*16);
+ }
+ else base('small-tree.png',sx+8,sy,30,44);
 }
 function lampAt(x,y){
- const sx=Math.round(x-camera.x),sy=Math.round(y-camera.y);
- pixel(sx+4,sy-24,3,25,'#253b46');pixel(sx+1,sy-28,9,11,'#1e3643');pixel(sx+3,sy-26,5,7,'#ffd47d');
- pixel(sx,sy-29,11,3,'#243b44');pixel(sx+3,sy-32,5,3,'#e4eced');
+ base('lamp-post.png',x-camera.x-8,y-camera.y-30,16,32);
 }
 function fenceAt(x,y,count=4){
- const sx=x-camera.x,sy=y-camera.y;
- for(let i=0;i<count;i++){const xx=Math.round(sx+i*12);pixel(xx,sy-7,4,18,'#503c31');pixel(xx+1,sy-9,3,3,'#f6fbfa');}
- pixel(sx,sy-4,count*12,3,'#9e7051');pixel(sx,sy+4,count*12,3,'#77503b');
+ for(let i=0;i<count*2;i++)base('fence-horizontal',x-camera.x+i*16,y-camera.y-9,16,16);
 }
 function signAt(s){
- const x=Math.round(s.x-camera.x),y=Math.round(s.y-camera.y);
- pixel(x+19,y-7,4,28,'#614533');outlineRect(x-17,y-18,76,18,'#d5a874','#42372d',2);
- pixel(x-12,y-16,67,2,'#fff1bc');ctx.fillStyle='#283a39';ctx.font='bold 6px monospace';ctx.textAlign='center';ctx.fillText(s.label,x+22,y-6);
-}
-function gift(x,y,tone){
- outlineRect(x,y,12,12,tone,'#384653',1);pixel(x+5,y,3,12,'#f8cf78');pixel(x,y+5,12,3,'#f8cf78');pixel(x+3,y-3,4,4,'#f9e6af');pixel(x+7,y-3,4,4,'#f9e6af');
+ base('sign-post.png',s.x-camera.x,s.y-camera.y-11,20,20);
 }
 function christmasTree(x,y){
- const px=x-camera.x,py=y-camera.y;
- pixel(px-4,py+25,8,20,'#62462f');
- for(const [yy,ww] of [[-42,23],[-22,38],[0,55],[15,69]]){
-   pixel(px-ww/2-2,py+yy+4,ww+4,16,'#243e3b');
-   pixel(px-ww/2,py+yy,ww,15,'#276951');pixel(px-ww/2+4,py+yy+1,ww-8,3,'#6b9f82');
-   pixel(px-ww/2+6,py+yy+5,8,3,'#e9f8f4');
- }
- for(let i=0;i<13;i++){let dx=(hash(i,33)*50-25)|0,dy=(hash(43,i)*48-26)|0;pixel(px+dx,py+dy,4,4,i%3===0?'#fddf83':i%3===1?'#e05f67':'#a5cef7')}
- pixel(px-3,py-49,7,12,'#ffdf72');pixel(px-7,py-45,15,5,'#ffdf72');
- gift(px-28,py+30,'#c14b53');gift(px+17,py+29,'#367b6c');
+ base('main-tree.png',x-camera.x-46,y-camera.y-70,92,122);
+ for(const [i,dx,dy] of [[1,-52,24],[2,31,21],[3,10,37]])
+ base('present'+i+'.png',x-camera.x+dx,y-camera.y+dy,18,18);
 }
 function houseAt(h){
- const sx=Math.round(h.x-camera.x),sy=Math.round(h.y-camera.y);
- if(sx < -110||sy< -110||sx>W+80||sy>H+80)return;
- const col=palette[h.colour%palette.length],open=calendar.isUnlocked(h.day),done=visited.has(h.day);
- // shadow, cut-stone base, wooden sill and varied brick rows
- pixel(sx+4,sy+73,88,8,'#809caa');
- outlineRect(sx+5,sy+25,78,50,'#af876a','#293947',3);
- pixel(sx+8,sy+31,72,6,'#e8b689');
- for(let r=0;r<4;r++)for(let j=0;j<5;j++)if((j+r)%2===0)pixel(sx+9+j*14+(r%2?4:0),sy+40+r*8,9,2,'#997157');
- // roof silhouette + three snow drifts with stepped pixel edge
- pixel(sx-6,sy+24,100,9,'#294052');
- pixel(sx+2,sy+14,84,12,'#304b5b');
- pixel(sx+11,sy+6,66,11,'#304b5b');
- pixel(sx+23,sy-1,42,11,'#304b5b');
- pixel(sx+30,sy-7,28,9,'#304b5b');
- pixel(sx-5,sy+22,98,5,col);
- pixel(sx+3,sy+12,82,8,col);
- pixel(sx+12,sy+5,64,9,col);
- pixel(sx+22,sy-2,44,10,col);
- pixel(sx+29,sy-6,29,6,col);
- pixel(sx+10,sy+11,22,4,'#f4f7f5');pixel(sx+36,sy+2,29,5,'#f4f7f5');pixel(sx+56,sy+14,20,4,'#f4f7f5');
- pixel(sx-8,sy+23,100,5,'#eef7f7');pixel(sx-2,sy+27,18,4,'#ecf7f9');pixel(sx+59,sy+27,25,4,'#ecf7f9');
- // individual porch, lit windows, snow on ledges, and a numbered Advent plaque
- for(const wx of [sx+15,sx+63]){
-   outlineRect(wx,sy+40,12,17,'#fbd886','#36404b',2);
-   pixel(wx+5,sy+40,2,17,'#72543d');pixel(wx,sy+47,12,2,'#72543d');
-   pixel(wx-2,sy+38,16,3,'#f4fcfb');
+ const x=Math.round(h.x-camera.x),y=Math.round(h.y-camera.y);
+ if(x<-104||y<-110||x>W+95||y>H+95)return;
+ const decorated=h.day%4===0;
+ // Native house textures are sourced from the user-provided Christmas Village pack.
+ // house1: actual 80x64 7-frame building sprite; house2: actual 80x48 companion cottage.
+ if(decorated){base('house2.png',x+3,y+19,82,61)}
+ else base('house1.png',x+3,y+5,82,73,0);
+ const unlocked=calendar.isUnlocked(h.day),done=visited.has(h.day);
+ if(h.day%3===0){
+   base('wreath.png',x+36,y+48,12,12);
+   base('present1.png',x+10,y+66,13,13);
+ } else if(h.day%3===1){
+   base('snowman1.png',x+2,y+57,21,23);
+   base('small-tree.png',x+66,y+51,18,30);
+ }else{
+   base('christmas-lights.png',x+9,y+24,64,8,0);
  }
- outlineRect(sx+35,sy+48,19,27,open?'#88543e':'#5a5361','#293944',2);
- pixel(sx+39,sy+52,11,19,'#50392f');pixel(sx+48,sy+63,2,2,'#fce199');
- pixel(sx+39,sy+52,11,4,done?'#4b9c77':open?'#ad704a':'#676c79');
- pixel(sx+38,sy+48,13,3,'#d5b27c');
- outlineRect(sx+32,sy+30,25,16,'#fff0c0','#634d3a',2);
- ctx.fillStyle='#563b30';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(h.day),sx+44,sy+38);
- // wreath and green garland, distinct doors
- pixel(sx+35,sy+57,5,7,'#1f6149');pixel(sx+38,sy+55,5,8,'#41885c');pixel(sx+39,sy+61,2,3,'#d95357');
- pixel(sx+9,sy+37,17,3,'#2f7353');pixel(sx+64,sy+37,17,3,'#2f7353');
- pixel(sx+7,sy+74,75,3,'#eef8fa');
- if(nearby===h&&scene==='village'){ctx.strokeStyle=open?'#ffe596':'#b4c5d8';ctx.lineWidth=2;ctx.strokeRect(sx+31,sy+45,27,35);}
- if(!open){pixel(sx+41,sy+64,7,6,'#9daab6');pixel(sx+42,sy+61,5,5,'#9daab6');pixel(sx+43,sy+63,3,4,'#5a677a')}
- if(done){pixel(sx+71,sy+10,7,7,'#f5db85');pixel(sx+73,sy+9,3,9,'#f5db85')}
-}
-function makePlayerSprites(){
- const out={};
- for(const d of ['down','up','left','right'])for(let frame=0;frame<2;frame++){
-  const b=document.createElement('canvas');b.width=22;b.height=30;
-  const g=b.getContext('2d');g.imageSmoothingEnabled=false;
-  const p=(x,y,w,h,color)=>{g.fillStyle=color;g.fillRect(x,y,w,h)};
-  p(5,27,13,3,'#4c6580');
-  p(5,11,13,13,'#2a3e5a');
-  p(6,12,11,13,'#ae4250');
-  p(7,14,9,8,'#c95861');
-  p(5,21+(frame?1:0),5,6,'#344765');p(13,22-(frame?1:0),5,5,'#344765');
-  p(4,26+(frame?1:0),7,3,'#253345');p(12,26-(frame?1:0),7,3,'#253345');
-  p(3,12,4,9,'#2d4159');p(17,12,3,9,'#2d4159');
-  p(7,10,11,4,'#f9d480'); // scarf
-  p(5,4,13,8,'#e3aa87'); // face and ears
-  p(6,2,11,7,'#30435d'); // hair
-  p(4,1,14,5,'#ae3e49');p(2,5,18,4,'#d44d57');p(13,0,4,3,'#f5f9f7');
-  p(2,6,18,2,'#eef7f5');
-  if(d==='down'){p(8,8,2,2,'#202f41');p(14,8,2,2,'#202f41');p(11,11,3,2,'#f8c6a0');}
-  if(d==='up'){p(6,8,12,5,'#7b3042');p(7,14,10,4,'#a74b51');}
-  if(d==='left'){p(5,8,2,2,'#203244');p(3,10,3,3,'#e7b38b');p(14,14,3,4,'#f1d481');}
-  if(d==='right'){p(16,8,2,2,'#203244');p(18,10,3,3,'#e7b38b');p(5,14,3,4,'#f1d481');}
-  out[d+frame]=b;
+ // A label is text UI atop the actual artwork, not a painted replacement house.
+ ctx.fillStyle=done?'#277654':unlocked?'#fae1a8':'#8594a5';
+ ctx.fillRect(x+30,y+26,28,18);
+ ctx.strokeStyle='#253647';ctx.lineWidth=2;ctx.strokeRect(x+30,y+26,28,18);
+ ctx.fillStyle=done?'#fffdf2':'#273747';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font='bold 12px monospace';ctx.fillText(String(h.day),x+44,y+35);
+ if(h===nearby&&scene==='village'){
+    ctx.strokeStyle=unlocked?'#ffe294':'#b4c0d0';ctx.lineWidth=2;
+    ctx.strokeRect(x+27,y+47,34,31);
  }
- return out;
 }
-const playerSprites=makePlayerSprites();
 function drawPlayer(){
- const x=Math.round(player.x-camera.x)-11,y=Math.round(player.y-camera.y)-29;
- const f=player.moving?(Math.floor(distance/9)%2):0;
- ctx.fillStyle='#4b709266';ctx.beginPath();ctx.ellipse(x+11,y+28,10,4,0,0,Math.PI*2);ctx.fill();
- ctx.drawImage(playerSprites[player.dir+f],x,y);
+ const dirBase={down:0,up:4,left:8,right:12};
+ const step=player.moving?(Math.floor(distance/9)%4):0;
+ const frame=(dirBase[player.dir]??0)+step;
+ base('character.png',player.x-camera.x-14,player.y-camera.y-26,28,28,frame);
+}
+function drawResident(name,x,y,dir='down'){
+ if(!christmasNPCs)return;
+ const cols=3,baseIndex={down:0,left:3,right:6,up:9}[dir]??0;
+ extra(name,x-camera.x-12,y-camera.y-29,24,31,baseIndex+Math.floor(now/240)%3);
+}
+function drawInterior(){
+ if(!villageArt)return;
+ // Full room tiles and furniture from the original Christmas Village pack.
+ for(let y=0;y<H;y+=16)for(let x=0;x<W;x+=16){
+    base('floor-tile.png',x,y,16,16);
+ }
+ for(let x=0;x<W;x+=16){
+    base('wall-tileset.png',x,0,16,48,0);
+    base('wall-tileset.png',x,48,16,48,1);
+ }
+ base('rug.png',76,260,168,104);
+ base('fireplace.png',26,87,83,64,0);
+ base('table.png',135,199,57,45);
+ base('hot-chocolate.png',153,209,15,15,0);
+ base('couch-horizontal',198,205,87,42);
+ base('main-tree.png',241,104,67,94);
+ base('present1.png',224,188,17,17);
+ base('present2.png',286,190,19,19);
+ base('stocking.png',88,89,14,22);
+ base('wreath.png',163,71,28,28);
+ if(christmasNPCs){
+   const day=inside?.day||1;
+   const people=['TF Santa.png','TF Gnome A.png','TF Mrs Claus.png','TF Gnome B.png','TF Elf B.png'];
+   const name=people[(day-1)%people.length];
+   const step=Math.floor(now/280)%3;
+   extra(name,179,164,27,37,step);
+ }
+ base('character.png',148,305,28,28,4);
 }
 function collides(x,y){
  if(x<18||y<30||x>WORLD_W-18||y>WORLD_H-16)return true;
@@ -327,44 +298,21 @@ function update(dt){
  checkHouse();
 }
 function drawVillage(){
- if(!terrain){pixel(0,0,W,H,'#e1eff5');return;}
+ if(!terrain||!villageArt)return;
  ctx.drawImage(terrain,Math.round(camera.x),Math.round(camera.y),W,H,0,0,W,H);
  const render=[];
  for(const t of trees)render.push({y:t.y+46,draw:()=>treeAt(t)});
  for(const h of houses)render.push({y:h.y+h.h,draw:()=>houseAt(h)});
  for(const l of lamps)render.push({y:l.y,draw:()=>lampAt(l.x,l.y)});
  for(const s of signs)render.push({y:s.y,draw:()=>signAt(s)});
- for(const b of benches)render.push({y:b[1],draw:()=>{const x=b[0]-camera.x,y=b[1]-camera.y;pixel(x,y,34,5,'#634c40');pixel(x,y-8,34,5,'#a77556');pixel(x+4,y+5,4,8,'#77583f');pixel(x+26,y+5,4,8,'#77583f')}})
+ for(const b of benches)render.push({y:b[1],draw:()=>base('bench.png',b[0]-camera.x,b[1]-camera.y-12,36,24)});
  for(const [x,y] of [[485,595],[900,590],[1040,812],[274,810],[1120,554]])render.push({y:y+12,draw:()=>fenceAt(x,y,4)});
  render.push({y:774,draw:()=>christmasTree(750,735)});
+ const npcs=[['TF Santa.png',728,650],['TF Gnome A.png',525,768],['TF Mrs Claus.png',927,705],['TF Elf B.png',1170,545]];
+ for(const [name,x,y] of npcs)render.push({y,draw:()=>drawResident(name,x,y)});
  render.push({y:player.y,draw:drawPlayer});
  render.sort((a,b)=>a.y-b.y);
  for(const r of render)r.draw();
-}
-function drawInterior(){
- pixel(0,0,W,H,'#67483c');pixel(0,0,W,174,'#9b7050');
- for(let y=175;y<H;y+=18){pixel(0,y,W,2,'#4d382e');for(let x=(y%36?10:0);x<W;x+=42)pixel(x,y+2,2,17,'#7a573e')}
- pixel(0,0,W,7,'#47372f');pixel(20,0,8,176,'#61442f');pixel(292,0,8,176,'#61442f');
- outlineRect(28,61,75,94,'#6a493b','#362d32',4);
- outlineRect(43,80,46,67,'#292b30','#57392e',3);
- pixel(49,124,33,20,'#cb5e32');pixel(56,106,18,39,'#ffbf62');pixel(62,110,10,23,'#fff0a8');
- outlineRect(22,53,88,9,'#f6d69d','#523c32',2);
- outlineRect(218,52,72,70,'#658faa','#2e3f50',4);
- pixel(252,53,5,68,'#32495d');pixel(219,85,70,5,'#32495d');pixel(220,108,68,13,'#edf6f5');
- // Table, parcel, rug, garlands, warm Christmas lighting.
- outlineRect(111,196,104,47,'#9d6749','#45362d',4);
- outlineRect(141,179,39,34,'#b94350','#493942',2);pixel(157,179,6,34,'#fbd78d');pixel(141,193,39,6,'#fbd78d');
- outlineRect(69,263,185,93,'#a33f4d','#553944',5);
- pixel(78,272,167,75,'#b85c5a');pixel(88,280,146,58,'#903947');
- for(let x=119;x<213;x+=14)pixel(x,26+(x%3),12,4,'#326e4f');
- for(let x=131;x<212;x+=27)pixel(x,33,4,5,'#d34f57');
- // Resident snowman from locally authorised scenery palette.
- pixel(255,203,4,20,'#5b4d46');pixel(238,209,20,5,'#604c41');
- ctx.fillStyle='#e8f2f1';ctx.beginPath();ctx.arc(257,208,14,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(257,186,10,0,Math.PI*2);ctx.fill();
- pixel(250,172,17,6,'#b04350');pixel(254,166,10,10,'#b04350');pixel(252,185,3,3,'#203444');pixel(262,185,3,3,'#203444');
- pixel(257,189,8,3,'#e5a259');
- // Player in interior and door at top.
- const frame=playerSprites['up0'];ctx.drawImage(frame,151,289,22,30);
 }
 function render(){
  ctx.imageSmoothingEnabled=false;
@@ -435,9 +383,8 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 addEventListener('blur',()=>{keys.clear();held.clear()});
 function resize(){
- const r=stage.getBoundingClientRect();
- const maxHeight=r.height-195;
- const scale=Math.max(.56,Math.min((r.width-12)/W,maxHeight/H,2));
+ const r=document.querySelector('.screenBezel').getBoundingClientRect();
+ const scale=Math.max(.25,Math.min((r.width-14)/W,(r.height-14)/H,2));
  canvas.style.width=Math.floor(W*scale)+'px';
  canvas.style.height=Math.floor(H*scale)+'px';
 }
@@ -460,5 +407,20 @@ camera.x=clamp(player.x-W/2,0,WORLD_W-W);
 camera.y=clamp(player.y-H/2,0,WORLD_H-H);
 if(zoneLabel)zoneLabel.textContent=region().toUpperCase();
 if(dayCounter)dayCounter.textContent='24 DOORS';
-checkHouse();buildTerrainCache();requestAnimationFrame(tick);
+checkHouse();
+const villageProvider=window.VillagePixelAssets;
+if(!villageProvider){throw new Error('Christmas Village source sprite pack was not loaded');}
+Promise.all([villageProvider.ready,window.WorldBuilderExtraAssets?.ready||Promise.resolve(null),atlasReady])
+.then(([v,t])=>{
+ villageArt=v;christmasNPCs=t;
+ // Verify the original 4-direction sheet is present before allowing game movement.
+ const meta=v.metadata('character.png');
+ if(meta.width!==256||meta.cell?.width!==16)throw new Error('16-frame village player spritesheet invalid');
+ buildTerrainCache();
+ requestAnimationFrame(tick);
+}).catch(err=>{
+ console.error('Advent art asset error:',err);artError=err;
+ prompt.textContent='Christmas artwork could not load. Please refresh the page.';
+ prompt.classList.add('visible');
+});
 })();
