@@ -192,8 +192,8 @@ function houseAt(h){
  const decorated=h.day%4===0;
  // Native house textures are sourced from the user-provided Christmas Village pack.
  // house1: actual 80x64 7-frame building sprite; house2: actual 80x48 companion cottage.
- if(decorated){base('house2.png',x+3,y+19,82,61)}
- else base('house1.png',x+3,y+5,82,73,0);
+ if(decorated){base('house2.png',x+4,y+30,80,48)}
+ else base('house1.png',x+4,y+14,80,64,0);
  const unlocked=calendar.isUnlocked(h.day),done=visited.has(h.day);
  if(h.day%3===0){
    base('wreath.png',x+36,y+48,12,12);
@@ -219,12 +219,12 @@ function drawPlayer(){
  const dirBase={down:0,up:4,left:8,right:12};
  const step=player.moving?(Math.floor(distance/9)%4):0;
  const frame=(dirBase[player.dir]??0)+step;
- base('character.png',player.x-camera.x-14,player.y-camera.y-26,28,28,frame);
+ base('character.png',player.x-camera.x-16,player.y-camera.y-31,32,32,frame);
 }
 function drawResident(name,x,y,dir='down'){
  if(!christmasNPCs)return;
  const cols=3,baseIndex={down:0,left:3,right:6,up:9}[dir]??0;
- extra(name,x-camera.x-12,y-camera.y-29,24,31,baseIndex+Math.floor(now/240)%3);
+ extra(name,x-camera.x-13,y-camera.y-34,26,36,baseIndex+Math.floor(now/240)%3);
 }
 function drawInterior(){
  if(!villageArt)return;
@@ -251,9 +251,9 @@ function drawInterior(){
    const people=['TF Santa.png','TF Gnome A.png','TF Mrs Claus.png','TF Gnome B.png','TF Elf B.png'];
    const name=people[(day-1)%people.length];
    const step=Math.floor(now/280)%3;
-   extra(name,179,164,27,37,step);
+   extra(name,179,164,26,36,step);
  }
- base('character.png',148,305,28,28,4);
+ base('character.png',148,305,32,32,4);
 }
 function collides(x,y){
  if(x<18||y<30||x>WORLD_W-18||y>WORLD_H-16)return true;
