@@ -1,0 +1,28 @@
+name: Repair Advent decoration edges
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/rebuild_decor_assets.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet Pillow numpy scipy
+      - run: python tools/rebuild_decor_assets.py
+      - name: Commit corrected decoration files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/decor/
+          if ! git diff --cached --quiet; then
+            git commit -m "Replace all 30 decoration assets with verified clean-alpha artwork"
+            git push origin HEAD:main
+          fi

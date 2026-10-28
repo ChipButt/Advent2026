@@ -27,7 +27,13 @@
     state={version:1,tutorialDone:false,decorations:[],opened:[],sound:false};
   }
   state.opened=state.opened.filter(n=>Number.isInteger(n)&&n>=1&&n<=24);
-  state.decorations=state.decorations.filter(d=>d&&typeof d.id==='string'&&typeof d.kind==='string'&&Number.isFinite(d.x)&&Number.isFinite(d.y));
+  state.decorations=state.decorations.filter(d=>{
+  if(!d||typeof d.id!=='string'||typeof d.kind!=='string'||!Number.isFinite(d.x)||!Number.isFinite(d.y))return false;
+  if(d.kind==='bauble')return Number.isInteger(d.day)&&state.opened.includes(d.day)&&d.id==='bauble-'+d.day;
+  if(d.id.startsWith('bauble-')||d.kind==='ornament'||d.kind==='gift-prop')return false;
+  if(d.kind==='star'&&!state.opened.includes(24))return false;
+  return true;
+});
   if(SHOWCASE && !localStorage.getItem(STORAGE_KEY)){
     state.tutorialDone=true;
     state.decorations=[
@@ -35,13 +41,7 @@
       {id:'starter-garland',kind:'garland',x:242,y:470},
       {id:'starter-stocking',kind:'stocking',x:185,y:552},
       {id:'stocking-ivory-knit',kind:'stocking',x:295,y:550},
-      {id:'bauble-red',kind:'ornament',x:680,y:444},
-      {id:'bauble-gold-diamond',kind:'ornament',x:749,y:532},
-      {id:'bauble-green',kind:'ornament',x:610,y:620},
-      {id:'bauble-snowglobe',kind:'ornament',x:737,y:713},
       {id:'bow-gold',kind:'bow',x:680,y:329},
-      {id:'gift-red-gold',kind:'gift-prop',x:573,y:819},
-      {id:'gift-green',kind:'gift-prop',x:796,y:828},
     ];
   }
 
@@ -95,27 +95,9 @@
   addEventListener('resize',()=>{if(document.querySelector('.nav-link.active')?.dataset.view==='room')focusTree();});
 
   function isTreePosition(x,y){if(y<170||y>800)return false;const hw=clamp((y-170)/620*225+22,28,235);return Math.abs(x-691)<=hw;}
-  function validPosition(kind,x,y){
-    if(kind==='bauble'||kind==='ornament')return isTreePosition(x,y);
-    if(kind==='star')return x>618&&x<775&&y>105&&y<230;
-    if(kind==='wreath')return x>=50&&x<=425&&y>=150&&y<=455;
-    if(kind==='garland')return x>=120&&x<=355&&y>=425&&y<=535;
-    if(kind==='stocking')return x>=60&&x<=440&&y>=410&&y<=630;
-    if(kind==='gift-prop'||kind==='skirt')return x>=430&&x<=930&&y>=755&&y<=930;
-    if(kind==='table')return x>=315&&x<=900&&y>=950&&y<=1240;
-    if(kind==='bow')return x>=30&&x<=900&&y>=125&&y<=900;
-    return x>=30&&x<=920&&y>=140&&y<=1450;
-  }
-  function dragPosition(kind,x,y){x=clamp(x,30,920);y=clamp(y,70,1450);
-    if(kind==='bauble'||kind==='ornament'){y=clamp(y,230,790);const half=clamp((y-170)/620*225+22,45,210);x=clamp(x,691-half,691+half);}
-    if(kind==='star'){x=clamp(x,650,740);y=clamp(y,117,190);}
-    if(kind==='wreath'){x=clamp(x,95,383);y=clamp(y,170,455);}
-    if(kind==='garland'){x=clamp(x,175,325);y=clamp(y,435,520);}
-    if(kind==='stocking'){x=clamp(x,108,390);y=clamp(y,435,610);}
-    if(kind==='gift-prop'||kind==='skirt'){x=clamp(x,490,890);y=clamp(y,800,920);}
-    if(kind==='table'){x=clamp(x,375,815);y=clamp(y,990,1200);}
-    return {x,y};
-  }
+  // Any decoration can be placed anywhere in the room; tree locations are suggestions, not restrictions.
+  function validPosition(kind,x,y){return Number.isFinite(x)&&Number.isFinite(y)&&x>=12&&x<=ROOM_W-12&&y>=12&&y<=ROOM_H-12;}
+  function dragPosition(kind,x,y){return {x:clamp(x,12,ROOM_W-12),y:clamp(y,12,ROOM_H-12)};}
   // All source artwork lives in assets/decor as individually isolated, true-RGBA PNGs.
   // Review mode (?test=1 or ?showcase=1) allows trying every asset; only selected
   // room starters are normally available before earned rewards are integrated.
@@ -154,9 +136,9 @@
   const assetFor=id=>ASSET_CATALOG.find(a=>a.id===id);
   function ownedItems(){
     const placed=new Set(state.decorations.map(d=>d.id));
-    const items=ASSET_CATALOG.filter(a=>(a.starter||TEST) && !placed.has(a.id) && (a.kind!=='star'||TEST||state.opened.includes(24)));
+    const items=ASSET_CATALOG.filter(a=>a.kind!=='ornament'&&a.kind!=='gift-prop'&&a.kind!=='star'&&!placed.has(a.id));
     const baubles=state.opened.filter(day=>!placed.has('bauble-'+day)).map(day=>({kind:'bauble',id:'bauble-'+day,day,label:'Day '+day,src:'assets/decor/bauble-red.webp',w:55,h:75}));
-    const star=!TEST&&state.opened.includes(24)&&!placed.has('star-gold')?[assetFor('star-gold')]:[];
+    const star=state.opened.includes(24)&&!placed.has('star-gold')?[assetFor('star-gold')]:[];
     return [...items,...star,...baubles];
   }
   let inventorySelection=null;
@@ -185,7 +167,7 @@
     attachDecorationEvents(b,d);return b;
   }
   function renderPlaced(){layer.replaceChildren();for(const d of state.decorations)layer.append(decorationElement(d));}
-  function placeItem(item,x,y){if(!validPosition(item.kind,x,y)){toast(['bauble','ornament','star'].includes(item.kind)?'Choose a spot on the Christmas tree':'Choose a suitable place for this decoration');return false;}
+  function placeItem(item,x,y){if(!validPosition(item.kind,x,y)){toast('Choose a spot in the room');return false;}
     state.decorations.push({id:item.id,kind:item.kind,day:item.day||null,x,y});inventorySelection=null;renderPlaced();renderInventory();saveSoon();toast('Lovely! Hold a decoration to move it.');
     if(tutorialPhase===1&&item.kind==='wreath'){tutorialPhase=2;inventorySelection='starter-stocking';renderInventory();renderGuide();}
     else if(tutorialPhase===2&&item.kind==='stocking'){tutorialPhase=3;renderGuide();}
@@ -201,8 +183,7 @@
       const p=pointToWorld(e.clientX,e.clientY),next=dragPosition(d.kind,p.x,p.y);el.style.left=next.x+'px';el.style.top=next.y+'px';
     });
     const release=e=>{if(pointerId!==e.pointerId)return;clearTimeout(heldTimer);const wasDrag=dragging;dragging=false;pointerId=null;el.classList.remove('dragging','decor-placement-glow');if(wasDrag){const p=pointToWorld(e.clientX,e.clientY);
-        if((d.kind==='bauble'||d.kind==='ornament') && (p.y>950||p.x<440)){state.decorations=state.decorations.filter(x=>x.id!==d.id);toast('Bauble returned to your inventory');}
-        else {const next=dragPosition(d.kind,p.x,p.y);d.x=next.x;d.y=next.y;}
+        const next=dragPosition(d.kind,p.x,p.y);d.x=next.x;d.y=next.y;
         renderPlaced();renderInventory();saveSoon();if(tutorialPhase===3){tutorialPhase=0;state.tutorialDone=true;saveNow();renderGuide();focusTree();toast('All yours! Presents arrive from 1 December.');}}
       else if(d.kind==='bauble'&&!cancelledTap&&down&&Math.hypot(e.clientX-down.clientX,e.clientY-down.clientY)<=15){playDay(d.day);}
       down=null;};
@@ -214,21 +195,33 @@
   $('inventoryToggle').addEventListener('click',()=>{const collapsed=tray.classList.toggle('collapsed');$('inventoryToggle').setAttribute('aria-expanded',String(!collapsed));});
 
   let modalDay=null;
-  function renderGifts(){gifts.replaceChildren();const available=Array.from({length:24},(_,i)=>i+1).filter(d=>unlocked(d)&&!state.opened.includes(d));
-    // Keep the tree readable; recent unopened gifts stand at the base and the rest are reachable through the shelf.
-    const onStage=available.slice(-7);
-    onStage.forEach((day,i)=>{const b=document.createElement('button');b.type='button';b.className='present'+(day===Math.min(24,londonParts().day)&&londonParts().month===12?' new':'');
-      b.textContent=day;b.setAttribute('aria-label',`Open Advent present ${day}`);b.style.left=(500+(i%4)*88)+'px';b.style.top=(810-Math.floor(i/4)*67)+'px';b.addEventListener('click',()=>openGift(day));gifts.append(b);});
-    if(available.length>7){const b=document.createElement('button');b.className='present';b.style.left='890px';b.style.top='813px';b.textContent='+';b.title='More unopened presents';b.addEventListener('click',()=>showMoreGifts(available));gifts.append(b);}
+  // Twenty-four daily gifts arranged in a close, illustrated pile around the snowy base.
+  const GIFT_POSITIONS=Array.from({length:24},(_,i)=>{
+    const row=Math.floor(i/6),col=i%6;
+    return {x:502+col*66+(row%2?22:0)+(i*7%17-8),y:772+row*35+(i*5%13-6),size:65+(i*13%18),angle:(i*11%15)-7};
+  });
+  const giftArtwork=day=>'assets/decor/'+(day%2?'gift-red-gold.webp':'gift-green.webp');
+  function renderGifts(){
+    gifts.replaceChildren();
+    const available=Array.from({length:24},(_,i)=>i+1).filter(day=>unlocked(day)&&!state.opened.includes(day));
+    for(const day of available){
+      const i=day-1,p=GIFT_POSITIONS[i],b=document.createElement('button');b.type='button';
+      b.className='present illustrated-present';b.setAttribute('aria-label','Open Advent present '+day);
+      b.style.left=p.x+'px';b.style.top=p.y+'px';b.style.width=p.size+'px';b.style.height=p.size+'px';b.style.zIndex=1+Math.floor(i/6);
+      b.style.setProperty('--tilt',p.angle+'deg');b.style.setProperty('--gift-hue',String([0,15,-18,25,-35,48,8,90][i%8])+'deg');
+      const art=makeArt(giftArtwork(day),'');art.className='present-art';
+      const number=document.createElement('span');number.className='present-day';number.textContent=String(day);
+      b.append(art,number);if(day===londonParts().day&&londonParts().month===12)b.classList.add('new');
+      b.addEventListener('click',()=>openGift(day));gifts.append(b);
+    }
   }
-  function showMoreGifts(days){const number=prompt(`Unopened gifts: ${days.join(', ')}. Enter a day number to open:`);if(number&&days.includes(Number(number)))openGift(Number(number));}
-  function openGift(day){if(!unlocked(day)||state.opened.includes(day))return;modalDay=day;$('giftTitle').textContent='Present '+day;$('giftEyebrow').textContent='DAY '+day+' · ADVENT 2026';$('giftDescription').textContent='A Christmas bauble for your tree is waiting inside.';$('giftOpening').classList.remove('opening');giftAction.hidden=false;giftAction.disabled=false;giftAction.textContent='Open present';giftOpenedInDialog=false;dialog.showModal();}
+  function openGift(day){if(!unlocked(day)||state.opened.includes(day))return;modalDay=day;$('giftTitle').textContent='Present '+day;$('giftEyebrow').textContent='DAY '+day+' · ADVENT 2026';$('giftDescription').textContent='A Christmas bauble for your tree is waiting inside.';$('giftOpening').classList.remove('opening');document.querySelectorAll('.gift-package').forEach(img=>img.src=giftArtwork(day));giftAction.hidden=false;giftAction.disabled=false;giftAction.textContent='Unwrap present';giftOpenedInDialog=false;dialog.showModal();}
   let giftOpenedInDialog=false,revealTimeout=null;
   giftAction.addEventListener('click',()=>{
     if(!modalDay)return;
     if(giftOpenedInDialog){
       const placedDay=modalDay;dialog.close();focusTree();inventorySelection='bauble-'+placedDay;renderInventory();
-      toast('Tap a branch to hang your bauble');return;
+      toast('Tap anywhere in the room to place your game bauble');return;
     }
     giftOpenedInDialog=true;
     if(!state.opened.includes(modalDay))state.opened.push(modalDay);
@@ -239,7 +232,7 @@
     revealTimeout=setTimeout(()=>{
       if(modalDay!==revealedDay||!dialog.open)return;
       giftAction.disabled=false;giftAction.textContent='Decorate your tree';
-      $('giftDescription').textContent=`Place day ${revealedDay}'s bauble anywhere on your tree.`;
+      $('giftDescription').textContent=`Place day ${revealedDay}'s game bauble anywhere in your room.`;
     },1250);
   });
   $('giftClose').addEventListener('click',()=>{clearTimeout(revealTimeout);dialog.close();});
@@ -247,7 +240,7 @@
 
   const tutorial=[
     {heading:'Welcome to your Christmas home',body:'Before Advent begins, you can make this room your own. Let’s try placing your first decoration.'},
-    {heading:'Decorate the room',body:'Choose the wreath in your inventory, then tap the wall above the fireplace to hang it. Next, hang a stocking below the mantelpiece.'},
+    {heading:'Decorate the room',body:'Choose a wreath, stocking or another decoration and place it anywhere you like.'},
     {heading:'Move things whenever you like',body:'Press and hold a decoration for half a second, then move it. Release your finger to leave it in its new place.'},
     {heading:'Keep an eye on the tree',body:'Your Christmas tree is waiting for its first bauble. Numbered presents arrive from 1 December. Open one, place its bauble on the tree, then tap the bauble to launch its game.'}
   ];
@@ -256,8 +249,8 @@
   const guide=$('guideBanner');
   function renderGuide(){
     guide.hidden=tutorialPhase===0;
-    if(tutorialPhase===1){$('guideTitle').textContent='1 of 3 · Hang the wreath';$('guideMessage').textContent='The wreath is selected. Tap the wall above the fireplace to place it.';}
-    else if(tutorialPhase===2){$('guideTitle').textContent='2 of 3 · Hang a stocking';$('guideMessage').textContent='The stocking is selected. Tap below the mantel to hang it.';}
+    if(tutorialPhase===1){$('guideTitle').textContent='1 of 3 · Hang the wreath';$('guideMessage').textContent='The wreath is selected. Tap anywhere in the room to place it.';}
+    else if(tutorialPhase===2){$('guideTitle').textContent='2 of 3 · Hang a stocking';$('guideMessage').textContent='The stocking is selected. Place it anywhere you like.';}
     else if(tutorialPhase===3){$('guideTitle').textContent='3 of 3 · Try rearranging';$('guideMessage').textContent='Press and hold one of your decorations, then drag and release it.';}
   }
   function finishTutorial(){tutorialPhase=0;guide.hidden=true;state.tutorialDone=true;saveNow();if($('tutorialDialog').open)$('tutorialDialog').close();toast('Your room is ready.');}
