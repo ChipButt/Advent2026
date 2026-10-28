@@ -62,3 +62,79 @@ dialog{border:0;padding:0;background:transparent;max-width:min(90vw,470px);color
 @keyframes giftUnwrapGlow{0%{opacity:.35;transform:scale(.65)}52%{opacity:1;transform:scale(1)}100%{opacity:.56;transform:scale(1.18)}}
 @keyframes giftUnwrapSpark{0%{opacity:0;transform:translate(0,0) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2)}}
 @media(prefers-reduced-motion:reduce){.gift-opening.opening .gift-package-top{opacity:0}.gift-opening.opening .gift-package-base{opacity:.25}.gift-opening.opening .reveal-bauble-art{opacity:1;transform:translate(-50%,-82%) scale(1.5)}}
+
+/* Advent 2026 cinematic illustration-led gift reveal (replaces split-CSS-box effect).
+   One actual illustrated parcel stays visible until paper fragments scatter;
+   the actual day's illustrated bauble then rises in a soft warm spotlight. */
+.gift-dialog{border:0;max-width:min(94vw,520px);width:min(94vw,520px);max-height:90dvh;overflow:visible}
+.gift-dialog::backdrop{background:rgba(5,16,13,.83);backdrop-filter:blur(6px) brightness(.6)}
+.gift-dialog .gift-modal{
+  position:relative;min-width:0;width:100%;padding:26px clamp(19px,5vw,33px) 28px;
+  border:2px solid #b99861;border-radius:22px;
+  background:radial-gradient(ellipse at 50% 46%,#4a3027 0%,#292b23 59%,#16221b 100%);
+  color:#f9eccd;box-shadow:0 0 0 6px #e6bd6740,0 25px 75px #000c,inset 0 2px 0 #fff4c65c;
+}
+.gift-dialog .gift-modal:before{content:"";position:absolute;inset:9px;border:1px solid #d9b87a4a;border-radius:15px;pointer-events:none}
+.gift-dialog .gift-modal .eyebrow{font-size:11px;color:#edcf8e;letter-spacing:.16em}
+.gift-dialog .gift-modal h2{color:#fff1c9;font:700 clamp(26px,6vw,35px)/1.15 Georgia,serif;text-shadow:0 2px 2px #0006;margin:7px 18px 2px}
+.gift-dialog #giftDescription{font-size:14px;color:#f2dfbe;min-height:44px;margin:3px 10px 17px;line-height:1.55}
+.gift-dialog .close-dialog{color:#f4dfb8;background:#583b2ba6;border:1px solid #d6b47375;border-radius:50%;width:31px;height:31px;display:grid;place-items:center;top:15px;right:15px;z-index:10}
+.gift-dialog .gold-button{background:linear-gradient(180deg,#ba9154,#805a29);border:1.5px solid #ffe7b0;box-shadow:inset 0 2px 0 #ffeac079,0 4px 13px #0006;color:#fff8e9;text-shadow:0 1px 3px #321a0f;min-width:min(82%,245px);padding:13px 19px;letter-spacing:.025em}
+.gift-dialog .gold-button:disabled{opacity:.65;cursor:wait}
+.gift-opening.gift-stage{position:relative;width:100%;max-width:360px;height:min(40dvh,320px);min-height:235px;margin:4px auto 0;isolation:isolate;overflow:visible}
+.gift-stage-light{position:absolute;inset:1% 3%;border-radius:50%;background:radial-gradient(ellipse at 50% 54%,#edc17c48 0%,#bd78392e 43%,transparent 73%);filter:blur(12px);opacity:1}
+.gift-stage-ring{position:absolute;left:50%;top:44%;width:248px;height:248px;border:1px solid #f8d79726;transform:translate(-50%,-50%) scale(.82);border-radius:50%;box-shadow:0 0 30px #dcb56c1a,inset 0 0 23px #fbd88d17}
+.gift-ground-shadow{position:absolute;left:50%;bottom:11%;width:175px;height:23px;border-radius:50%;background:#100c09a0;filter:blur(12px);transform:translateX(-50%);opacity:.8}
+.gift-stage .gift-hero-parcel{position:absolute;left:50%;top:45%;width:190px;height:205px;object-fit:contain;z-index:3;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 17px 14px #080a0888);pointer-events:none;will-change:transform,opacity}
+.gift-stage .gift-wrapping-pieces{position:absolute;inset:0;pointer-events:none;z-index:4}
+.gift-stage .paper-shard{position:absolute;left:50%;top:45%;width:190px;height:205px;object-fit:contain;transform:translate(-50%,-50%);opacity:0;will-change:transform,opacity}
+.gift-stage .shard-1{clip-path:polygon(0 0,52% 0,37% 38%,0 55%)}
+.gift-stage .shard-2{clip-path:polygon(51% 0,100% 0,100% 49%,63% 32%)}
+.gift-stage .shard-3{clip-path:polygon(0 55%,37% 38%,58% 59%,0 100%)}
+.gift-stage .shard-4{clip-path:polygon(63% 32%,100% 49%,100% 100%,58% 59%)}
+.gift-stage .shard-5{clip-path:polygon(37% 38%,63% 32%,58% 59%)}
+.gift-stage .shard-6{clip-path:polygon(0 100%,58% 59%,100% 100%)}
+.gift-reward-halo{position:absolute;left:50%;top:40%;width:185px;height:185px;transform:translate(-50%,-50%) scale(.2);border-radius:50%;background:radial-gradient(circle,#fff3c8a3,#f8cf7c75 34%,#d68c392e 63%,transparent 75%);filter:blur(8px);opacity:0;z-index:1;pointer-events:none}
+.gift-stage .gift-reward-art{position:absolute;left:50%;top:40%;width:104px;height:140px;object-fit:contain;z-index:5;opacity:0;transform:translate(-50%,12%) scale(.35);filter:drop-shadow(0 8px 8px #120d0a);pointer-events:none;will-change:transform,opacity}
+.gift-fine-glitter{position:absolute;inset:0;z-index:6;pointer-events:none}
+.gift-fine-glitter i{position:absolute;left:50%;top:45%;width:5px;height:5px;background:#ffeec2;border-radius:50%;opacity:0;--dx:60px;--dy:-50px}
+.gift-fine-glitter i:nth-child(1){--dx:-108px;--dy:-70px}.gift-fine-glitter i:nth-child(2){--dx:-55px;--dy:-115px}
+.gift-fine-glitter i:nth-child(3){--dx:6px;--dy:-142px}.gift-fine-glitter i:nth-child(4){--dx:85px;--dy:-94px}
+.gift-fine-glitter i:nth-child(5){--dx:117px;--dy:-25px}.gift-fine-glitter i:nth-child(6){--dx:91px;--dy:75px}
+.gift-fine-glitter i:nth-child(7){--dx:31px;--dy:115px}.gift-fine-glitter i:nth-child(8){--dx:-83px;--dy:89px}
+.gift-fine-glitter i:nth-child(9){--dx:-125px;--dy:9px}.gift-fine-glitter i:nth-child(10){--dx:-26px;--dy:79px}
+.gift-fine-glitter i:nth-child(11){--dx:56px;--dy:-20px}.gift-fine-glitter i:nth-child(12){--dx:-52px;--dy:24px}
+.gift-stage.opening .gift-hero-parcel{animation:parcelUnwrap 1.68s cubic-bezier(.28,.7,.3,1) forwards}
+.gift-stage.opening .paper-shard{animation:paperScatter 1.26s cubic-bezier(.16,.6,.35,1) .89s forwards}
+.gift-stage.opening .shard-1{--dx:-116px;--dy:-103px;--rot:-38deg}
+.gift-stage.opening .shard-2{--dx:124px;--dy:-99px;--rot:32deg}
+.gift-stage.opening .shard-3{--dx:-141px;--dy:65px;--rot:-58deg}
+.gift-stage.opening .shard-4{--dx:148px;--dy:45px;--rot:43deg}
+.gift-stage.opening .shard-5{--dx:10px;--dy:-158px;--rot:70deg}
+.gift-stage.opening .shard-6{--dx:-17px;--dy:127px;--rot:-30deg}
+.gift-stage.opening .gift-reward-halo{animation:rewardHalo 2.3s cubic-bezier(.24,.77,.4,1) .94s forwards}
+.gift-stage.opening .gift-reward-art{animation:rewardRise 2.1s cubic-bezier(.22,.65,.3,1.1) 1.01s forwards}
+.gift-stage.opening .gift-stage-ring{animation:rewardRing 2.3s ease .9s both}
+.gift-stage.opening .gift-fine-glitter i{animation:giftDust 1.5s ease-out 1.15s forwards}
+@keyframes parcelUnwrap{
+0%,12%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg)}
+25%{transform:translate(-50%,-54%) scale(1.04) rotate(-3deg)}
+43%{transform:translate(-50%,-52%) scale(1.06) rotate(3deg)}
+58%{opacity:1;transform:translate(-50%,-55%) scale(1.03) rotate(-2deg)}
+71%{opacity:0;transform:translate(-50%,-48%) scale(1.18) rotate(4deg)}
+100%{opacity:0;transform:translate(-50%,-48%) scale(.9) rotate(0)}
+}
+@keyframes paperScatter{
+0%{opacity:0;transform:translate(-50%,-50%) scale(1) rotate(0)}
+8%{opacity:1}
+100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.74) rotate(var(--rot))}
+}
+@keyframes rewardHalo{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}40%{opacity:.95;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:.55;transform:translate(-50%,-50%) scale(1.06)}}
+@keyframes rewardRise{0%{opacity:0;transform:translate(-50%,30%) scale(.37)}27%{opacity:.97;transform:translate(-50%,-25%) scale(.9)}66%{opacity:1;transform:translate(-50%,-69%) scale(1.28)}100%{opacity:1;transform:translate(-50%,-62%) scale(1.19)}}
+@keyframes rewardRing{0%{opacity:.3;transform:translate(-50%,-50%) scale(.73)}60%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}}
+@keyframes giftDust{0%{opacity:0;transform:translate(0,0) scale(.4)}18%{opacity:.85}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.25)}}
+@media(prefers-reduced-motion:reduce){
+.gift-stage.opening .gift-hero-parcel,.gift-stage.opening .paper-shard{opacity:0!important;animation:none!important}
+.gift-stage.opening .gift-reward-art{opacity:1!important;transform:translate(-50%,-62%) scale(1.19)!important;animation:none!important}
+.gift-stage.opening .gift-reward-halo{opacity:.55!important;transform:translate(-50%,-50%)!important;animation:none!important}
+}

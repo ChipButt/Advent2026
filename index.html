@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1e1b18">
   <meta name="description" content="A Christmas home to decorate and 24 daily game surprises, Advent 2026.">
   <title>Your Christmas Home · Advent 2026 (Preview)</title>
-  <link rel="stylesheet" href="room.css?v=20261028-clean2">
+  <link rel="stylesheet" href="room.css?v=20261028-unwrap3">
 </head>
 <body>
   <div class="app">
@@ -79,13 +79,26 @@
       <button type="button" class="close-dialog" id="giftClose" aria-label="Close">×</button>
       <p class="eyebrow" id="giftEyebrow">ADVENT SURPRISE</p>
       <h2 id="giftTitle">A present for you!</h2>
-      <div class="gift-opening" id="giftOpening" aria-hidden="true">
-      <div class="gift-aura"></div><img class="reveal-bauble-art" src="assets/decor/bauble-red.webp?v=20261028-clean2" alt="">
-      <img class="gift-package gift-package-base" src="assets/decor/gift-red-gold.webp?v=20261028-clean2" alt="">
-      <img class="gift-package gift-package-top" src="assets/decor/gift-red-gold.webp?v=20261028-clean2" alt="">
-      <div class="gift-sparkles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="gift-opening gift-stage" id="giftOpening" aria-hidden="true">
+        <div class="gift-stage-light"></div>
+        <div class="gift-stage-ring"></div>
+        <div class="gift-ground-shadow"></div>
+        <img class="gift-package gift-hero-parcel" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+        <div class="gift-wrapping-pieces">
+          <img class="gift-package paper-shard shard-1" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+          <img class="gift-package paper-shard shard-2" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+          <img class="gift-package paper-shard shard-3" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+          <img class="gift-package paper-shard shard-4" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+          <img class="gift-package paper-shard shard-5" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+          <img class="gift-package paper-shard shard-6" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
+        </div>
+        <div class="gift-reward-halo"></div>
+        <img class="reveal-bauble-art gift-reward-art" src="assets/decor/bauble-red.webp?v=20261028-trim3" alt="">
+        <div class="gift-fine-glitter">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
       </div>
-      <p id="giftDescription">Open your present to discover a decoration.</p>
+      <p id="giftDescription" aria-live="polite">Open your present to discover a decoration.</p>
       <button type="button" id="giftAction" class="gold-button">Open present</button>
     </div>
   </dialog>
@@ -100,6 +113,6 @@
     </div>
   </dialog>
   <div class="toast" role="status" aria-live="polite" id="toast"></div>
-  <script src="room.js?v=20261028-clean2"></script>
+  <script src="room.js?v=20261028-unwrap3"></script>
 </body>
 </html>
