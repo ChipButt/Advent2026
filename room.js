@@ -132,12 +132,12 @@
     ['gift-green','gift-prop','Green wrapped present','gift-green',78,85,false],
     ['tree-skirt','skirt','Festive tree skirt','tree-skirt',190,93,false],
     ['star-gold','star','Christmas Eve star','star-gold',98,112,false],
-  ].map(([id,kind,label,asset,w,h,starter])=>({id,kind,label,src:'assets/decor/'+asset+'.webp',w,h,starter})));
+  ].map(([id,kind,label,asset,w,h,starter])=>({id,kind,label,src:'assets/decor/'+asset+'.webp?v=20261028-clean2',w,h,starter})));
   const assetFor=id=>ASSET_CATALOG.find(a=>a.id===id);
   function ownedItems(){
     const placed=new Set(state.decorations.map(d=>d.id));
     const items=ASSET_CATALOG.filter(a=>a.kind!=='ornament'&&a.kind!=='gift-prop'&&a.kind!=='star'&&!placed.has(a.id));
-    const baubles=state.opened.filter(day=>!placed.has('bauble-'+day)).map(day=>({kind:'bauble',id:'bauble-'+day,day,label:'Day '+day,src:'assets/decor/bauble-red.webp',w:55,h:75}));
+    const baubles=state.opened.filter(day=>!placed.has('bauble-'+day)).map(day=>({kind:'bauble',id:'bauble-'+day,day,label:'Day '+day,src:'assets/decor/bauble-red.webp?v=20261028-clean2',w:55,h:75}));
     const star=state.opened.includes(24)&&!placed.has('star-gold')?[assetFor('star-gold')]:[];
     return [...items,...star,...baubles];
   }
@@ -146,14 +146,14 @@
   function makeArt(src,alt){const img=document.createElement('img');img.src=src;img.alt=alt;img.loading='lazy';img.draggable=false;return img;}
   function renderInventory(){const arr=ownedItems();inventoryItems.replaceChildren();$('inventoryCount').textContent=arr.length+' available';
     for(const item of arr){const b=document.createElement('button');b.type='button';b.className='inventory-item'+(inventorySelection===item.id?' selected':'');b.setAttribute('aria-label',`Select ${item.label} for placement`);
-      const pic=document.createElement('span');pic.className='item-picture';pic.append(makeArt(item.src||'assets/decor/bauble-red.webp',''));
+      const pic=document.createElement('span');pic.className='item-picture';pic.append(makeArt(item.src||'assets/decor/bauble-red.webp?v=20261028-clean2',''));
       const cap=document.createElement('span');cap.textContent=item.label;b.append(pic,cap);
       b.addEventListener('click',()=>{inventorySelection=inventorySelection===item.id?null:item.id;renderInventory();if(inventorySelection)toast('Tap where you want to place '+item.label.toLowerCase());});inventoryItems.append(b);
     }
     if(!arr.length){const p=document.createElement('span');p.className='inventory-placeholder';p.textContent='Everything is placed. Press and hold to rearrange.';inventoryItems.append(p);}
   }
   function dataForDec(id){const catalog=assetFor(id);if(catalog)return catalog;
-    if(id.startsWith('bauble-')){const day=Number(id.slice(7));return {id,day,kind:'bauble',label:'Day '+day,src:'assets/decor/bauble-red.webp',w:55,h:75};}
+    if(id.startsWith('bauble-')){const day=Number(id.slice(7));return {id,day,kind:'bauble',label:'Day '+day,src:'assets/decor/bauble-red.webp?v=20261028-clean2',w:55,h:75};}
     return {id,kind:'art',label:'Decoration'};
   }
   function decorationElement(d){const b=document.createElement('button');const item=dataForDec(d.id);
@@ -200,7 +200,7 @@
     const row=Math.floor(i/6),col=i%6;
     return {x:502+col*66+(row%2?22:0)+(i*7%17-8),y:772+row*35+(i*5%13-6),size:65+(i*13%18),angle:(i*11%15)-7};
   });
-  const giftArtwork=day=>'assets/decor/'+(day%2?'gift-red-gold.webp':'gift-green.webp');
+  const giftArtwork=day=>'assets/decor/'+(day%2?'gift-red-gold.webp?v=20261028-clean2':'gift-green.webp?v=20261028-clean2');
   function renderGifts(){
     gifts.replaceChildren();
     const available=Array.from({length:24},(_,i)=>i+1).filter(day=>unlocked(day)&&!state.opened.includes(day));
