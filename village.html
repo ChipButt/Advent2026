@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#1d324c">
+  <meta name="description" content="Advent 2026 Christmas village">
+  <title>Advent Village · Advent 2026</title>
+  <link rel="stylesheet" href="styles.css?v=6">
+</head>
+<body>
+  <div class="appShell">
+    <header class="appHeader">
+      <div>
+        <p class="eyebrow">A CHRISTMAS ADVENT ADVENTURE</p>
+        <h1>ADVENT <span>2026</span></h1>
+      </div>
+      <span id="testModeBadge" class="testModeBadge" hidden>TEST MODE</span>
+      <div class="headerBadge" aria-label="24 Advent doors"><span>24</span><small>DOORS</small></div>
+    </header>
+
+    <main class="viewHost" id="viewHost">
+      <section class="view calendarView" data-view="calendar" aria-label="Advent village">
+        <div id="villageStage" class="villageStage">
+          <div class="gameScreenHeading">
+            <div class="areaName"><span class="areaDot" aria-hidden="true"></span><strong id="zoneLabel">CHRISTMAS TOWN</strong><small id="dayCounter">24 DOORS</small></div>
+            <button id="mapButton" class="mapToggle" type="button" aria-label="Open Advent day finder"><span class="mapTile" aria-hidden="true">▦</span> MAP</button>
+          </div>
+          <div class="screenBezel"><canvas id="villageCanvas" width="320" height="416" aria-label="Game Boy Color-style snowy Advent village. Use arrow keys or the directional pad to move."></canvas></div>
+          <div id="housePrompt" class="housePrompt" aria-live="polite"></div>
+          <div class="villageControls" aria-label="RPG game controls">
+            <div class="dpad" aria-label="Four directional movement">
+              <button type="button" class="dpadUp" data-direction="up" aria-label="Walk north">▲</button>
+              <button type="button" class="dpadLeft" data-direction="left" aria-label="Walk west">◀</button>
+              <div class="dpadCenter" aria-hidden="true"></div>
+              <button type="button" class="dpadRight" data-direction="right" aria-label="Walk east">▶</button>
+              <button type="button" class="dpadDown" data-direction="down" aria-label="Walk south">▼</button>
+            </div>
+            <div class="actionArea"><button id="houseEnterButton" class="enterButton" type="button" disabled><strong>A</strong><span>ENTER</span></button><span class="controlLegend">INTERACT</span></div>
+          </div>
+          <div id="mapOverlay" class="mapOverlay" hidden>
+            <section class="mapPanel" role="dialog" aria-modal="true" aria-labelledby="mapHeading">
+              <div class="mapTitle"><div><small>CHRISTMAS TOWN / SNOW TRAILS</small><h2 id="mapHeading">ADVENT HOUSES</h2></div><button id="mapClose" type="button" aria-label="Close Advent map">×</button></div>
+              <p>Choose a number to locate that house. Grey doors are still locked by date.</p>
+              <div class="mapKey"><span>■ LOCKED</span><span>■ UNLOCKED</span><span>■ VISITED</span></div>
+              <div id="mapDays" class="mapDays" aria-label="Advent day finder"></div>
+              <div class="mapFooter">Find a door to jump to its doorstep, then press A to enter.</div>
+            </section>
+          </div>
+          <div id="houseInteriorHud" class="interiorHud" hidden>
+            <div class="dialogueCard">
+              <p id="insideHouseNumber" class="dialogueKicker">HOUSE 1</p>
+              <p id="insideElfGreeting" class="elfGreeting">Hello!</p>
+              <h2 id="insideActivityTitle">Your Advent surprise</h2>
+              <p id="insideActivityText">Visit a numbered door to see what is inside.</p>
+              <div class="dialogueActions">
+                <button id="playHouseGame" class="playHouseGame" type="button" hidden>PLAY GAME</button>
+                <button id="leaveHouseButton" type="button">LEAVE HOUSE</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view collectionView" data-view="playroom" hidden>
+        <div class="pixelPanel">
+          <p class="sectionKicker">YOUR COLLECTION</p>
+          <h2>Playroom</h2>
+          <p>Every activity you unlock in the village will live here so you can come back and play it again.</p>
+          <div id="gameShelf" class="gameShelf" aria-live="polite"></div>
+          <div id="playroomMessage" class="emptyState">Unlocked games will appear here as December progresses.</div>
+        </div>
+      </section>
+
+      <section class="view collectionView" data-view="scores" hidden>
+        <div class="pixelPanel">
+          <p class="sectionKicker">FAMILY RESULTS</p>
+          <h2>Scores</h2>
+          <p>Personal bests and family leaderboards will appear here once the Advent games are connected.</p>
+          <div class="scoreBoard" aria-hidden="true">
+            <div><span>1</span><strong>—</strong></div>
+            <div><span>2</span><strong>—</strong></div>
+            <div><span>3</span><strong>—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view collectionView" data-view="profile" hidden>
+        <div class="pixelPanel">
+          <p class="sectionKicker">YOUR ELF</p>
+          <h2>Profile</h2>
+          <p>Your advent progress and testing options live here.</p>
+          <div id="testTools" class="testTools" hidden><h3>Testing mode</h3><p>All numbered doors are accessible for testing. Game previews are listed in Playroom even before their dates are assigned.</p><button type="button" id="exitTestMode">Leave testing mode</button></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottomNav" aria-label="Main navigation">
+      <a class="navItem" href="#calendar" data-route="calendar" aria-current="page">
+        <img class="navIcon" src="assets/ui/home.png" alt=""><span>Calendar</span>
+      </a>
+      <a class="navItem" href="#playroom" data-route="playroom">
+        <img class="navIcon" src="assets/ui/gamepad.png" alt=""><span>Playroom</span>
+      </a>
+      <a class="navItem" href="#scores" data-route="scores">
+        <img class="navIcon" src="assets/ui/trophy.png" alt=""><span>Scores</span>
+      </a>
+      <a class="navItem" href="#profile" data-route="profile">
+        <img class="navIcon" src="assets/ui/singleplayer.png" alt=""><span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="assets/village/village-assets.js?v=1"></script>
+  <script src="assets/christmas/world-builder-tf-data-1.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-2.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-3.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-4.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-5.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-6.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-7.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-8.js"></script>
+  <script src="assets/christmas/world-builder-tf-data-9.js"></script>
+  <script src="assets/christmas/world-builder-tf-runtime.js"></script>
+  <script src="advent-calendar.js?v=1"></script>
+  <script src="village.js?v=7"></script>
+  <script src="app.js?v=5"></script>
+</body>
+</html>

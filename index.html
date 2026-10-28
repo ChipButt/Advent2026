@@ -1,129 +1,100 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <meta name="theme-color" content="#1d324c">
-  <meta name="description" content="Advent 2026 Christmas village">
-  <title>Advent Village · Advent 2026</title>
-  <link rel="stylesheet" href="styles.css?v=6">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#1e1b18">
+  <meta name="description" content="A Christmas home to decorate and 24 daily game surprises, Advent 2026.">
+  <title>Your Christmas Home · Advent 2026 (Preview)</title>
+  <link rel="stylesheet" href="room.css?v=20261028">
 </head>
 <body>
-  <div class="appShell">
-    <header class="appHeader">
-      <div>
-        <p class="eyebrow">A CHRISTMAS ADVENT ADVENTURE</p>
-        <h1>ADVENT <span>2026</span></h1>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="eyebrow">A LITTLE CHRISTMAS MAGIC · PREVIEW</span><strong>ADVENT <em>2026</em></strong></div>
+      <div class="top-actions">
+        <span class="uk-clock" id="ukClock" aria-label="Time in the United Kingdom"></span>
+        <button type="button" class="icon-btn" id="soundBtn" aria-label="Turn fireplace sounds on" aria-pressed="false" title="Fireplace sound">♫</button>
+        <button type="button" class="icon-btn" id="helpBtn" aria-label="Open decorating instructions" title="Help">?</button>
       </div>
-      <span id="testModeBadge" class="testModeBadge" hidden>TEST MODE</span>
-      <div class="headerBadge" aria-label="24 Advent doors"><span>24</span><small>DOORS</small></div>
     </header>
 
-    <main class="viewHost" id="viewHost">
-      <section class="view calendarView" data-view="calendar" aria-label="Advent village">
-        <div id="villageStage" class="villageStage">
-          <div class="gameScreenHeading">
-            <div class="areaName"><span class="areaDot" aria-hidden="true"></span><strong id="zoneLabel">CHRISTMAS TOWN</strong><small id="dayCounter">24 DOORS</small></div>
-            <button id="mapButton" class="mapToggle" type="button" aria-label="Open Advent day finder"><span class="mapTile" aria-hidden="true">▦</span> MAP</button>
-          </div>
-          <div class="screenBezel"><canvas id="villageCanvas" width="320" height="416" aria-label="Game Boy Color-style snowy Advent village. Use arrow keys or the directional pad to move."></canvas></div>
-          <div id="housePrompt" class="housePrompt" aria-live="polite"></div>
-          <div class="villageControls" aria-label="RPG game controls">
-            <div class="dpad" aria-label="Four directional movement">
-              <button type="button" class="dpadUp" data-direction="up" aria-label="Walk north">▲</button>
-              <button type="button" class="dpadLeft" data-direction="left" aria-label="Walk west">◀</button>
-              <div class="dpadCenter" aria-hidden="true"></div>
-              <button type="button" class="dpadRight" data-direction="right" aria-label="Walk east">▶</button>
-              <button type="button" class="dpadDown" data-direction="down" aria-label="Walk south">▼</button>
+    <main class="main">
+      <section class="room-view" id="roomView" aria-label="Decoratable Christmas living room">
+        <div class="world-viewport" id="viewport" aria-label="Christmas room. Drag to explore and pinch to zoom." tabindex="0">
+          <div class="world" id="world">
+            <img class="room-background" src="assets/approved-room.webp" alt="" draggable="false" width="941" height="1672">
+            <div class="fire" id="fire" aria-label="Fireplace">
+              <div class="fire-light"></div>
+              <div class="fire-logs"><i></i><i></i><i></i></div>
+              <div class="fire-flames"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="fire-embers"></div>
             </div>
-            <div class="actionArea"><button id="houseEnterButton" class="enterButton" type="button" disabled><strong>A</strong><span>ENTER</span></button><span class="controlLegend">INTERACT</span></div>
+            <div id="placedDecorations" class="placed-layer" aria-label="Placed decorations"></div>
+            <div id="giftLayer" class="gift-layer" aria-label="Daily Advent presents"></div>
+            <div class="tree-hint" id="treeHint" hidden>Press and hold a decoration to move it</div>
           </div>
-          <div id="mapOverlay" class="mapOverlay" hidden>
-            <section class="mapPanel" role="dialog" aria-modal="true" aria-labelledby="mapHeading">
-              <div class="mapTitle"><div><small>CHRISTMAS TOWN / SNOW TRAILS</small><h2 id="mapHeading">ADVENT HOUSES</h2></div><button id="mapClose" type="button" aria-label="Close Advent map">×</button></div>
-              <p>Choose a number to locate that house. Grey doors are still locked by date.</p>
-              <div class="mapKey"><span>■ LOCKED</span><span>■ UNLOCKED</span><span>■ VISITED</span></div>
-              <div id="mapDays" class="mapDays" aria-label="Advent day finder"></div>
-              <div class="mapFooter">Find a door to jump to its doorstep, then press A to enter.</div>
-            </section>
-          </div>
-          <div id="houseInteriorHud" class="interiorHud" hidden>
-            <div class="dialogueCard">
-              <p id="insideHouseNumber" class="dialogueKicker">HOUSE 1</p>
-              <p id="insideElfGreeting" class="elfGreeting">Hello!</p>
-              <h2 id="insideActivityTitle">Your Advent surprise</h2>
-              <p id="insideActivityText">Visit a numbered door to see what is inside.</p>
-              <div class="dialogueActions">
-                <button id="playHouseGame" class="playHouseGame" type="button" hidden>PLAY GAME</button>
-                <button id="leaveHouseButton" type="button">LEAVE HOUSE</button>
-              </div>
-            </div>
-          </div>
+        </div>
+        <div class="view-tools" role="group" aria-label="Room zoom controls">
+          <button type="button" id="treeBtn">✦ <span>Find tree</span></button>
+          <button type="button" id="roomBtn">⌂ <span>View room</span></button>
+          <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+        </div>
+        <aside class="guide-banner" id="guideBanner" hidden aria-live="polite">
+          <div><strong id="guideTitle">Let's decorate</strong><p id="guideMessage"></p></div>
+          <button type="button" id="guideSkip">Skip tutorial</button>
+        </aside>
+        <div class="inventory-tray" id="inventoryTray">
+          <button class="inventory-heading" id="inventoryToggle" type="button" aria-expanded="true"><span>YOUR DECORATIONS <small id="previewNote">· art preview</small></span><strong id="inventoryCount">0 items</strong><span class="chevron">⌄</span></button>
+          <div class="inventory-items" id="inventoryItems" aria-label="Decoration inventory"></div>
         </div>
       </section>
 
-      <section class="view collectionView" data-view="playroom" hidden>
-        <div class="pixelPanel">
-          <p class="sectionKicker">YOUR COLLECTION</p>
-          <h2>Playroom</h2>
-          <p>Every activity you unlock in the village will live here so you can come back and play it again.</p>
-          <div id="gameShelf" class="gameShelf" aria-live="polite"></div>
-          <div id="playroomMessage" class="emptyState">Unlocked games will appear here as December progresses.</div>
-        </div>
+      <section class="panel-view" id="gamesView" hidden>
+        <div class="panel-head"><span class="eyebrow">COME BACK ANYTIME</span><h1>Game shelf</h1><p>Your unlocked baubles will also launch games directly from the tree.</p></div>
+        <div class="game-list" id="gamesList"></div>
       </section>
-
-      <section class="view collectionView" data-view="scores" hidden>
-        <div class="pixelPanel">
-          <p class="sectionKicker">FAMILY RESULTS</p>
-          <h2>Scores</h2>
-          <p>Personal bests and family leaderboards will appear here once the Advent games are connected.</p>
-          <div class="scoreBoard" aria-hidden="true">
-            <div><span>1</span><strong>—</strong></div>
-            <div><span>2</span><strong>—</strong></div>
-            <div><span>3</span><strong>—</strong></div>
-          </div>
-        </div>
+      <section class="panel-view" id="scoresView" hidden>
+        <div class="panel-head"><span class="eyebrow">A FRIENDLY LITTLE COMPETITION</span><h1>Family leaderboard</h1><p>The room preview doesn't submit scores. Cloudflare accounts and trusted score integration must be connected before there can be real standings.</p></div>
+        <div class="empty-card"><strong>Family scores coming soon</strong><span>No invented rankings or demo scores will appear here.</span></div>
       </section>
-
-      <section class="view collectionView" data-view="profile" hidden>
-        <div class="pixelPanel">
-          <p class="sectionKicker">YOUR ELF</p>
-          <h2>Profile</h2>
-          <p>Your advent progress and testing options live here.</p>
-          <div id="testTools" class="testTools" hidden><h3>Testing mode</h3><p>All numbered doors are accessible for testing. Game previews are listed in Playroom even before their dates are assigned.</p><button type="button" id="exitTestMode">Leave testing mode</button></div>
-        </div>
+      <section class="panel-view" id="settingsView" hidden>
+        <div class="panel-head"><span class="eyebrow">MAKE YOURSELF AT HOME</span><h1>Settings</h1><p>Preview controls are saved in this browser only.</p></div>
+        <div class="settings-card"><strong>Room progress</strong><p>Decorations and opened presents are stored locally on this device. Cloud account sync will be added with the secure backend.</p><button type="button" id="resetPreview">Reset this browser's preview</button></div>
+        <div class="settings-card"><strong>Sound</strong><p>Fire crackling is off until you choose to enable it. Your preference will be remembered here.</p></div>
       </section>
     </main>
 
-    <nav class="bottomNav" aria-label="Main navigation">
-      <a class="navItem" href="#calendar" data-route="calendar" aria-current="page">
-        <img class="navIcon" src="assets/ui/home.png" alt=""><span>Calendar</span>
-      </a>
-      <a class="navItem" href="#playroom" data-route="playroom">
-        <img class="navIcon" src="assets/ui/gamepad.png" alt=""><span>Playroom</span>
-      </a>
-      <a class="navItem" href="#scores" data-route="scores">
-        <img class="navIcon" src="assets/ui/trophy.png" alt=""><span>Scores</span>
-      </a>
-      <a class="navItem" href="#profile" data-route="profile">
-        <img class="navIcon" src="assets/ui/singleplayer.png" alt=""><span>Profile</span>
-      </a>
+    <nav class="bottom-nav" aria-label="Main sections">
+      <button class="nav-link active" data-view="room" type="button" aria-current="page"><span>⌂</span>Home</button>
+      <button class="nav-link" data-view="games" type="button"><span>◈</span>Games</button>
+      <button class="nav-link" data-view="scores" type="button"><span>♛</span>Scores</button>
+      <button class="nav-link" data-view="settings" type="button"><span>⚙</span>Settings</button>
     </nav>
   </div>
 
-  <script src="assets/village/village-assets.js?v=1"></script>
-  <script src="assets/christmas/world-builder-tf-data-1.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-2.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-3.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-4.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-5.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-6.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-7.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-8.js"></script>
-  <script src="assets/christmas/world-builder-tf-data-9.js"></script>
-  <script src="assets/christmas/world-builder-tf-runtime.js"></script>
-  <script src="advent-calendar.js?v=1"></script>
-  <script src="village.js?v=7"></script>
-  <script src="app.js?v=5"></script>
+  <dialog id="giftDialog" class="gift-dialog" aria-labelledby="giftTitle">
+    <div class="gift-modal">
+      <button type="button" class="close-dialog" id="giftClose" aria-label="Close">×</button>
+      <p class="eyebrow" id="giftEyebrow">ADVENT SURPRISE</p>
+      <h2 id="giftTitle">A present for you!</h2>
+      <div class="gift-opening" id="giftOpening" aria-hidden="true"><div class="gift-body"></div><div class="gift-lid"></div><div class="gift-ribbon"></div><div class="gift-bow">✦</div><div class="reveal-bauble">✶</div></div>
+      <p id="giftDescription">Open your present to discover a decoration.</p>
+      <button type="button" id="giftAction" class="gold-button">Open present</button>
+    </div>
+  </dialog>
+
+  <dialog id="tutorialDialog" class="tutorial-dialog" aria-labelledby="tutorialTitle">
+    <div class="tutorial-modal">
+      <p class="eyebrow">WELCOME HOME</p>
+      <h2 id="tutorialTitle">A little Christmas magic</h2>
+      <p id="tutorialText"></p>
+      <div class="tutorial-progress" id="tutorialProgress" aria-label="Tutorial progress"></div>
+      <div class="tutorial-actions"><button type="button" id="skipTutorial">Skip</button><button type="button" id="nextTutorial" class="gold-button">Let's decorate</button></div>
+    </div>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" id="toast"></div>
+  <script src="room.js?v=20261028"></script>
 </body>
 </html>
