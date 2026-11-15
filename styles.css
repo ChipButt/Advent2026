@@ -74,3 +74,30 @@
 .elf-icon.elf-icon--settings{background-position:60% 100% !important;}
 .elf-icon.elf-icon--notifications{background-position:80% 100% !important;}
 .elf-icon.elf-icon--tie{background-position:100% 100% !important;}
+
+/* V5: actual approved Elflympics 2026 transparent PNG artwork (not recreated). */
+.masthead{min-height:92px;height:auto;padding-top:7px;padding-bottom:7px;gap:14px}
+.masthead .brand{min-width:0;flex:0 1 auto;display:flex;align-items:center;overflow:visible}
+.masthead .brand img.brand-logo{display:block;width:clamp(210px,24vw,294px);height:auto;max-width:100%;object-fit:contain;flex-shrink:1}
+.masthead .head-account{flex:0 0 auto}
+.hero-content{padding-top:46px}
+.hero-logo{display:block;width:min(540px,100%);height:auto;object-fit:contain;margin:0 0 20px -9px;filter:drop-shadow(0 12px 22px rgba(2,18,25,.25))}
+.hero{min-height:555px}
+.hero h1{margin-top:12px}
+.hero-crest{display:none}
+.modal .modal-crest{display:block;width:min(100%,300px);height:auto;max-height:120px;object-fit:contain;margin:0 0 13px -6px}
+@media(max-width:600px){
+ .masthead{min-height:76px;height:auto;padding:7px 12px;gap:7px}
+ .masthead .brand{flex:1 1 auto;min-width:0;overflow:hidden}
+ .masthead .brand img.brand-logo{width:min(58vw,216px);height:auto;max-width:100%;flex-shrink:1}
+ .masthead .head-account{flex:0 0 auto;max-width:115px}
+ .hero{min-height:490px}
+ .hero-content{padding:40px 18px 85px}
+ .hero-logo{width:min(100%,410px);margin:0 0 18px -5px}
+ .hero h1{font-size:clamp(40px,11vw,51px);margin-top:10px}
+ .hero p{font-size:15px}
+}
+@media(max-width:365px){
+ .masthead .brand img.brand-logo{width:50vw}
+ .masthead .head-account{max-width:104px}
+}
