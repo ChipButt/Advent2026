@@ -24,7 +24,7 @@ function isFinal(){return today()>"2026-12-24";}
 function getGame(key){return games.find(g=>g.key===key);}
 function clean(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
-function icon(name,extra=""){return '<svg class="elf-icon '+extra+'" aria-hidden="true" focusable="false"><use href="./assets/ui-icons-v3.svg#'+name+'"></use></svg>';}
+function icon(name,extra=""){return '<span class="elf-icon elf-icon--'+name+' '+extra+'" aria-hidden="true"></span>';}
 function rankCell(rank,tied){const n=Number(rank),medal=n===1?"medal-gold":n===2?"medal-silver":n===3?"medal-bronze":"";return '<span class="rank-cell">'+(medal?icon(medal):"")+'<span>'+clean(rank)+'</span>'+(tied?icon("tie","tie-mark"):"")+'</span>';}
 function storageGet(){try{return JSON.parse(localStorage.getItem("elflympics-session")||"null");}catch(_){return null;}}
 function storageSet(s){try{if(s)localStorage.setItem("elflympics-session",JSON.stringify(s));else localStorage.removeItem("elflympics-session");}catch(_){}}

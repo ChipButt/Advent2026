@@ -53,3 +53,24 @@
  .masthead .head-account{flex:0 1 auto;min-width:0;max-width:122px}
  .masthead .head-account span{min-width:0;max-width:68px;white-space:nowrap;text-overflow:ellipsis}
 }
+
+/* V4 — USES THE APPROVED V2 PNG ICON ARTWORK; NO REDRAWN SVG SYMBOLS. */
+.elf-icon{background-image:url("./assets/approved-icons-v2.png") !important;background-repeat:no-repeat!important;background-size:600% 300%!important;padding:0!important;position:relative;}
+.elf-icon.elf-icon--home{background-position:0% 0% !important;}
+.elf-icon.elf-icon--events{background-position:20% 0% !important;}
+.elf-icon.elf-icon--standings{background-position:40% 0% !important;}
+.elf-icon.elf-icon--profile{background-position:60% 0% !important;}
+.elf-icon.elf-icon--practice{background-position:80% 0% !important;}
+.elf-icon.elf-icon--official-race{background-position:100% 0% !important;}
+.elf-icon.elf-icon--locked{background-position:0% 50% !important;}
+.elf-icon.elf-icon--unlocked{background-position:20% 50% !important;}
+.elf-icon.elf-icon--result-recorded{background-position:40% 50% !important;}
+.elf-icon.elf-icon--attempt-used{background-position:60% 50% !important;}
+.elf-icon.elf-icon--medal-gold{background-position:80% 50% !important;}
+.elf-icon.elf-icon--medal-silver{background-position:100% 50% !important;}
+.elf-icon.elf-icon--medal-bronze{background-position:0% 100% !important;}
+.elf-icon.elf-icon--trophy{background-position:20% 100% !important;}
+.elf-icon.elf-icon--sign-in{background-position:40% 100% !important;}
+.elf-icon.elf-icon--settings{background-position:60% 100% !important;}
+.elf-icon.elf-icon--notifications{background-position:80% 100% !important;}
+.elf-icon.elf-icon--tie{background-position:100% 100% !important;}
