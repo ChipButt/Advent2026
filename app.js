@@ -23,6 +23,9 @@ function isOpen(day){const p=ukParts();return p.year>2026||(p.year===2026&&(p.mo
 function isFinal(){return today()>"2026-12-24";}
 function getGame(key){return games.find(g=>g.key===key);}
 function clean(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+function icon(name,extra=""){return '<svg class="elf-icon '+extra+'" aria-hidden="true" focusable="false"><use href="./assets/ui-icons-v3.svg#'+name+'"></use></svg>';}
+function rankCell(rank,tied){const n=Number(rank),medal=n===1?"medal-gold":n===2?"medal-silver":n===3?"medal-bronze":"";return '<span class="rank-cell">'+(medal?icon(medal):"")+'<span>'+clean(rank)+'</span>'+(tied?icon("tie","tie-mark"):"")+'</span>';}
 function storageGet(){try{return JSON.parse(localStorage.getItem("elflympics-session")||"null");}catch(_){return null;}}
 function storageSet(s){try{if(s)localStorage.setItem("elflympics-session",JSON.stringify(s));else localStorage.removeItem("elflympics-session");}catch(_){}}
 async function authRequest(path,body){
@@ -88,7 +91,7 @@ function makeGameCard(game,day,training=false){
  const status=training?"Practice available":isFinal()?"Event completed":"Event open";
  const badge="";
  const button=document.createElement("button");button.type="button";button.className="event-card";
- button.innerHTML='<div class="event-art"><span class="event-num">'+clean(label)+'</span><span class="event-symbol" aria-hidden="true">'+clean(game.mark)+'</span></div><div class="event-body"><h3>'+clean(game.name)+'</h3><p>'+clean(game.desc)+'</p><span class="status'+badge+'">'+clean(status)+'</span></div>';
+ button.innerHTML='<div class="event-art"><span class="event-num">'+clean(label)+'</span>'+icon(training?"practice":"official-race")+'</div><div class="event-body"><h3>'+clean(game.name)+'</h3><p>'+clean(game.desc)+'</p><span class="status'+badge+'">'+icon(training?"practice":"unlocked")+clean(status)+'</span></div>';
  button.disabled=!active;
  if(active)button.addEventListener("click",()=>openEvent(game,day));return button;
 }
@@ -102,7 +105,7 @@ function renderCalendar(){
  for(let day=1;day<=24;day++){
   const open=isOpen(day)||isFinal();if(open)released++;
   const b=document.createElement("button");b.className="date "+(open?"live":"locked")+(p.month===12&&p.day===day?" current":"");
-  b.type="button";b.innerHTML="<strong>"+day+"</strong><small>"+(open?"RELEASED":"LOCKED")+"</small>";
+  b.type="button";b.innerHTML="<strong>"+day+"</strong>"+icon(open?"unlocked":"locked")+"<small>"+(open?"RELEASED":"LOCKED")+"</small>";
   b.addEventListener("click",()=>{show("events");document.getElementById("day-"+day)?.scrollIntoView({block:"center",behavior:"smooth"});});dateStrip.append(b);
  }
  $("unlockCount").textContent=released+" of 24 released";
@@ -115,7 +118,7 @@ function renderCalendar(){
  for(let day=1;day<=24;day++){
   const open=isOpen(day),g=gameForEvent(day),published=!!g;
   const b=document.createElement("button");b.id="day-"+day;b.type="button";b.disabled=!(published&&open);if(open&&published)b.className="active-day";
-  b.innerHTML='<span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+'</span><strong>'+(published?clean(g.name):"Event "+day)+'</strong><small>'+(open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
+  b.innerHTML='<div class="tile-header"><span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+'</span>'+icon(open&&published?"unlocked":"locked")+'</div><strong>'+(published?clean(g.name):"Event "+day)+'</strong><small>'+(open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
   if(open&&published)b.onclick=()=>openEvent(g,day);all.append(b);
  }
  const training=$("trainingGames");training.replaceChildren();
@@ -131,29 +134,30 @@ function renderStandings(){
  if(!ready){info.textContent="Online accounts and competition standings will become available once the dedicated Supabase project is connected.";board.innerHTML='<div class="empty">No results are displayed until the real competition is connected.</div>';return;}
  info.textContent=isFinal()?"Final championship standings.":"Standings are provisional and may change whenever a competitor completes another official race.";
  if(!state.standings?.length){board.innerHTML='<div class="empty">No official results yet. The championship begins on 1 December.</div>';return;}
- board.innerHTML=table(["Position","Competitor","Championship points","Completed events"],state.standings.map(r=>'<tr class="'+(r.player_id===state.session?.user?.id?"me":"")+'"><td class="num">'+clean(r.position)+'</td><td>'+clean(r.display_name)+'</td><td><strong>'+clean(r.total_points)+'</strong></td><td>'+clean(r.events_finished)+'</td></tr>'));
+ const posCounts=new Map();state.standings.forEach(r=>posCounts.set(r.position,(posCounts.get(r.position)||0)+1));
+ board.innerHTML=table(["Position","Competitor","Championship points","Completed events"],state.standings.map(r=>'<tr class="'+(r.player_id===state.session?.user?.id?"me":"")+'"><td class="num">'+rankCell(r.position,(posCounts.get(r.position)||0)>1)+'</td><td>'+clean(r.display_name)+'</td><td><strong>'+clean(r.total_points)+'</strong></td><td>'+clean(r.events_finished)+'</td></tr>'));
 }
 function renderProfile(){
- const el=$("profileContent");if(!state.session){el.innerHTML='<div class="profile-card"><h2>Your competitor account</h2><p>Create an account to enter official races, retain your results across devices and appear in the championship standings.</p><button class="primary" id="profileSignIn">Create account / sign in</button></div>';el.querySelector("button").onclick=()=>openAuth("register");return;}
+ const el=$("profileContent");if(!state.session){el.innerHTML='<div class="profile-card"><h2 class="profile-heading">'+icon("profile")+'Your competitor account</h2><p>Create an account to enter official races, retain your results across devices and appear in the championship standings.</p><button class="primary" id="profileSignIn">'+icon("sign-in")+'Create account / sign in</button></div>';el.querySelector("button").onclick=()=>openAuth("register");return;}
  const current=state.attempts?.length||0;
- el.innerHTML='<div class="profile-card"><span class="kicker dark">REGISTERED COMPETITOR</span><h2>'+clean(state.profile?.display_name||state.session.user?.user_metadata?.display_name||"Elflympian")+'</h2><p>Signed in as '+clean(state.session.user?.email||"")+'</p><p>Official attempts recorded: <strong>'+current+'</strong></p><button class="secondary" id="signOut">Sign out</button></div>';
+ el.innerHTML='<div class="profile-card"><span class="kicker dark">REGISTERED COMPETITOR</span><h2 class="profile-heading">'+icon("profile")+clean(state.profile?.display_name||state.session.user?.user_metadata?.display_name||"Elflympian")+'</h2><p>Signed in as '+clean(state.session.user?.email||"")+'</p><p>Official attempts recorded: <strong>'+current+'</strong></p><button class="secondary" id="signOut">Sign out</button></div>';
  $("signOut").onclick=async()=>{try{await fetch(base+"/auth/v1/logout",{method:"POST",headers:{"apikey":conf.publishableKey,"Authorization":"Bearer "+state.session.access_token}});}catch(_){}state.session=null;state.profile=null;state.attempts=[];state.standings=[];storageSet(null);updateAuthUI();show("profile");};
 }
 function render(){renderCalendar();renderStandings();renderProfile();}
-function updateAuthUI(){$("accountButton").textContent=state.profile?.display_name||state.session?.user?.user_metadata?.display_name||(ready?"Sign in":"Accounts pending");renderProfile();}
+function updateAuthUI(){$("accountButton").innerHTML=icon(state.session?"profile":"sign-in")+"<span>"+clean(state.profile?.display_name||state.session?.user?.user_metadata?.display_name||(ready?"Sign in":"Accounts pending"))+"</span>";renderProfile();}
 function openAuth(mode="login"){
  if(!ready){toast("Player accounts need the dedicated Supabase project connected first.");return;}
  state.authMode=mode;$("authStatus").textContent="";$("authForm").reset();
  const reg=mode==="register";$("nameField").hidden=!reg;$('nameField').querySelector("input").required=reg;
  $("authTitle").textContent=reg?"Create your account":"Welcome back";$("authIntro").textContent=reg?"Choose your Elflympics competitor name. Your email stays private.":"Sign in to enter official races and see your results.";
- $("authSubmit").textContent=reg?"Create account":"Sign in";$("authSwitch").textContent=reg?"Already registered? Sign in":"New competitor? Create account";
+ $("authSubmit").innerHTML=icon("sign-in")+(reg?"Create account":"Sign in");$("authSwitch").textContent=reg?"Already registered? Sign in":"New competitor? Create account";
  if(!$("authDialog").open)$("authDialog").showModal();
 }
 function openEvent(game,day){
  if(!Number.isInteger(day)||!isOpen(day)||!eventFor(day)?.is_published||eventFor(day)?.game_key!==game.key){toast("This event has not unlocked yet.");return;}
  state.selected={game,day};$("eventEyebrow").textContent=day?"OFFICIAL EVENT "+String(day).padStart(2,"0"):"TRAINING CENTRE";$("eventName").textContent=game.name;$("eventDescription").textContent=game.desc;
  const result=day?latest(day):null;
- $("personalResult").textContent=result?(result.status==="finished"?"Latest official result: "+Number(result.result).toLocaleString()+" "+game.measure:"Latest official attempt: DNF / unfinished"):"No official result yet";
+ $("personalResult").innerHTML=icon(result?(result.status==="finished"?"result-recorded":"attempt-used"):"official-race")+"<span>"+clean(result?(result.status==="finished"?"Latest official result: "+Number(result.result).toLocaleString()+" "+game.measure:"Latest official attempt: DNF / unfinished"):"No official result yet")+"</span>";
  const avail=day&&isOpen(day)&&!!eventFor(day)?.is_published;
  const used=day&&usedToday(day);
  let message="Practice races do not affect the leaderboard.";
@@ -165,7 +169,7 @@ function openEvent(game,day){
  $("eventStatus").textContent=message;
  $("practiceButton").disabled=false;
  $("officialButton").disabled=!(avail&&!used&&state.session&&!isFinal());
- $("officialButton").textContent=used?"Attempt used today":"Official race";
+ $("officialButton").innerHTML=icon(used?"attempt-used":"official-race")+(used?"Attempt used today":"Official race");
  $("eventBoard").hidden=!day;$("eventBoard").onclick=()=>{const d=day;$("eventDialog").close();showBoard(d,game.name);};
  $("eventDialog").showModal();
 }
@@ -209,7 +213,8 @@ async function showBoard(day,name){
  if(!ready){$("eventTable").innerHTML='<div class="empty">Official standings are not connected yet.</div>';return;}
  try{
   const data=await api("event_standings?select=position,display_name,result,event_points,player_id&day=eq."+day+"&order=position.asc");
-  $("eventTable").innerHTML=data.length?table(["Place","Competitor","Result","Points"],data.map(x=>'<tr class="'+(x.player_id===state.session?.user?.id?"me":"")+'"><td class="num">'+clean(x.position)+'</td><td>'+clean(x.display_name)+'</td><td>'+clean(Number(x.result).toLocaleString())+'</td><td>'+clean(x.event_points)+'</td></tr>')):'<div class="empty">Nobody has completed an official race in this event yet.</div>';
+  const posCounts=new Map();data.forEach(x=>posCounts.set(x.position,(posCounts.get(x.position)||0)+1));
+  $("eventTable").innerHTML=data.length?table(["Place","Competitor","Result","Points"],data.map(x=>'<tr class="'+(x.player_id===state.session?.user?.id?"me":"")+'"><td class="num">'+rankCell(x.position,(posCounts.get(x.position)||0)>1)+'</td><td>'+clean(x.display_name)+'</td><td>'+clean(Number(x.result).toLocaleString())+'</td><td>'+clean(x.event_points)+'</td></tr>')):'<div class="empty">Nobody has completed an official race in this event yet.</div>';
  }catch(e){$("eventTable").innerHTML='<div class="empty">'+clean(e.message)+'</div>';}
 }
 document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.nav)));
