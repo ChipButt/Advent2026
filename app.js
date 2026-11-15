@@ -13,10 +13,12 @@ const conf=window.ELFLYMPICS_CONFIG||{};
 const ready=!!(conf.supabaseUrl&&conf.publishableKey);
 const base=String(conf.supabaseUrl||"").replace(/\/$/,"");
 const state={session:null,profile:null,events:[],attempts:[],standings:[],selected:null,boardDay:null,race:null,view:"home",authMode:"login"};
+const UK_FORMATTER=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"});
+let cachedUkDate=null,cachedUkAt=0,calendarRevision="";
 let toastTimer=null;
 function toast(s){const t=$("toast");t.textContent=s;t.classList.add("on");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("on"),3600);}
 const today=()=>{const p=ukParts();return String(p.year)+"-"+String(p.month).padStart(2,"0")+"-"+String(p.day).padStart(2,"0");};
-function ukParts(){const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());return Object.fromEntries(p.filter(x=>x.type!=="literal").map(x=>[x.type,Number(x.value)]));}
+function ukParts(){const now=Date.now();if(cachedUkDate&&now-cachedUkAt<10000)return cachedUkDate;const p=UK_FORMATTER.formatToParts(new Date(now));cachedUkDate=Object.fromEntries(p.filter(x=>x.type!=="literal").map(x=>[x.type,Number(x.value)]));cachedUkAt=now;return cachedUkDate;}
 function isOpen(day){const p=ukParts();return p.year>2026||(p.year===2026&&(p.month>12||(p.month===12&&p.day>=day)));}
 function isFinal(){return today()>"2026-12-24";}
 function getGame(key){return games.find(g=>g.key===key);}
@@ -47,15 +49,23 @@ async function api(path,options={}){
  return response.json();
 }
 const rpc=(name,data)=>api("rpc/"+name,{method:"POST",body:data});
-async function signIn(email,password){const s=await authRequest("token?grant_type=password",{email,password});acceptSession(s);await loadPlayer();updateAuthUI();}
-async function signUp(email,password,displayName){const r=await authRequest("signup?redirect_to="+encodeURIComponent(location.origin+location.pathname),{email,password,data:{display_name:displayName}});if(r.access_token){acceptSession(r);await loadPlayer();updateAuthUI();return "Account created and signed in.";}return "Check your email to confirm your Elflympics account, then sign in.";}
+async function signIn(email,password){const s=await authRequest("token?grant_type=password",{email,password});acceptSession(s);updateAuthUI();void loadPlayer().then(()=>{updateAuthUI();renderStandings();}).catch(e=>toast(e.message));}
+async function signUp(email,password,displayName){const r=await authRequest("signup?redirect_to="+encodeURIComponent(location.origin+location.pathname),{email,password,data:{display_name:displayName}});if(r.access_token){acceptSession(r);updateAuthUI();void loadPlayer().then(()=>{updateAuthUI();renderStandings();}).catch(e=>toast(e.message));return "Account created and signed in.";}return "Check your email to confirm your Elflympics account, then sign in.";}
 async function loadPlayer(){
  if(!state.session)return;
  try{
-  const p=await api("profiles?select=id,display_name&id=eq."+encodeURIComponent(state.session.user?.id||""));
-  state.profile=p?.[0]||null;
-  state.attempts=await api("race_attempts?select=id,event_day,race_day,result,status,begun_at&player_id=eq."+encodeURIComponent(state.session.user?.id||"")+"&order=begun_at.desc&limit=200");
-  state.standings=await api("overall_standings?select=*&order=position.asc");
+  await ensureSession();
+  const id=encodeURIComponent(state.session.user?.id||"");
+  const [profile,attempts,standings]=await Promise.all([
+   api("profiles?select=id,display_name&id=eq."+id),
+   api("race_attempts?select=id,event_day,race_day,result,status,begun_at&player_id=eq."+id+"&order=begun_at.desc&limit=200"),
+   api("overall_standings?select=*&order=position.asc")
+  ]);
+  if(!state.session)return;
+  state.profile=profile?.[0]||null;
+  state.attempts=attempts||[];
+  state.standings=standings||[];
+  renderProfile();renderStandings();
  }catch(e){toast(e.message);}
 }
 async function loadEvents(){
@@ -67,22 +77,27 @@ function gameForEvent(day){const e=eventFor(day);return e?.is_published?getGame(
 function latest(day){return (state.attempts||[]).filter(a=>a.event_day===day).sort((a,b)=>new Date(b.begun_at)-new Date(a.begun_at))[0]||null;}
 function usedToday(day){return (state.attempts||[]).some(a=>a.event_day===day&&a.race_day===today());}
 function show(view){
+ if(!["home","events","standings","profile"].includes(view))return;
  state.view=view;document.querySelectorAll(".view").forEach(x=>x.hidden=x.id!==view+"View");
  document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav===view));
- render();window.scrollTo({top:0,behavior:"instant"});
+ window.scrollTo(0,0);
 }
-function makeGameCard(game,day){
- const isScheduled=Number.isInteger(day),active=isScheduled&&isOpen(day);
- const e=isScheduled?eventFor(day):null;
- const label=isScheduled?(active?"EVENT "+String(day).padStart(2,"0"):"EVENT "+day):"TRAINING";
- const status=isScheduled?(active?(isFinal()?"Event completed":"Official event open"):"Not yet released"):"Practice available";
- const badge=isScheduled?(active?"":" locked"):" testing";
+function makeGameCard(game,day,training=false){
+ const active=Number.isInteger(day)&&isOpen(day)&&eventFor(day)?.is_published&&eventFor(day)?.game_key===game.key;
+ const label=(training?"TRAINING · ":"EVENT ")+String(day).padStart(2,"0");
+ const status=training?"Practice available":isFinal()?"Event completed":"Event open";
+ const badge="";
  const button=document.createElement("button");button.type="button";button.className="event-card";
  button.innerHTML='<div class="event-art"><span class="event-num">'+clean(label)+'</span><span class="event-symbol" aria-hidden="true">'+clean(game.mark)+'</span></div><div class="event-body"><h3>'+clean(game.name)+'</h3><p>'+clean(game.desc)+'</p><span class="status'+badge+'">'+clean(status)+'</span></div>';
- button.addEventListener("click",()=>openEvent(game,isScheduled?day:null));return button;
+ button.disabled=!active;
+ if(active)button.addEventListener("click",()=>openEvent(game,day));return button;
 }
 function renderCalendar(){
- const p=ukParts(),dateStrip=$("dateStrip");dateStrip.replaceChildren();
+ const p=ukParts();
+ const revision=today()+"|"+state.events.map(e=>[e.day,e.is_published,e.game_key].join(":")).join("|");
+ if(calendarRevision===revision)return;
+ calendarRevision=revision;
+ const dateStrip=$("dateStrip");dateStrip.replaceChildren();
  let released=0;
  for(let day=1;day<=24;day++){
   const open=isOpen(day)||isFinal();if(open)released++;
@@ -95,7 +110,7 @@ function renderCalendar(){
  const home=$("homeEvents");home.replaceChildren();
  const active=state.events.filter(e=>e.is_published&&getGame(e.game_key)&&isOpen(e.day)).reverse().slice(0,3);
  if(active.length){active.forEach(e=>home.append(makeGameCard(getGame(e.game_key),e.day)));}
- else{games.slice(0,3).forEach(g=>home.append(makeGameCard(g,null)));}
+ else{home.innerHTML='<div class="empty unlock-message">No events are available yet. Games can only be practised after their December event has unlocked.</div>';}
  const all=$("allEvents");all.replaceChildren();
  for(let day=1;day<=24;day++){
   const open=isOpen(day),g=gameForEvent(day),published=!!g;
@@ -103,7 +118,10 @@ function renderCalendar(){
   b.innerHTML='<span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+'</span><strong>'+(published?clean(g.name):"Event "+day)+'</strong><small>'+(open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
   if(open&&published)b.onclick=()=>openEvent(g,day);all.append(b);
  }
- const training=$("trainingGames");training.replaceChildren();games.forEach(g=>training.append(makeGameCard(g,null)));
+ const training=$("trainingGames");training.replaceChildren();
+ const unlocked=state.events.filter(e=>e.is_published&&isOpen(e.day)&&getGame(e.game_key));
+ if(unlocked.length)unlocked.forEach(e=>training.append(makeGameCard(getGame(e.game_key),e.day,true)));
+ else training.innerHTML='<div class="empty unlock-message">Training is locked. Each game becomes available for practice only when its event unlocks in December.</div>';
  const linked=$("leaderboardEvents");linked.replaceChildren();state.events.filter(e=>e.is_published&&isOpen(e.day)&&getGame(e.game_key)).forEach(e=>linked.append(makeGameCard(getGame(e.game_key),e.day)));
  if(!linked.children.length)linked.innerHTML='<div class="empty">Event leaderboards appear as official events are released.</div>';
 }
@@ -129,17 +147,17 @@ function openAuth(mode="login"){
  const reg=mode==="register";$("nameField").hidden=!reg;$('nameField').querySelector("input").required=reg;
  $("authTitle").textContent=reg?"Create your account":"Welcome back";$("authIntro").textContent=reg?"Choose your Elflympics competitor name. Your email stays private.":"Sign in to enter official races and see your results.";
  $("authSubmit").textContent=reg?"Create account":"Sign in";$("authSwitch").textContent=reg?"Already registered? Sign in":"New competitor? Create account";
- $("authDialog").showModal();
+ if(!$("authDialog").open)$("authDialog").showModal();
 }
 function openEvent(game,day){
+ if(!Number.isInteger(day)||!isOpen(day)||!eventFor(day)?.is_published||eventFor(day)?.game_key!==game.key){toast("This event has not unlocked yet.");return;}
  state.selected={game,day};$("eventEyebrow").textContent=day?"OFFICIAL EVENT "+String(day).padStart(2,"0"):"TRAINING CENTRE";$("eventName").textContent=game.name;$("eventDescription").textContent=game.desc;
  const result=day?latest(day):null;
  $("personalResult").textContent=result?(result.status==="finished"?"Latest official result: "+Number(result.result).toLocaleString()+" "+game.measure:"Latest official attempt: DNF / unfinished"):"No official result yet";
  const avail=day&&isOpen(day)&&!!eventFor(day)?.is_published;
  const used=day&&usedToday(day);
  let message="Practice races do not affect the leaderboard.";
- if(!day)message="This game is available for practice. Official entry opens when it is assigned to a December event.";
- else if(!avail)message="This event is not currently open.";
+ if(!avail)message="This event is not currently open.";
  else if(isFinal())message="The Elflympics has finished; results are final.";
  else if(!state.session)message="Create an account or sign in before entering an official race.";
  else if(used)message="Your official attempt for this event has already been used today. Try again tomorrow.";
@@ -152,7 +170,9 @@ function openEvent(game,day){
  $("eventDialog").showModal();
 }
 function openFrame(game,mode,day=null,attemptId=null){
- state.race={game,mode,day,attemptId,done:false};
+ const eventDay=day??state.selected?.day;
+ if(!Number.isInteger(eventDay)||!isOpen(eventDay)||!eventFor(eventDay)?.is_published||eventFor(eventDay)?.game_key!==game.key){toast("This event is locked.");return;}
+ state.race={game,mode,day:eventDay,attemptId,done:false};
  $("raceTitle").textContent=game.name;$("raceType").textContent=mode==="official"?"OFFICIAL RACE · ATTEMPT RESERVED":"UNLIMITED PRACTICE";
  $("raceMessage").hidden=true;$("raceMessage").textContent="";
  $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.key)+"/?elfMode="+encodeURIComponent(mode);
@@ -169,7 +189,7 @@ function exitRace(){
  const r=state.race;if(!r)return;
  if(r.mode==="official"&&!r.done&&!confirm("Leave this official race? The daily attempt remains used and will count as an unfinished result."))return;
  $("raceFrame").src="about:blank";$("raceDialog").close();state.race=null;
- if(r.mode==="official")loadPlayer().then(()=>{render();toast(r.done?"Official result recorded.":"Official attempt used. You can practise or retry tomorrow.");});
+ if(r.mode==="official")loadPlayer().then(()=>{toast(r.done?"Official result recorded.":"Official attempt used. You can practise or retry tomorrow.");});
 }
 async function finishedGame(event){
  const r=state.race;
@@ -179,7 +199,7 @@ async function finishedGame(event){
  r.done=true;
  let note="Practice finished · "+score.toLocaleString()+" "+r.game.measure+". Practice scores do not enter the leaderboard.";
  if(r.mode==="official"){
-  try{await rpc("complete_elf_race",{p_attempt_id:r.attemptId,p_score:score});note="Official result saved: "+score.toLocaleString()+" "+r.game.measure+". Your standings will update.";await loadPlayer();render();}
+  try{await rpc("complete_elf_race",{p_attempt_id:r.attemptId,p_score:score});note="Official result saved: "+score.toLocaleString()+" "+r.game.measure+". Your standings will update.";await loadPlayer();}
   catch(e){note="Official result could not be saved: "+e.message+" Contact the organiser with your race details.";r.done=false;}
  }
  $("raceMessage").textContent=note;$("raceMessage").hidden=false;if(r.mode==="official"&&r.done){$("raceFrame").style.pointerEvents="none";$("quitRace").focus();}
@@ -214,19 +234,30 @@ $("practiceButton").onclick=()=>{const s=state.selected;if(s)openFrame(s.game,"p
 $("officialButton").onclick=startOfficial;$("quitRace").onclick=exitRace;
 $("raceDialog").addEventListener("cancel",e=>{e.preventDefault();exitRace();});
 window.addEventListener("message",finishedGame);
-window.addEventListener("pageshow",()=>{if(ready&&state.session){loadPlayer().then(render);}});
+window.addEventListener("pageshow",e=>{if(e.persisted&&ready&&state.session)void loadPlayer();});
+// Update the day and unlocks if the page remains open across UK midnight.
+setInterval(()=>{const previous=calendarRevision.split("|",1)[0];if(previous!==today()){calendarRevision="";void loadEvents().then(renderCalendar);}},30000);
 async function boot(){
  state.session=storageGet();
  const hash=new URLSearchParams(location.hash.replace(/^#/,""));
  if(hash.has("access_token")&&hash.has("refresh_token")){
   acceptSession({access_token:hash.get("access_token"),refresh_token:hash.get("refresh_token"),expires_in:Number(hash.get("expires_in"))||3600});history.replaceState(null,"",location.pathname+location.search);toast("Email confirmed. Welcome to Elflympics.");
  }
- await loadEvents();
- if(ready&&state.session){
-  try{await ensureSession();const user=await fetch(base+"/auth/v1/user",{headers:{"apikey":conf.publishableKey,"Authorization":"Bearer "+state.session.access_token}}).then(x=>x.json());if(user?.id){state.session.user=user;storageSet(state.session);await loadPlayer();}else throw Error("Session expired");}
-  catch(_){state.session=null;storageSet(null);}
- }
+ // Render and make navigation interactive immediately. Network setup runs in parallel.
  updateAuthUI();render();
+ const eventsPromise=loadEvents().then(()=>renderCalendar());
+ if(ready&&state.session){
+  void (async()=>{try{
+   await ensureSession();
+   const response=await fetch(base+"/auth/v1/user",{headers:{"apikey":conf.publishableKey,"Authorization":"Bearer "+state.session.access_token}});
+   if(!response.ok)throw Error("Session expired");
+   const user=await response.json();
+   if(user?.id){state.session.user=user;storageSet(state.session);await loadPlayer();updateAuthUI();}
+   else throw Error("Session expired");
+  }catch(_){state.session=null;state.profile=null;state.attempts=[];state.standings=[];storageSet(null);updateAuthUI();renderStandings();}
+  })();
+ }
+ void eventsPromise;
 }
 boot().catch(e=>toast(e.message));
 })();

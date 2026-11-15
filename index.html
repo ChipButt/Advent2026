@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#0b2b2d"><meta name="description" content="Elflympics 2026 — the North Pole winter games. Twenty-four events, one champion.">
 <title>Elflympics 2026 · North Pole Winter Championship</title>
 <link rel="icon" type="image/svg+xml" href="./assets/crest.svg">
-<link rel="stylesheet" href="./styles.css?v=elf-v1">
+<link rel="stylesheet" href="./styles.css?v=elf-v2">
 </head><body>
 <div class="app-shell">
  <header class="masthead">
@@ -35,7 +35,7 @@
       </div>
     </div>
   </section>
-  <section class="view" id="eventsView" hidden><div class="page-banner"><span class="kicker">THE COMPETITION CALENDAR</span><h1>All 24 events</h1><p>A new event unlocks every day from 1 December. Past events stay open until Christmas Eve.</p></div><div class="wrap content"><div id="allEvents" class="all-events"></div><div class="section-title section-gap"><h2>Training centre</h2><span class="section-subtle">Existing games · practice only until scheduled</span></div><div id="trainingGames" class="event-grid"></div></div></section>
+  <section class="view" id="eventsView" hidden><div class="page-banner"><span class="kicker">THE COMPETITION CALENDAR</span><h1>All 24 events</h1><p>A new event unlocks every day from 1 December. Past events stay open until Christmas Eve.</p></div><div class="wrap content"><div id="allEvents" class="all-events"></div><div class="section-title section-gap"><h2>Training centre</h2><span class="section-subtle">Only games from already-unlocked December events</span></div><div id="trainingGames" class="event-grid"></div></div></section>
   <section class="view" id="standingsView" hidden><div class="page-banner"><span class="kicker">LIVE CHAMPIONSHIP</span><h1>Overall standings</h1><p>Event positions convert into championship points. Tied results share the same place and points.</p></div><div class="wrap content"><div id="standingsInfo" class="callout"></div><div id="overallTable" class="table-wrap"></div><div class="section-title section-gap"><h2>Event leaderboards</h2></div><div id="leaderboardEvents" class="event-grid"></div></div></section>
   <section class="view" id="profileView" hidden><div class="page-banner"><span class="kicker">YOUR ELFLYMPICS</span><h1>Competitor profile</h1><p>Your account, race entries and results stay with you across devices.</p></div><div class="wrap content"><div id="profileContent"></div></div></section>
  </main>
@@ -48,5 +48,5 @@
 <dialog id="boardDialog" class="dialog"><div class="modal"><button class="close" data-close="boardDialog" type="button" aria-label="Close">×</button><span class="kicker dark">EVENT STANDINGS</span><h2 id="boardTitle"></h2><div id="eventTable" class="table-wrap"></div><p class="notice">Equal results share the same place and the same event points. Rankings stay provisional until Christmas Eve.</p></div></dialog>
 <dialog id="howDialog" class="dialog"><div class="modal"><button class="close" data-close="howDialog" type="button" aria-label="Close">×</button><span class="kicker dark">HOW THE ELFLYMPICS WORK</span><h2>24 days. One champion.</h2><p>Each day from 1–24 December a new event opens. You can practise unlocked games without limit.</p><p>You get one official race per event each UK calendar day. Starting a race uses that day's attempt. Your latest official attempt counts — even if the result is worse than before.</p><p>All unlocked events remain playable until the competition finishes on Christmas Eve. Players tie when their results or total championship points are equal.</p><button class="primary full" data-close="howDialog" type="button">Got it</button></div></dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="./config.js"></script><script src="./app.js?v=elf-v1" defer></script>
+<script src="./config.js"></script><script src="./app.js?v=elf-v2" defer></script>
 </body></html>
