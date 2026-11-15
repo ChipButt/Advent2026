@@ -1,37 +1,51 @@
-# Advent 2026
+# Elflympics 2026 · North Pole Winter Championship
 
-An explorable, pixel-art Christmas Advent calendar built from real existing GameBox and ToolBox assets.
+**Status: V1 foundation, awaiting dedicated Supabase project connection, event assignments and end-to-end verification.**
 
-## Art and environment
+This is a replacement for Advent2026's old village/decorating UI. The original is saved in branch `archive-advent2026-before-elflympics` for rollback. Six original games remain in `games/`.
 
-- 24 numbered houses across Christmas Town, Northern Snow Trail and Eastern Pine Route.
-- Ground, path and fir-tree terrain from the **Gherwit Winter Tiles** atlas, copied to assets/winter/Winter-tiles.png.
-- Houses, Christmas trees, snowmen, presents, lamps, fences, furniture and interiors are drawn from the user-supplied Christmas Village art pack, installed at assets/village/village-assets.js. No code-generated substitute house or character art.
-- The player uses original **character.png**: 256×16, sixteen 16×16 frames, four consecutive walking frames for each of four directions. Frames change with distance travelled and return to idle when stationary.
-- Santa, gnomes and Christmas residents use original Time Fantasy Christmas 3-frame × 4-direction sprite sheets, copied unchanged to assets/christmas/.
-- Controller and navigation art uses the original Kenney PNGs, copied unchanged to assets/ui/.
-- CSS is used for layout, scaling and UI surfaces only. Gameworld artwork comes from original source assets.
+## Rules
+- 24 daily events, 1–24 December 2026, based on Europe/London dates
+- Unlimited practice for unlocked games
+- One official attempt **per event per UK calendar day**, reserved when the player begins
+- Latest official attempt replaces an earlier result, including a worse score or an unfinished run (DNF)
+- Event standings update while events are open, then freeze after 24 December
+- Ties share the same event and championship rank and event points
+- Initial scoring formula: 1st = 24, 2nd = 23, etc., minimum 1 point. Confirm before launch.
 
-## Advent behaviour
+## What's included
+- Responsive, premium North Pole winter sports front end with events, leaderboard, profile and modals
+- Existing six GameBox games retained, prepared for practice mode and score reporting
+- Supabase Auth email/password registration, confirmation and sign-in code
+- SQL schema in `supabase/schema.sql` for users, event schedule, race reservations, standings
+- Server-side atomic uniqueness preventing extra daily official race starts
 
-- 1–24 December 2026, using Europe/London dates.
-- Test mode: https://chipbutt.github.io/Advent2026/?test=1#calendar unlocks houses in the browser session and provides six game copies in the Playroom for testing.
-- Six approved GameBox copies: Tiny Ski Run, Jigsaw, Workshop Watch, Block Breaker, Santa Invaders and Festive Blocks. They are unchanged.
-- Game-to-date assignments remain **blank**, pending approval; no duplicates or invented content.
-- Four-direction movement on mobile controls or keyboard, A/Enter interaction, a numbered day finder, and proper return to the same doorway.
+## Required before official racing works
+1. Create a **new Supabase project** under the user's chosen organisation; do not use the unrelated existing database.
+2. Run `supabase/schema.sql` against that project after reviewing it.
+3. In `config.js`, set the new project's public URL and publishable key. **Never put a service_role or secret key into the browser.**
+4. In Supabase Auth, set Site URL and redirect URLs to the deployed site; set up verified SMTP for actual signups.
+5. Assign and publish event days in the database once the 24-game programme is agreed, e.g.
+   `update public.events set game_key='tiny-ski-run',is_published=true where day=1;`
+   Game keys: `tiny-ski-run`, `workshop-watch`, `block-breaker`, `santa-invaders`, `festive-blocks`, `jigsaw`.
+6. Standardise the Jigsaw's image/grid before allowing official competitions.
+7. Implement **per-game score verification** and test against cheating and client manipulation before real competition. Current score bridge reports client-derived results and is insufficient for a high-trust competition.
+8. Test on actual mobile devices and with multiple independent users before declaring production-ready.
 
-## Source locations
+### Deployment
+The existing GitHub Pages path `https://chipbutt.github.io/Advent2026/` can continue serving this repository after deployment. This static front-end does not contain a private Supabase key.
 
-- assets/village/village-assets.js — source-authentic compressed Christmas Village pack
-- assets/christmas/world-builder-tf-data-1.js through -9.js, world-builder-tf-runtime.js — unchanged source copies from GameBox/christmas-quest/
-- assets/winter/Winter-tiles.png — unchanged Gherwit winter atlas
-- assets/ui/ — unchanged Kenney controller and navigation PNGs
-- games/ — the six previously copied approved games
+### Important notes
+- Offline or disconnected clients cannot submit official results.
+- Starting and abandoning an official run uses that day's attempt. No automatic retry on lost connection.
+- Free Supabase databases can pause for low activity; daily genuine database use usually prevents it but is not guaranteed.
+- Back up critical results externally before the championship finishes; the Supabase Free plan does not provide managed daily backups.
 
-## Quality checks and limitations
-
-Source names and byte hashes were checked when copying the vendor artwork. Code syntax, house navigation and date-lock checks are performed before release. Real-device visual review is still required before claiming full match to the original concept image.
-
-The prior hand-drawn house, overworld character and interior props have been replaced by real asset drawing. The concept image is a design reference, **not** a screenshot of the implemented game.
-
-Live: https://chipbutt.github.io/Advent2026/
+## Structure
+- `index.html`: new app shell
+- `styles.css`: responsive sports-brand design
+- `app.js`: events, registration and race UI, leaderboards
+- `config.js`: public Supabase connection values (initially empty)
+- `assets/crest.svg`, `assets/mountains.svg`: new branding illustration
+- `games/`: six retained games, with new result message bridge
+- `supabase/schema.sql`: database schema and server-side attempt enforcement

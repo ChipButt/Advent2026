@@ -1,118 +1,52 @@
-<!DOCTYPE html>
-<html lang="en-GB">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-  <meta name="theme-color" content="#1e1b18">
-  <meta name="description" content="A Christmas home to decorate and 24 daily game surprises, Advent 2026.">
-  <title>Your Christmas Home · Advent 2026 (Preview)</title>
-  <link rel="stylesheet" href="room.css?v=20261028-unwrap3">
-</head>
-<body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand"><span class="eyebrow">A LITTLE CHRISTMAS MAGIC · PREVIEW</span><strong>ADVENT <em>2026</em></strong></div>
-      <div class="top-actions">
-        <span class="uk-clock" id="ukClock" aria-label="Time in the United Kingdom"></span>
-        <button type="button" class="icon-btn" id="soundBtn" aria-label="Turn fireplace sounds on" aria-pressed="false" title="Fireplace sound">♫</button>
-        <button type="button" class="icon-btn" id="helpBtn" aria-label="Open decorating instructions" title="Help">?</button>
+<!doctype html>
+<html lang="en-GB"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2b2d"><meta name="description" content="Elflympics 2026 — the North Pole winter games. Twenty-four events, one champion.">
+<title>Elflympics 2026 · North Pole Winter Championship</title>
+<link rel="icon" type="image/svg+xml" href="./assets/crest.svg">
+<link rel="stylesheet" href="./styles.css?v=elf-v1">
+</head><body>
+<div class="app-shell">
+ <header class="masthead">
+  <a href="./" class="brand" aria-label="Elflympics home"><img src="./assets/crest.svg" alt=""><span><strong>ELFLYMPICS <em>2026</em></strong><small>NORTH POLE WINTER CHAMPIONSHIP</small></span></a>
+  <button id="accountButton" class="head-account" type="button">Sign in</button>
+ </header>
+ <main>
+  <section class="view" id="homeView">
+    <div class="hero">
+      <div class="hero-content"><div class="kicker">NORTH POLE · DECEMBER 2026</div>
+       <h1>The games are <em>coming.</em></h1>
+       <p>24 events. Daily races. One overall championship.</p>
+       <div class="hero-ctas"><button class="primary" id="heroEvents" type="button">Explore events <span aria-hidden="true">→</span></button><button id="heroHow" class="ghost" type="button">How it works</button></div>
       </div>
-    </header>
-
-    <main class="main">
-      <section class="room-view" id="roomView" aria-label="Decoratable Christmas living room">
-        <div class="world-viewport" id="viewport" aria-label="Christmas room. Drag to explore and pinch to zoom." tabindex="0">
-          <div class="world" id="world">
-            <img class="room-background" src="assets/approved-room.webp" alt="" draggable="false" width="941" height="1672">
-            <div class="fire" id="fire" aria-label="Fireplace">
-              <div class="fire-light"></div>
-              <div class="fire-logs"><i></i><i></i><i></i></div>
-              <div class="fire-flames"><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="fire-embers"></div>
-            </div>
-            <div id="placedDecorations" class="placed-layer" aria-label="Placed decorations"></div>
-            <div id="giftLayer" class="gift-layer" aria-label="Daily Advent presents"></div>
-            <div class="tree-hint" id="treeHint" hidden>Press and hold a decoration to move it</div>
-          </div>
-        </div>
-        <div class="view-tools" role="group" aria-label="Room zoom controls">
-          <button type="button" id="treeBtn">✦ <span>Find tree</span></button>
-          <button type="button" id="roomBtn">⌂ <span>View room</span></button>
-          <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
-          <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
-        </div>
-        <aside class="guide-banner" id="guideBanner" hidden aria-live="polite">
-          <div><strong id="guideTitle">Let's decorate</strong><p id="guideMessage"></p></div>
-          <button type="button" id="guideSkip">Skip tutorial</button>
-        </aside>
-        <div class="inventory-tray" id="inventoryTray">
-          <button class="inventory-heading" id="inventoryToggle" type="button" aria-expanded="true"><span>YOUR DECORATIONS <small id="previewNote">· art preview</small></span><strong id="inventoryCount">0 items</strong><span class="chevron">⌄</span></button>
-          <div class="inventory-items" id="inventoryItems" aria-label="Decoration inventory"></div>
-        </div>
-      </section>
-
-      <section class="panel-view" id="gamesView" hidden>
-        <div class="panel-head"><span class="eyebrow">COME BACK ANYTIME</span><h1>Game shelf</h1><p>Your unlocked baubles will also launch games directly from the tree.</p></div>
-        <div class="game-list" id="gamesList"></div>
-      </section>
-      <section class="panel-view" id="scoresView" hidden>
-        <div class="panel-head"><span class="eyebrow">A FRIENDLY LITTLE COMPETITION</span><h1>Family leaderboard</h1><p>The room preview doesn't submit scores. Cloudflare accounts and trusted score integration must be connected before there can be real standings.</p></div>
-        <div class="empty-card"><strong>Family scores coming soon</strong><span>No invented rankings or demo scores will appear here.</span></div>
-      </section>
-      <section class="panel-view" id="settingsView" hidden>
-        <div class="panel-head"><span class="eyebrow">MAKE YOURSELF AT HOME</span><h1>Settings</h1><p>Preview controls are saved in this browser only.</p></div>
-        <div class="settings-card"><strong>Room progress</strong><p>Decorations and opened presents are stored locally on this device. Cloud account sync will be added with the secure backend.</p><button type="button" id="resetPreview">Reset this browser's preview</button></div>
-        <div class="settings-card"><strong>Sound</strong><p>Fire crackling is off until you choose to enable it. Your preference will be remembered here.</p></div>
-      </section>
-    </main>
-
-    <nav class="bottom-nav" aria-label="Main sections">
-      <button class="nav-link active" data-view="room" type="button" aria-current="page"><span>⌂</span>Home</button>
-      <button class="nav-link" data-view="games" type="button"><span>◈</span>Games</button>
-      <button class="nav-link" data-view="scores" type="button"><span>♛</span>Scores</button>
-      <button class="nav-link" data-view="settings" type="button"><span>⚙</span>Settings</button>
-    </nav>
-  </div>
-
-  <dialog id="giftDialog" class="gift-dialog" aria-labelledby="giftTitle">
-    <div class="gift-modal">
-      <button type="button" class="close-dialog" id="giftClose" aria-label="Close">×</button>
-      <p class="eyebrow" id="giftEyebrow">ADVENT SURPRISE</p>
-      <h2 id="giftTitle">A present for you!</h2>
-      <div class="gift-opening gift-stage" id="giftOpening" aria-hidden="true">
-        <div class="gift-stage-light"></div>
-        <div class="gift-stage-ring"></div>
-        <div class="gift-ground-shadow"></div>
-        <img class="gift-package gift-hero-parcel" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-        <div class="gift-wrapping-pieces">
-          <img class="gift-package paper-shard shard-1" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-          <img class="gift-package paper-shard shard-2" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-          <img class="gift-package paper-shard shard-3" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-          <img class="gift-package paper-shard shard-4" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-          <img class="gift-package paper-shard shard-5" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-          <img class="gift-package paper-shard shard-6" src="assets/decor/gift-red-gold.webp?v=20261028-trim3" alt="">
-        </div>
-        <div class="gift-reward-halo"></div>
-        <img class="reveal-bauble-art gift-reward-art" src="assets/decor/bauble-red.webp?v=20261028-trim3" alt="">
-        <div class="gift-fine-glitter">
-          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        </div>
+      <div class="hero-crest" aria-hidden="true"><img src="./assets/crest.svg" alt=""></div>
+      <div class="hero-foot"><span>DEC 01 — DEC 24</span><span>UNITED KINGDOM TIME</span></div>
+    </div>
+    <div class="content wrap">
+      <div class="section-title"><div><span class="kicker dark">THE ROAD TO CHRISTMAS EVE</span><h2>December events</h2></div><span id="unlockCount" class="section-subtle">0 of 24 released</span></div>
+      <div id="dateStrip" class="date-strip" aria-label="December event dates"></div>
+      <div class="section-title section-gap"><div><span class="kicker dark">YOUR STARTING LINE</span><h2>Events & training</h2></div></div>
+      <div id="homeEvents" class="event-grid"></div>
+      <div class="section-title section-gap"><div><span class="kicker dark">THE COMPETITION</span><h2>Championship overview</h2></div></div>
+      <div class="feature-row">
+       <article class="feature"><span class="feature-number">01</span><h3>Train without limits</h3><p>Practice every available game as often as you like.</p></article>
+       <article class="feature"><span class="feature-number">02</span><h3>Race once per day</h3><p>One official run in each unlocked event every UK calendar day.</p></article>
+       <article class="feature"><span class="feature-number">03</span><h3>Risk your result</h3><p>Your newest official attempt replaces the previous one, even if it scores lower.</p></article>
       </div>
-      <p id="giftDescription" aria-live="polite">Open your present to discover a decoration.</p>
-      <button type="button" id="giftAction" class="gold-button">Open present</button>
     </div>
-  </dialog>
-
-  <dialog id="tutorialDialog" class="tutorial-dialog" aria-labelledby="tutorialTitle">
-    <div class="tutorial-modal">
-      <p class="eyebrow">WELCOME HOME</p>
-      <h2 id="tutorialTitle">A little Christmas magic</h2>
-      <p id="tutorialText"></p>
-      <div class="tutorial-progress" id="tutorialProgress" aria-label="Tutorial progress"></div>
-      <div class="tutorial-actions"><button type="button" id="skipTutorial">Skip</button><button type="button" id="nextTutorial" class="gold-button">Let's decorate</button></div>
-    </div>
-  </dialog>
-  <div class="toast" role="status" aria-live="polite" id="toast"></div>
-  <script src="room.js?v=20261028-unwrap3"></script>
-</body>
-</html>
+  </section>
+  <section class="view" id="eventsView" hidden><div class="page-banner"><span class="kicker">THE COMPETITION CALENDAR</span><h1>All 24 events</h1><p>A new event unlocks every day from 1 December. Past events stay open until Christmas Eve.</p></div><div class="wrap content"><div id="allEvents" class="all-events"></div><div class="section-title section-gap"><h2>Training centre</h2><span class="section-subtle">Existing games · practice only until scheduled</span></div><div id="trainingGames" class="event-grid"></div></div></section>
+  <section class="view" id="standingsView" hidden><div class="page-banner"><span class="kicker">LIVE CHAMPIONSHIP</span><h1>Overall standings</h1><p>Event positions convert into championship points. Tied results share the same place and points.</p></div><div class="wrap content"><div id="standingsInfo" class="callout"></div><div id="overallTable" class="table-wrap"></div><div class="section-title section-gap"><h2>Event leaderboards</h2></div><div id="leaderboardEvents" class="event-grid"></div></div></section>
+  <section class="view" id="profileView" hidden><div class="page-banner"><span class="kicker">YOUR ELFLYMPICS</span><h1>Competitor profile</h1><p>Your account, race entries and results stay with you across devices.</p></div><div class="wrap content"><div id="profileContent"></div></div></section>
+ </main>
+ <nav class="bottom-nav" aria-label="Main navigation"><button class="active" data-nav="home" type="button"><span aria-hidden="true">⌂</span>Home</button><button data-nav="events" type="button"><span aria-hidden="true">▦</span>Events</button><button data-nav="standings" type="button"><span aria-hidden="true">♜</span>Standings</button><button data-nav="profile" type="button"><span aria-hidden="true">♙</span>Profile</button></nav>
+ <footer>ELFLYMPICS 2026 · NORTH POLE WINTER CHAMPIONSHIP · V1</footer>
+</div>
+<dialog id="authDialog" class="dialog"><div class="modal"><button class="close" data-close="authDialog" type="button" aria-label="Close">×</button><img class="modal-crest" src="./assets/crest.svg" alt=""><span class="kicker dark">BECOME A COMPETITOR</span><h2 id="authTitle">Sign in</h2><p id="authIntro">Sign in to record official race results.</p><form id="authForm"><label id="nameField" hidden>Competitor name<input name="display_name" autocomplete="nickname" minlength="3" maxlength="28"></label><label>Email address<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" minlength="8" autocomplete="current-password" required></label><p id="authStatus" role="status"></p><button id="authSubmit" class="primary full" type="submit">Sign in</button></form><button id="authSwitch" class="text-button" type="button">Create an account</button><button id="resetPassword" class="text-button" type="button">Forgot password?</button></div></dialog>
+<dialog id="eventDialog" class="dialog"><div class="modal event-modal"><button class="close" data-close="eventDialog" type="button" aria-label="Close">×</button><span class="kicker dark" id="eventEyebrow">EVENT</span><h2 id="eventName"></h2><p id="eventDescription"></p><div class="result-panel" id="personalResult">No official result yet</div><div class="race-rules"><div><strong>∞</strong><span>Unlimited practice races</span></div><div><strong>◷</strong><span>One official attempt per event, per UK day</span></div><div><strong>♛</strong><span>Latest official attempt determines your position</span></div></div><p id="eventStatus" class="notice"></p><div class="action-row"><button id="practiceButton" class="secondary" type="button">Practice race</button><button id="officialButton" class="primary" type="button">Official race</button></div><button id="eventBoard" class="text-button" type="button">View event leaderboard</button></div></dialog>
+<dialog id="raceDialog" class="race-dialog"><div class="race-head"><span><strong id="raceTitle"></strong><small id="raceType"></small></span><button id="quitRace" type="button">Exit race ×</button></div><iframe id="raceFrame" title="Elflympics event" allow="fullscreen" referrerpolicy="same-origin"></iframe><div id="raceMessage" class="race-message" hidden></div></dialog>
+<dialog id="boardDialog" class="dialog"><div class="modal"><button class="close" data-close="boardDialog" type="button" aria-label="Close">×</button><span class="kicker dark">EVENT STANDINGS</span><h2 id="boardTitle"></h2><div id="eventTable" class="table-wrap"></div><p class="notice">Equal results share the same place and the same event points. Rankings stay provisional until Christmas Eve.</p></div></dialog>
+<dialog id="howDialog" class="dialog"><div class="modal"><button class="close" data-close="howDialog" type="button" aria-label="Close">×</button><span class="kicker dark">HOW THE ELFLYMPICS WORK</span><h2>24 days. One champion.</h2><p>Each day from 1–24 December a new event opens. You can practise unlocked games without limit.</p><p>You get one official race per event each UK calendar day. Starting a race uses that day's attempt. Your latest official attempt counts — even if the result is worse than before.</p><p>All unlocked events remain playable until the competition finishes on Christmas Eve. Players tie when their results or total championship points are equal.</p><button class="primary full" data-close="howDialog" type="button">Got it</button></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="./config.js"></script><script src="./app.js?v=elf-v1" defer></script>
+</body></html>

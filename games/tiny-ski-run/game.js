@@ -824,6 +824,7 @@ function finishRun(){
   const m=metres();
   const gatePoints=gates*GATE_BONUS;
   const finalScore=m+gatePoints;
+  if(window.parent!==window)window.parent.postMessage({type:"elflympics-finish",game:"tiny-ski-run",score:finalScore},location.origin);
   const isBest=finalScore>best;
   if(isBest){best=finalScore;localStorage.setItem(BEST_KEY,String(best))}
   finalScoreEl.textContent=finalScore;

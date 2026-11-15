@@ -451,6 +451,7 @@ function endGame(victory){
   gameEnded=true;waveActive=false;buildType=null;
   const protectionBonus=lives*75;
   const final=score+protectionBonus;
+  if(window.parent!==window)window.parent.postMessage({type:"elflympics-finish",game:"workshop-watch",score:final},location.origin);
   const isBest=final>best;
   if(isBest){best=final;localStorage.setItem(BEST_KEY,String(best))}
   resultEyebrow.textContent=victory?'ALL 12 TRACKS SAFE':'PRESENTS STOLEN';

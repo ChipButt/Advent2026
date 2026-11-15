@@ -112,7 +112,7 @@ function clearCompleted(){
  showToast(lines>1?lines+' LINES!':'LINE CLEAR!');tone(lines>1?760:620,.13,'triangle',.04,lines>1?1120:860);
 }
 function finishGame(){
- gameOver=true;saveHigh();resultScore.textContent=String(score);resultBest.textContent=String(high);setTimeout(function(){resultSheet.classList.add('show');},220);tone(180,.28,'sawtooth',.03,90);
+ gameOver=true;saveHigh();if(window.parent!==window)window.parent.postMessage({type:'elflympics-finish',game:'festive-blocks',score:score},location.origin);resultScore.textContent=String(score);resultBest.textContent=String(high);setTimeout(function(){resultSheet.classList.add('show');},220);tone(180,.28,'sawtooth',.03,90);
 }
 function showToast(text){clearTimeout(toastTimer);toastEl.textContent=text;toastEl.classList.add('show');toastTimer=setTimeout(function(){toastEl.classList.remove('show');},900);}
 function spawnBurst(x,y,color){for(let i=0;i<7;i++){const a=Math.random()*Math.PI*2,s=30+Math.random()*65;particles.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.45+Math.random()*.25,max:.7,color:color});}if(particles.length>150)particles.splice(0,particles.length-150);}

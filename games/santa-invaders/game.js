@@ -292,7 +292,7 @@ function pause(){
 function resume(){game.state=game.returnTo;closePanel()}
 function end(reason=""){
   game.overReason=reason;
-  release();saveBest();openPanel("over");announce("Run over. Score: "+game.score);
+  release();saveBest();if(window.parent!==window)window.parent.postMessage({type:"elflympics-finish",game:"santa-invaders",score:game.score},location.origin);openPanel("over");announce("Run over. Score: "+game.score);
   tone(210,.2,"sawtooth",.05);
 }
 function damagePlayer(){

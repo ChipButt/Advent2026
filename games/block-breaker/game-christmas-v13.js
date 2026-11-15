@@ -473,6 +473,7 @@ function loseLife(now){
 }
 function finishRun(victory){
   state=victory?'victory':'gameOver';paused=true;saveHighScore();
+  if(window.parent!==window)window.parent.postMessage({type:'elflympics-finish',game:'block-breaker',score:score},location.origin);
   resultKicker.textContent=victory?'ALL 12 DAYS CLEARED':'RUN OVER';
   resultTitle.textContent=victory?'12 Days Complete!':'Game Over';
   resultScore.textContent=String(score);resultBest.textContent=String(highScore);

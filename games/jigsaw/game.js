@@ -1,11 +1,12 @@
 (function(){
   'use strict';
+  window.__elfJigsawStart=performance.now();
   const canvas=document.getElementById('puzzleCanvas'),stage=document.getElementById('puzzleStage'),menu=document.getElementById('menuSheet'),howTo=document.getElementById('howToSheet'),win=document.getElementById('winOverlay'),guideBtn=document.getElementById('guideButton'),guideState=document.getElementById('guideState'),guideChoices=[...document.querySelectorAll('[data-guide-label]')],soundBtn=document.getElementById('soundButton'),soundState=document.getElementById('soundState'),soundIcon=document.getElementById('soundIcon'),soundCheck=document.getElementById('soundCheck'),pieceButtons=[...document.querySelectorAll('[data-piece-grid]')],winPieceCount=document.getElementById('winPieceCount'),fileInput=document.getElementById('imageFile'),titleEl=document.getElementById('puzzleTitle');
   let guideIndex=0;
   const guideValues=[0,.10,.28],guideLabels=['Off','Faint','Strong'],guideKeys=['off','faint','strong'];
   let sound=true,objectUrl='';
   const ICON_BASE='https://chipbutt.github.io/GameBox/assets/gamebox/kenney/icons/Game Icons/White/2x/',CHECK_EMPTY='https://chipbutt.github.io/GameBox/assets/gamebox/kenney/ui/UI Pack/Grey/Double/check_square_grey.png',CHECK_ON='https://chipbutt.github.io/GameBox/assets/gamebox/kenney/ui/UI Pack/Green/Double/check_square_color_checkmark.png';
-  const puzzle=GameBoxJigsaw.create({canvas,image:'assets/test-christmas-scene.svg',rows:6,columns:6,guideOpacity:guideValues[guideIndex],snapTolerance:.24,snapDuration:125,seed:'gamebox-jigsaw-christmas-test-v1',sound:true,vibration:true,onProgress({total}){if(winPieceCount)winPieceCount.textContent=total;},onComplete(){win.classList.add('show');}});
+  const puzzle=GameBoxJigsaw.create({canvas,image:'assets/test-christmas-scene.svg',rows:6,columns:6,guideOpacity:guideValues[guideIndex],snapTolerance:.24,snapDuration:125,seed:'gamebox-jigsaw-christmas-test-v1',sound:true,vibration:true,onProgress({total}){if(winPieceCount)winPieceCount.textContent=total;},onComplete(){win.classList.add('show');if(window.parent!==window)window.parent.postMessage({type:'elflympics-finish',game:'jigsaw',score:Math.max(1,Math.round((performance.now()-window.__elfJigsawStart)/1000))},location.origin);}});
   function syncStageArt(){const l=puzzle.layout;if(!l||!stage)return;stage.style.setProperty('--board-x',l.boardX+'px');stage.style.setProperty('--board-y',l.boardY+'px');stage.style.setProperty('--board-size',l.boardSize+'px');}
   function closeMenu(){menu.classList.remove('show')} function openMenu(){menu.classList.add('show')}
   function closeHowTo(){howTo.classList.remove('show')} function openHowTo(){closeMenu();howTo.classList.add('show')}
