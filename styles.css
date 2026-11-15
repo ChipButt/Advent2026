@@ -43,3 +43,13 @@
 .profile-card .profile-heading .elf-icon{height:44px;width:44px}
 @media(max-width:600px){.bottom-nav{min-height:77px}.bottom-nav button{min-width:0;flex:1;padding:3px}.bottom-nav button .nav-mark{height:40px;width:40px}.page-banner h1>.elf-icon{height:38px;width:38px}.section-title h2>.elf-icon{width:28px;height:28px}}
 @media(prefers-reduced-motion:reduce){.bottom-nav button .nav-mark{transition:none}}
+
+/* Keep the app header inside the screen when competitor names are long. */
+@media(max-width:600px){
+ .masthead .brand{flex:1 1 auto;min-width:0;overflow:hidden}
+ .masthead .brand>span{min-width:0;overflow:hidden}
+ .masthead .brand strong{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .masthead .brand small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .masthead .head-account{flex:0 1 auto;min-width:0;max-width:122px}
+ .masthead .head-account span{min-width:0;max-width:68px;white-space:nowrap;text-overflow:ellipsis}
+}
