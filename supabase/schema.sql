@@ -169,3 +169,7 @@ grant select on public.event_standings,public.overall_standings to authenticated
 -- Tied ranks share the same points. Change this formula before 1 Dec if needed.
 -- IMPORTANT: Configure a verified custom SMTP sender for email signups.
 -- IMPORTANT: Configure Auth redirect URLs and test RLS with two accounts.
+
+-- Privilege hardening following Supabase advisor check
+revoke all on function public.create_elf_profile() from public,anon,authenticated;
+create index if not exists race_attempts_event_day_idx on public.race_attempts(event_day);

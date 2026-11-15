@@ -48,7 +48,7 @@ async function api(path,options={}){
 }
 const rpc=(name,data)=>api("rpc/"+name,{method:"POST",body:data});
 async function signIn(email,password){const s=await authRequest("token?grant_type=password",{email,password});acceptSession(s);await loadPlayer();updateAuthUI();}
-async function signUp(email,password,displayName){const r=await authRequest("signup",{email,password,data:{display_name:displayName},options:{email_redirect_to:location.origin+location.pathname}});if(r.access_token){acceptSession(r);await loadPlayer();updateAuthUI();return "Account created and signed in.";}return "Check your email to confirm your Elflympics account, then sign in.";}
+async function signUp(email,password,displayName){const r=await authRequest("signup?redirect_to="+encodeURIComponent(location.origin+location.pathname),{email,password,data:{display_name:displayName}});if(r.access_token){acceptSession(r);await loadPlayer();updateAuthUI();return "Account created and signed in.";}return "Check your email to confirm your Elflympics account, then sign in.";}
 async function loadPlayer(){
  if(!state.session)return;
  try{

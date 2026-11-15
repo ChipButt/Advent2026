@@ -1,3 +1,6 @@
-// Elflympics account service connection is intentionally not configured until a new, dedicated Supabase project is approved.
-// Paste ONLY the new project's public URL and publishable key. NEVER put a secret/service_role key here.
-window.ELFLYMPICS_CONFIG = Object.freeze({supabaseUrl:"",publishableKey:""});
+// Elflympics 2026: dedicated Chip In Supabase project public connection.
+// This is a PUBLIC publishable key only. Never put service_role or secret keys here.
+window.ELFLYMPICS_CONFIG = Object.freeze({
+  supabaseUrl:"https://jdijlpxqxiuanyyfflkh.supabase.co",
+  publishableKey:"sb_publishable_5-yqZzWPHnuoZVPh0IW6LA_Wsa9Fvqv"
+});
