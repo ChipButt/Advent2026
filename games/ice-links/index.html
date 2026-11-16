@@ -165,6 +165,10 @@ html,body{background:#07142e}body{background:radial-gradient(ellipse at 50% -25%
 .finalScorePanel span{font-size:13px;font-weight:800;color:#e0f4ff}
 .speedTarget{display:flex;align-items:center;gap:6px;white-space:nowrap;color:#b6d0e8}
 .speedTarget b{font:900 14px 'Outfit';color:#ffdc90}
+
+/* The Elflympics host owns race navigation and attempt-abandon confirmation. */
+.embedded .topbar>a.iconBtn,.embedded #returnAdvent{display:none!important}
+.embedded .resultSheet .menuActions{grid-template-columns:1fr}
 </style>
 </head>
 <body>
@@ -266,6 +270,7 @@ html,body{background:#07142e}body{background:radial-gradient(ellipse at 50% -25%
 'use strict';
 var mode=new URLSearchParams(location.search).get('elfMode');
 if(mode!=='official'&&mode!=='practice')mode='standalone';
+if(mode!=='standalone')document.body.classList.add('embedded');
 var attempt=new URLSearchParams(location.search).get('elfAttempt')||'';
 attempt=/^[0-9a-f-]{8,50}$/i.test(attempt)?attempt:'local';
 var SAVE=mode==='official'?'elflympics.ice-links.official.'+attempt:'gamebox.ice-links.advent-run.v1';
@@ -571,7 +576,7 @@ function showFinal(){
  if(mode!=='official'){records.bestScore=Math.max(Math.floor(Number(records.bestScore)||0),state.score);setRecords(records);}
  $('finalScore').textContent=state.score.toLocaleString('en-GB');
  $('finalBreakdown').textContent=SETTINGS[state.startLevel].label+' · '+RUN_LENGTH+' puzzles · '+state.streak+' clean streak';
- $('adventStatus').textContent=mode==='official'?'Final score sent to Elflympics. The event window confirms whether it was saved.':mode==='practice'?'Practice score only — official rankings are unaffected.':'Official scores are ranked by Elflympics against other competitors.';
+ $('adventStatus').textContent=mode==='official'?'Score sent. Wait for the Elflympics event window to confirm saving, then use its Exit race control.':mode==='practice'?'Practice score only — rankings are unaffected. Use the event window to exit or play again.':'Official scores are ranked by Elflympics against other competitors.';
  $('playAgainBtn').hidden=mode==='official';
  $('returnAdvent').textContent=mode==='standalone'?'Advent Playroom':'Back to Elflympics';
  $('returnAdvent').setAttribute('href',mode==='standalone'?'../advent-2026/':'../../');
