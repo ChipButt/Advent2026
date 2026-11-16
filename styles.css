@@ -101,3 +101,80 @@
  .masthead .brand img.brand-logo{width:50vw}
  .masthead .head-account{max-width:104px}
 }
+
+
+/* === ELF V6: NORTH POLE CHAMPIONSHIP BACKGROUND TRIAL ===
+   Reversible visual-only change. Remove this entire block to restore V5.
+   Uses the two existing approved compositions, converted to lightweight AVIF.
+   No changes to player logic, icons, logo, events or race restrictions.
+*/
+html{background:#071e2d}
+body{background:transparent}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:#092b38 url("./assets/elflympics-village-desktop.avif") center center / cover no-repeat;
+}
+.app-shell{position:relative;z-index:1;background:transparent}
+.hero{
+  background-image:
+    linear-gradient(90deg,rgba(4,24,36,.84) 0%,rgba(5,28,42,.61) 43%,rgba(5,30,45,.18) 100%),
+    url("./assets/elflympics-village-desktop.avif");
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.hero::before{
+  background:linear-gradient(0deg,rgba(4,21,32,.70) 0%,transparent 38%);
+}
+.page-banner{
+  background-image:
+    linear-gradient(90deg,rgba(5,27,38,.87),rgba(8,43,53,.40)),
+    url("./assets/elflympics-village-desktop.avif");
+  background-position:center 52%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.view>.content.wrap{
+  background:rgba(249,247,240,.92);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:16px;
+  margin-top:22px;
+  margin-bottom:24px;
+  box-shadow:0 18px 45px rgba(2,22,34,.22);
+}
+@media(max-width:600px){
+  body::before{
+    background-image:url("./assets/elflympics-village-mobile.avif");
+    background-position:center 56%;
+  }
+  .hero{
+    background-image:
+      linear-gradient(180deg,rgba(4,25,39,.55) 0%,rgba(4,24,36,.70) 65%,rgba(4,20,33,.82) 100%),
+      url("./assets/elflympics-village-mobile.avif");
+    background-position:center 60%;
+    background-size:cover;
+  }
+  .page-banner{
+    background-image:
+      linear-gradient(90deg,rgba(4,26,36,.85),rgba(4,26,36,.42)),
+      url("./assets/elflympics-village-mobile.avif");
+    background-position:center 62%;
+  }
+  .view>.content.wrap{
+    width:calc(100% - 20px);
+    margin:12px 10px 18px;
+    padding:25px 15px 40px;
+    border-radius:13px;
+    background:rgba(249,247,240,.94);
+    box-shadow:0 12px 30px rgba(2,22,34,.23);
+  }
+}
+@media(prefers-reduced-data:reduce){
+  /* Avoid additional effects on metered connections. */
+  .view>.content.wrap{box-shadow:none}
+}
+/* === END ELF V6 BACKGROUND TRIAL === */
