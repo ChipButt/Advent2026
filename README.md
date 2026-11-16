@@ -2,7 +2,7 @@
 
 **Status: V1 foundation, awaiting dedicated Supabase project connection, event assignments and end-to-end verification.**
 
-This is a replacement for Advent2026's old village/decorating UI. The original is saved in branch `archive-advent2026-before-elflympics` for rollback. Six original games remain in `games/`.
+This is a replacement for Advent2026's old village/decorating UI. The original is saved in branch `archive-advent2026-before-elflympics` for rollback. The original games remain in `games/`. Ice Links is now included as a scored Advent event candidate (`games/ice-links/`).
 
 ## Rules
 - 24 daily events, 1–24 December 2026, based on Europe/London dates
@@ -20,6 +20,16 @@ This is a replacement for Advent2026's old village/decorating UI. The original i
 - SQL schema in `supabase/schema.sql` for users, event schedule, race reservations, standings
 - Server-side atomic uniqueness preventing extra daily official race starts
 
+
+### Ice Links Advent scoring (Game 21 candidate)
+- Game key: `ice-links`; standalone QA URL: `games/ice-links/`.
+- Each attempt has five consecutive puzzles with automatic transitions; the player selects Easy, Medium or Hard for the whole attempt. There are no medal awards inside Ice Links.
+- Per completed puzzle: 100 / 200 / 350 base points respectively, plus a speed bonus (up to 75% of base) and a clean-streak bonus (up to 100). One hint yields half the base award and two or more yield zero. Skipping gives zero and resets the streak.
+- At the end of five puzzles the game sends one `elflympics-finish` message with `game: "ice-links"` and an integer `score`. Practice attempts do not affect standings; official results are processed by the existing race reservation and submission flow.
+- The existing `event_standings` and `overall_standings` views rank highest raw event scores first, assign event place points, and sum these into the championship. No second leaderboard or game-specific medals are needed.
+- **Scheduling:** Ice Links is registered in `app.js` but not assigned to a December day or published in the database. Choose its event day separately before launch; do not automatically overwrite an existing event.
+- **Integrity:** Client-generated score messages are not authoritative anti-cheat evidence. Validate/replay results server-side before running a competitive public event.
+
 ## Required before official racing works
 1. Create a **new Supabase project** under the user's chosen organisation; do not use the unrelated existing database.
 2. Run `supabase/schema.sql` against that project after reviewing it.
@@ -27,7 +37,7 @@ This is a replacement for Advent2026's old village/decorating UI. The original i
 4. In Supabase Auth, set Site URL and redirect URLs to the deployed site; set up verified SMTP for actual signups.
 5. Assign and publish event days in the database once the 24-game programme is agreed, e.g.
    `update public.events set game_key='tiny-ski-run',is_published=true where day=1;`
-   Game keys: `tiny-ski-run`, `workshop-watch`, `block-breaker`, `santa-invaders`, `festive-blocks`, `jigsaw`.
+   Game keys: `tiny-ski-run`, `workshop-watch`, `block-breaker`, `santa-invaders`, `festive-blocks`, `jigsaw`, `ice-links`.
 6. Standardise the Jigsaw's image/grid before allowing official competitions.
 7. Implement **per-game score verification** and test against cheating and client manipulation before real competition. Current score bridge reports client-derived results and is insufficient for a high-trust competition.
 8. Test on actual mobile devices and with multiple independent users before declaring production-ready.
