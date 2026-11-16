@@ -7,7 +7,8 @@ const games=[
  {key:"block-breaker",name:"Block Breaker",short:"Precision challenge",mark:"◆",measure:"points",higher:true,desc:"Keep the ball alive and clear the winter blocks."},
  {key:"santa-invaders",name:"Santa Invaders",short:"Arcade survival",mark:"✧",measure:"points",higher:true,desc:"Hold the line against the North Pole invasion."},
  {key:"festive-blocks",name:"Festive Blocks",short:"Puzzle competition",mark:"▦",measure:"points",higher:true,desc:"Arrange blocks to clear lines and set your score."},
- {key:"jigsaw",name:"Jigsaw",short:"Puzzle training",mark:"◇",measure:"seconds",higher:false,desc:"Complete the festive puzzle. Official rules need a standardised image and grid."}
+ {key:"jigsaw",name:"Jigsaw",short:"Puzzle training",mark:"◇",measure:"seconds",higher:false,desc:"Complete the festive puzzle. Official rules need a standardised image and grid."},
+ {key:"ice-links",name:"Ice Links",short:"Elflympics ice-bridge logic",mark:"❄",measure:"points",higher:true,desc:"Choose a difficulty and complete five consecutive ice-bridge puzzles. Fast, clean solves earn more points; the final total is ranked against other competitors."}
 ];
 const conf=window.ELFLYMPICS_CONFIG||{};
 const ready=!!(conf.supabaseUrl&&conf.publishableKey);
@@ -179,7 +180,7 @@ function openFrame(game,mode,day=null,attemptId=null){
  state.race={game,mode,day:eventDay,attemptId,done:false};
  $("raceTitle").textContent=game.name;$("raceType").textContent=mode==="official"?"OFFICIAL RACE · ATTEMPT RESERVED":"UNLIMITED PRACTICE";
  $("raceMessage").hidden=true;$("raceMessage").textContent="";
- $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.key)+"/?elfMode="+encodeURIComponent(mode);
+ $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.key)+"/?elfMode="+encodeURIComponent(mode)+(attemptId?"&elfAttempt="+encodeURIComponent(attemptId):"");
  $("eventDialog").close();$("raceDialog").showModal();
 }
 async function startOfficial(){
