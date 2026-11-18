@@ -40,5 +40,6 @@ jobs:
           git add -A games/
           if ! git diff --cached --quiet; then
             git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Import original GameBox Advent candidates into Workshop (pinned source)"
+            git pull --rebase origin workshop
             git push origin HEAD:workshop
           fi
