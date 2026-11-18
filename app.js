@@ -366,6 +366,7 @@ function openEvent(game,day){
  else if(used)message="Your official attempt for this event has already been used today. Try again tomorrow.";
  else message="Starting an official race uses today's attempt. A later attempt replaces your earlier result, even if worse.";
  if(workshop)message="Candidate version · gameplay, styling and scoring still need review. No live score can be submitted.";
+ if(workshop){$("personalResult").innerHTML=icon("practice")+"<span>Candidate imported from GameBox · not yet approved for Elflympics scoring.</span>";document.querySelector(".race-rules").innerHTML="<div>Workshop test mode · review gameplay, appearance, and difficulty</div><div>No official attempts or live leaderboard updates</div><div>Scores will be integrated after the game is approved</div>";}
  $("eventStatus").textContent=message;
  $("practiceButton").disabled=false;
  $("practiceButton").textContent=workshop?"Launch game":"Practice race";
@@ -455,7 +456,7 @@ window.addEventListener("pageshow",e=>{if(e.persisted&&ready&&state.session)void
 // Update the day and unlocks if the page remains open across UK midnight.
 setInterval(()=>{const previous=calendarRevision.split("|",1)[0];if(previous!==today()){calendarRevision="";void loadEvents().then(renderCalendar);}},30000);
 async function boot(){
- if(workshop){$("workshopRibbon").hidden=false;document.querySelector("footer").textContent="ELFLYMPICS 2026 · WORKSHOP W1 · 18 NOV 2026";}
+ if(workshop){$("workshopRibbon").hidden=false;document.querySelector("footer").textContent="ELFLYMPICS 2026 · WORKSHOP W1 · 18 NOV 2026";document.querySelector("#eventsView .page-banner p").textContent="All 24 days are unlocked for reviewing imported GameBox games. Changes here do not affect Live.";document.querySelector("#eventsView .section-subtle").textContent="Workshop test candidates only";document.querySelector("#homeView .feature-row").innerHTML="<article class=\"feature\"><span class=\"feature-number\">01</span><h3>Open any event</h3><p>Review the actual locally imported game.</p></article><article class=\"feature\"><span class=\"feature-number\">02</span><h3>Improve one at a time</h3><p>Gameplay, mobile presentation, instructions and scoring.</p></article><article class=\"feature\"><span class=\"feature-number\">03</span><h3>Approve before Live</h3><p>Only a reviewed Workshop release will be promoted.</p></article>";}
  state.session=workshop?null:storageGet();
  const hash=workshop?new URLSearchParams():new URLSearchParams(location.hash.replace(/^#/,""));
  if(hash.has("access_token")&&hash.has("refresh_token")){
