@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "name": "Elflympics Workshop — Original GameBox Advent Games",
+  "source_repository": "ChipButt/GameBox",
+  "source_commit": "fcc46ad55fdd5eca9a8f5d35caf1a19963011ea4",
+  "official_events_published": false,
+  "approved_for_live": false,
+  "games": [
+    {
+      "number": 1,
+      "id": "tiny-ski-run",
+      "name": "Tiny Ski Run",
+      "path": "tiny-ski-run/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 2,
+      "id": "jigsaw",
+      "name": "Jigsaw",
+      "path": "jigsaw/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 3,
+      "id": "workshop-watch",
+      "name": "Workshop Watch",
+      "path": "workshop-watch/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 4,
+      "id": "block-breaker",
+      "name": "Block Breaker",
+      "path": "block-breaker/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 5,
+      "id": "santa-invaders",
+      "name": "Santa Invaders",
+      "path": "santa-invaders/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 6,
+      "id": "festive-blocks",
+      "name": "Festive Blocks",
+      "path": "festive-blocks/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 7,
+      "id": "santa-letter-sort",
+      "name": "Santa’s Letter Sort",
+      "path": "santa-letter-sort/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 8,
+      "id": "christmas-dash",
+      "name": "North Pole Dash",
+      "path": "christmas-dash/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 9,
+      "id": "north-pole-pizzeria",
+      "name": "North Pole Pizzeria",
+      "path": "north-pole-pizzeria/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 10,
+      "id": "snowy-crossing",
+      "name": "Snowy Crossing",
+      "path": "snowy-crossing/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 11,
+      "id": "present-stack",
+      "name": "Santa’s Present Stack",
+      "path": "present-stack/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 12,
+      "id": "chimney-drop-in",
+      "name": "Chimney Drop-In",
+      "path": "chimney-drop-in/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 13,
+      "id": "santas-sorting-shift",
+      "name": "Santa’s Sorting Shift",
+      "path": "santas-sorting-shift/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 14,
+      "id": "snow-shoveller",
+      "name": "Snow Shoveller",
+      "path": "snow-shoveller/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 15,
+      "id": "snowball-knockdown",
+      "name": "Snowball Knockdown",
+      "path": "snowball-knockdown/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 16,
+      "id": "santas-arrow-escape",
+      "name": "Santa’s Arrow Escape",
+      "path": "santas-arrow-escape/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 17,
+      "id": "christmas-potion-sort",
+      "name": "Santa’s Potion Sort",
+      "path": "christmas-potion-sort/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 18,
+      "id": "gift-bubble-shooter",
+      "name": "Gift Bubble Shooter",
+      "path": "gift-bubble-shooter/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 19,
+      "id": "snowy-sweets",
+      "name": "Snowy Sweets",
+      "path": "snowy-sweets/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 20,
+      "id": "shift-in-maze",
+      "name": "Shift In Maze",
+      "path": "shift-in-maze/",
+      "status": "needs-testing"
+    },
+    {
+      "number": 21,
+      "id": "bridgebound",
+      "name": "Ice Links",
+      "path": "bridgebound/",
+      "status": "needs-testing"
+    }
+  ]
+}

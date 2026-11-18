@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102d3b">
+<title>21 GameBox Advent Games · Elflympics Workshop</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6ed;background:#0b1f2c}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% 0,#285b67 0,#132e3d 48%,#0b1f2c 100%);min-height:100vh}
+main{max-width:1140px;margin:auto;padding:30px clamp(15px,4vw,42px) 70px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header a{color:#daeedc;text-decoration:none;font-size:13px}header strong{font-size:12px;letter-spacing:.14em;color:#eac995}
+h1{font-size:clamp(32px,7vw,62px);line-height:1.02;letter-spacing:-.05em;margin:35px 0 12px;color:#ffe3a1}
+.lead{font-size:16px;color:#c4dadd;line-height:1.6;max-width:720px}
+.warning{background:#163844;border:1px solid #719595;border-radius:15px;padding:16px 18px;color:#f8e7c2;margin:24px 0}
+.warning strong{display:block;font-size:13px;letter-spacing:.09em}
+.warning p{margin:7px 0 0;font-size:13px;line-height:1.55}
+.topline{display:flex;justify-content:space-between;align-items:baseline;gap:15px;flex-wrap:wrap;margin-top:35px}
+.topline h2{font-size:20px;margin:0}.topline span{color:#a5c4c8;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-top:18px}
+.tile{display:flex;gap:14px;align-items:center;min-height:97px;padding:16px;color:#f8f8f1;text-decoration:none;background:linear-gradient(145deg,#24515a,#153845);border:1px solid #557d81;border-radius:17px;box-shadow:0 4px 0 #061b26;transition:transform .15s}
+.tile:hover,.tile:focus-visible{transform:translateY(-3px);border-color:#f7d387;outline:0}
+.number{display:grid;place-items:center;background:#0d2e3b;border:1px solid #73948a;color:#f6d594;width:42px;height:42px;border-radius:12px;flex:none;font-weight:800}
+.title{font-weight:750;font-size:15px;line-height:1.25}.meta{display:block;margin-top:6px;color:#a9caca;font-size:11px;font-weight:600}
+#loading,#error{color:#eed29c;margin-top:22px}#error[hidden]{display:none}
+footer{margin-top:38px;font-size:12px;color:#8aabb1;line-height:1.6}
+</style></head><body><main>
+<header><strong>ELFLYMPICS 2026 · WORKSHOP</strong><a href="../">Elflympics app</a></header>
+<h1>Game testing<br>collection</h1>
+<p class="lead">All 21 original GameBox Advent games, together in one isolated Workshop. Open and test each game before choosing which games enter the final Elflympics calendar.</p>
+<div class="warning"><strong>WORKSHOP ONLY · NOTHING APPROVED FOR LIVE</strong><p>These games are not assigned to Advent dates, and scores here do not enter the official leaderboard. Original GameBox gameplay is preserved for testing.</p></div>
+<div class="topline"><h2>All Advent games</h2><span>21 originals · pinned GameBox source</span></div>
+<div id="loading">Loading game collection…</div><div id="error" hidden></div><div class="grid" id="grid"></div>
+<footer>This list is separate from Elflympics’ currently registered seven games. Moving a game into the official programme requires a deliberate, reviewed promotion.</footer>
+</main><script>
+(async()=>{
+try{
+ const response=await fetch('./catalog.json',{cache:'no-store'});if(!response.ok)throw Error('Game catalogue unavailable');
+ const data=await response.json();if(data.games.length!==21)throw Error('Expected exactly 21 source games');
+ const grid=document.getElementById('grid');
+ data.games.forEach(game=>{
+   const a=document.createElement('a');a.className='tile';a.href='./'+encodeURIComponent(game.id)+'/';
+   const n=document.createElement('span');n.className='number';n.textContent=String(game.number).padStart(2,'0');
+   const body=document.createElement('span');const t=document.createElement('span');t.className='title';t.textContent=game.name;
+   const m=document.createElement('span');m.className='meta';m.textContent='OPEN FOR TESTING';
+   body.append(t,m);a.append(n,body);grid.append(a);
+ });
+ document.getElementById('loading').remove();
+}catch(e){document.getElementById('loading').remove();const el=document.getElementById('error');el.textContent=e.message;el.hidden=false;}
+})();
+</script></body></html>

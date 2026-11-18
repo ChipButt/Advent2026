@@ -1,0 +1,75 @@
+name: Import original GameBox Advent games into Elflympics Workshop
+on:
+  push:
+    branches: [workshop]
+    paths:
+      - workshop-games/catalog.json
+      - tools/import_gamebox_advent.py
+      - .github/workflows/import-gamebox-advent-workshop.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: workshop-gamebox-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Elflympics workshop
+        uses: actions/checkout@v4
+        with:
+          ref: workshop
+          persist-credentials: true
+      - name: Checkout pinned original GameBox code and artwork
+        uses: actions/checkout@v4
+        with:
+          repository: ChipButt/GameBox
+          ref: fcc46ad55fdd5eca9a8f5d35caf1a19963011ea4
+          path: .source-gamebox
+          filter: blob:none
+          sparse-checkout: |
+            tiny-ski-run
+            jigsaw
+            workshop-watch
+            block-breaker
+            santa-invaders
+            festive-blocks
+            santa-letter-sort
+            christmas-dash
+            north-pole-pizzeria
+            snowy-crossing
+            present-stack
+            chimney-drop-in
+            santas-sorting-shift
+            snow-shoveller
+            snowball-knockdown
+            santas-arrow-escape
+            christmas-potion-sort
+            gift-bubble-shooter
+            snowy-sweets
+            shift-in-maze
+            bridgebound
+            assets
+            shared
+            hub
+      - name: Import and verify exactly the 21 original Advent games
+        run: python3 tools/import_gamebox_advent.py
+      - name: Check there are no symlinks or unexpectedly large files
+        shell: bash
+        run: |
+          if find workshop-games -type l | grep .; then
+            echo "Symlinks are not allowed in the Workshop bundle"
+            exit 1
+          fi
+          find workshop-games -type f -size +25M -print -quit | grep -q . && { echo "File too large for Pages"; exit 1; } || true
+      - name: Commit Workshop-only copies, never touch main
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- workshop-games
+          if ! git diff --cached --quiet; then
+            git commit -m "Import 21 pinned GameBox Advent originals for Workshop QA [skip ci]"
+            git push origin HEAD:workshop
+          fi
