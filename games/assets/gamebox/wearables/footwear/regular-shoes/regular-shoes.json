@@ -1,0 +1,18 @@
+{
+  "id": "regular-shoes",
+  "name": "Regular Shoes",
+  "slot": "footwear",
+  "baseCharacter": "christmas-elf",
+  "skeleton": "CharacterArmature",
+  "requiredBones": [
+    "Foot.L",
+    "LowerLeg.L",
+    "Foot.R",
+    "LowerLeg.R"
+  ],
+  "meshes": [
+    "Shoe_Regular_Left_01",
+    "Shoe_Regular_Right_01"
+  ],
+  "format": "glb"
+}

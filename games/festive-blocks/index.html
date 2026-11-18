@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#11191e">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Festive Blocks · GameBox</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body data-build="festive-blocks-v1">
+<div class="app">
+  <header class="hud">
+    <a class="roundAsset hudButton backButtonAsset" href="../" aria-label="Back to GameBox"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/arrowLeft.png" alt=""></a>
+    <div class="titleStack"><span class="titleEdition">CHRISTMAS EDITION</span><h1>FESTIVE BLOCKS</h1><strong>PLACE · CLEAR · SCORE</strong></div>
+    <button id="menuButton" class="roundAsset hudButton settingsButtonAsset" type="button" aria-label="Settings"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/gear.png" alt=""></button>
+  </header>
+
+  <main class="gameStage">
+    <div class="playFrame">
+      <canvas id="gameCanvas" width="780" height="1300" aria-label="Festive Blocks puzzle board"></canvas>
+      <div id="toast" class="toast" aria-live="polite"></div>
+    </div>
+  </main>
+</div>
+
+<div id="settingsSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <section class="panel festivePanel">
+    <img class="panelChristmasMark" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <button id="closeSettings" class="roundAsset closeButton backButtonAsset" type="button" aria-label="Close settings"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/cross.png" alt=""></button>
+    <header class="panelHeading"><span>CHRISTMAS PUZZLE</span><h2 id="settingsTitle">Settings</h2></header>
+    <div class="statCard"><span>HIGH SCORE</span><strong id="settingsHighScore">0</strong></div>
+    <button id="soundButton" class="settingButton" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/audioOn.png" alt=""><span><small>SOUND</small><strong id="soundState">On</strong></span></button>
+    <button id="howToButton" class="settingButton" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/target.png" alt=""><span><small>HELP</small><strong>How to play</strong></span></button>
+    <button id="restartButton" class="assetAction dangerAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/return.png" alt=""><span>Restart Game</span></button>
+  </section>
+</div>
+
+<div id="howToSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="howToTitle">
+  <section class="panel festivePanel howPanel">
+    <img class="panelChristmasMark" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <button id="closeHowTo" class="roundAsset closeButton backButtonAsset" type="button" aria-label="Close how to play"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/cross.png" alt=""></button>
+    <header class="panelHeading"><span>CHRISTMAS PUZZLE</span><h2 id="howToTitle">How to Play</h2></header>
+    <div class="howSteps">
+      <p><b>1.</b><span>Drag one of the three festive pieces onto the 10×10 board.</span></p>
+      <p><b>2.</b><span>Fill a complete row or column to clear it and score bonus points.</span></p>
+      <p><b>3.</b><span>Pieces cannot rotate. When all three are used, a fresh set appears.</span></p>
+      <p><b>4.</b><span>The run ends when none of your remaining pieces can fit anywhere.</span></p>
+    </div>
+    <button id="howToDone" class="assetAction primaryAction" type="button"><span>Got It</span></button>
+  </section>
+</div>
+
+<div id="resultSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+  <section class="panel festivePanel resultPanel">
+    <img class="panelChristmasMark" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <span class="resultKicker">NO MORE MOVES</span>
+    <h2 id="resultTitle">Snowed In!</h2>
+    <div class="resultStats"><span>SCORE<strong id="resultScore">0</strong></span><span>BEST<strong id="resultBest">0</strong></span></div>
+    <p id="resultMessage">No remaining piece will fit on the board.</p>
+    <button id="playAgainButton" class="assetAction primaryAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/return.png" alt=""><span>Play Again</span></button>
+    <a class="assetAction secondaryAction" href="../"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/home.png" alt=""><span>GameBox</span></a>
+  </section>
+</div>
+
+<script src="game.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+GameBox source SHA: fcc46ad55fdd5eca9a8f5d35caf1a19963011ea4
+22 candidate game folders copied; 21 original Advent collection games plus Christmas Village Hunt.

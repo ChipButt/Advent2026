@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b2532">
+<meta name="description" content="Santa's Potion Sort, a festive Christmas water sort puzzle. Pour magical colours into matching glass bottles and complete all the North Pole potion challenges.">
+<title>Santa's Potion Sort · GameBox</title>
+<style>
+:root{color-scheme:dark;--cream:#fff2d5;--gold:#ffda88;--ink:#092631;--pine:#174e50;--mint:#a9dfcf}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;min-height:100%;background:#061923;color:var(--cream);font-family:ui-rounded,system-ui,"Trebuchet MS",sans-serif;overscroll-behavior:none}
+body{min-height:100dvh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 5%,#2c5157,#091d30 65%,#051525)}
+button,a{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #ffefb4;outline-offset:3px}
+[hidden]{display:none!important}
+.app{position:relative;isolation:isolate;width:min(100%,520px);height:100dvh;min-height:490px;max-height:1000px;display:flex;flex-direction:column;gap:9px;padding:calc(7px + env(safe-area-inset-top)) 12px calc(9px + env(safe-area-inset-bottom));overflow:hidden;background:linear-gradient(180deg,#214c57,#0c3544 19%,#091d32 88%,#0b2738);box-shadow:0 0 90px #0007}
+.app:before{content:"";pointer-events:none;position:absolute;inset:0;background:radial-gradient(circle at 12% 15%,#f7fffaaa 0 1px,transparent 2px),radial-gradient(circle at 79% 25%,#dffef988 0 1px,transparent 2px),radial-gradient(circle at 55% 65%,#e0f7ff88 0 1px,transparent 2px),radial-gradient(circle at 24% 78%,#fff8c58c 0 1px,transparent 2px);background-size:73px 83px,125px 117px,148px 121px,192px 161px;opacity:.6}
+.top,.stats,.tools,.foot{position:relative;z-index:2;flex-shrink:0}
+.top{display:flex;align-items:center;gap:9px;min-height:47px}
+.back,.menu{display:grid;place-items:center;flex:0 0 43px;height:42px;border-radius:13px;color:#fff3d9;text-decoration:none;font-size:22px;font-weight:950;background:linear-gradient(#377a73,#1d4e57);border:2px solid #a5d1b9;border-bottom:5px solid #0b2837;box-shadow:0 3px 7px #05192388}
+.heading{flex:1;min-width:0;text-align:center}.heading span{display:block;font-weight:900;font-size:9px;letter-spacing:2.1px;color:#d6e8be}
+.heading h1{font-size:clamp(19px,5vw,27px);line-height:1.02;letter-spacing:-.9px;margin:3px 0 0;text-shadow:0 3px 0 #062b36}.heading h1 em{font-style:normal;color:#ffde8b}
+.menu{font-size:12px;letter-spacing:.7px;flex-basis:54px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stat{min-height:55px;padding:6px 2px;text-align:center;border:2px solid #659591;border-bottom:5px solid #0b2635;border-radius:12px;background:linear-gradient(#24525c,#153c4a);box-shadow:inset 0 1px 0 #bcead143}
+.stat small{display:block;font-size:9px;font-weight:950;letter-spacing:1.2px;color:#c5ddd3}
+.stat b{font-variant-numeric:tabular-nums;display:block;font-size:20px;line-height:1.2;font-weight:1000;color:var(--gold)}
+.scene{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;border:3px solid #a87b52;border-bottom:7px solid #714932;border-radius:23px;background:radial-gradient(circle at 50% 7%,#36717a 0,#163d57 37%,#121a3b 76%,#0c1935 100%);box-shadow:inset 0 0 0 2px #ffe2a13b,0 8px 22px #061a2cbf}
+.scene:before{content:"";position:absolute;top:10%;left:50%;width:175px;height:175px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle,#b1e6cf30,transparent 68%);filter:blur(2px)}
+.scene:after{content:"";position:absolute;bottom:-12px;left:-8%;right:-8%;height:68px;border-radius:55% 55% 0 0;background:linear-gradient(#e6ffff,#9bc8d0 70%,#6a9fae);box-shadow:0 -8px 24px #e8fff344;z-index:0}
+.snow{position:absolute;inset:0;pointer-events:none;opacity:.6;background-image:radial-gradient(circle,#fff 1.5px,transparent 2px),radial-gradient(circle,#fff9 1px,transparent 2px);background-size:70px 91px,121px 77px;animation:snow 13s linear infinite}
+.tree{position:absolute;bottom:20px;z-index:1;pointer-events:none;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 9px 3px #001b2daa)}
+.tree.left{width:86px;left:-23px}.tree.right{width:94px;right:-26px;transform:scaleX(-1)}
+.ornament{position:absolute;z-index:1;top:13px;color:#fff4be;text-shadow:0 0 12px #ffe58d;font-size:20px}.ornament.a{left:17px}.ornament.b{right:19px;font-size:13px}
+.scene-title{position:absolute;z-index:2;top:14px;left:10%;right:10%;text-align:center;font-size:11px;font-weight:950;letter-spacing:2px;color:#e0f5e8;text-shadow:0 2px #183a51}
+.rack{position:absolute;inset:41px 4px 39px;z-index:2;display:flex;justify-content:center;align-items:center}
+.bottles{max-width:465px}
+
+.bottle{appearance:none;display:block;position:relative;min-width:0;width:100%;height:100%;max-width:96px;max-height:155px;min-height:0;padding:0;margin:auto;border:0;background:transparent;touch-action:manipulation;transition:transform .16s ease,filter .16s ease;filter:drop-shadow(0 7px 3px #041329aa)}
+.bottle:active{transform:translateY(-5px)}.bottle.selected{transform:translateY(-10px) scale(1.035);filter:drop-shadow(0 0 13px #ffe198b8)}
+.bottle.target{filter:drop-shadow(0 0 12px #b7ffbe) drop-shadow(0 7px 3px #031624)}
+.bottle.hint-source{animation:hint .7s 2}.bottle.hint-target{filter:drop-shadow(0 0 14px #ffe178)}
+.bottle canvas{width:100%;height:100%;display:block;image-rendering:auto;pointer-events:none}
+.bottle.in-flight{visibility:hidden}
+.bottle.invalid{animation:shake .25s}
+.pour-canvas{position:absolute;inset:0;z-index:11;width:100%;height:100%;pointer-events:none}
+.rack .bottles{height:100%;width:100%;display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));grid-template-rows:repeat(var(--rows,3),minmax(0,1fr));gap:clamp(3px,1vh,9px) clamp(1px,1vw,6px);justify-items:center;align-items:center;align-content:center}
+.tip{position:absolute;z-index:3;left:12%;right:12%;bottom:8px;text-align:center;font-size:10px;letter-spacing:.4px;color:#183b4b;font-weight:900}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;min-height:65px}
+.tool{min-height:62px;color:#fff3d7;border:2px solid #b2d8c6;border-bottom:6px solid #0b2d35;border-radius:15px;background:linear-gradient(#3a7774,#1e555d);box-shadow:inset 0 2px #a7ead757,0 5px 10px #031b2b7a;font-size:12px;font-weight:950;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.tool svg{height:23px;width:23px;stroke:#fff0cb;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.tool.primary{background:linear-gradient(#ffd98d,#eab063);color:#163b44;border-color:#fff0be;border-bottom-color:#916238}.tool.primary svg{stroke:#153e44}
+.tool:active,.back:active,.menu:active{transform:translateY(3px);border-bottom-width:3px}
+.hint-label{display:block;white-space:nowrap;font-size:12px;letter-spacing:0}.tool:disabled{opacity:.45;cursor:default}.foot{display:flex;justify-content:center;align-items:center;min-height:16px;color:#b9d4c7;font-size:9px;letter-spacing:1.6px;font-weight:850}
+.overlay{position:absolute;z-index:20;inset:0;background:#061727df;display:grid;place-items:center;padding:17px;overflow:auto;backdrop-filter:blur(6px)}
+.dialog{width:100%;max-width:385px;border:3px solid #ffe0a2;border-bottom:8px solid #7b5838;border-radius:24px;background:radial-gradient(circle at 50% 0,#397970,#1a4b57 56%,#103747);box-shadow:0 20px 40px #020e19cc,inset 0 1px #fff9;padding:19px 17px 18px;text-align:center}
+.dialog .eyebrow{font-size:10px;font-weight:1000;letter-spacing:3px;color:#ffdea4}.dialog h2{margin:9px 0;font-size:clamp(30px,8vw,43px);line-height:.95;letter-spacing:-1.2px;text-shadow:0 3px #11343b}.dialog h2 em{font-style:normal;color:#ffe093}
+.dialog p{font-size:14px;line-height:1.46;font-weight:650;color:#e7f2e8;margin:10px 0}
+.gifts{height:87px;display:flex;justify-content:center;align-items:flex-end;gap:5px;filter:drop-shadow(0 6px 0 #133a42)}.gifts img{width:78px;height:78px;object-fit:contain;image-rendering:pixelated}.gifts img:nth-child(2){height:88px;width:88px;transform:translateY(-3px)}
+.dialog button{width:100%;margin-top:9px;min-height:48px;border-radius:14px;font-weight:1000;letter-spacing:.6px}
+.cta{font-size:17px;color:#143b3e;border:2px solid #fff0ba;border-bottom:6px solid #a16734;background:linear-gradient(#ffeaad,#f2b956)}
+.secondary{color:#efffee;background:#2a6966;border:2px solid #b1e6ca;border-bottom:5px solid #143d45}
+.dialog .fine{font-size:11px;color:#b5d1c7}.trophy{font-size:38px;color:#ffe294;letter-spacing:5px;text-shadow:0 0 14px #ffdc81}
+.result{display:flex;gap:9px;justify-content:center;margin:15px 0}.result span{flex:1;border:1px solid #81b4a5;border-radius:12px;background:#143b47;padding:8px 3px;font-weight:950}.result b{display:block;color:#ffde8e;font-size:25px}
+.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-height:min(55dvh,350px);overflow-y:auto;margin:12px 0 5px}
+.level-grid button{min-height:48px;margin:0;border-radius:11px;border:2px solid #acdfc6;border-bottom:4px solid #13343f;background:#275c61;color:#ffeed3;font-size:15px}
+.level-grid button.locked{opacity:.32}.level-grid button.current{border-color:#ffdc91;background:#ad623c}.level-grid button.completed{color:#ffe9a0}
+.rule{display:flex;align-items:center;gap:10px;text-align:left;font-size:12px;color:#eaf0d9;margin:12px 1px}.rule b{flex:0 0 32px;border-radius:9px;background:#236866;padding:7px;text-align:center;color:#ffe4a6}
+.toast{position:absolute;z-index:30;bottom:112px;left:50%;transform:translate(-50%,12px);white-space:nowrap;max-width:94%;padding:9px 14px;border-radius:25px;background:#fff1c9;color:#183c40;box-shadow:0 4px 0 #96724d;font-size:13px;font-weight:950;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes snow{to{background-position:0 260px,0 190px}}@keyframes hint{50%{transform:translateY(-11px)}}@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes tilt{40%{transform:translateY(-20px) rotate(13deg)}75%{transform:translateY(-16px) rotate(10deg)}}
+@keyframes stream{0%,100%{opacity:0}40%,70%{opacity:.9}}@keyframes twinkle{50%{opacity:.58;transform:scale(.88)}}
+@media(max-height:690px){.app{gap:5px;padding-top:calc(4px + env(safe-area-inset-top))}.top{min-height:39px}.back,.menu{height:36px;flex-basis:38px}.menu{flex-basis:49px}.stat{min-height:43px;padding:3px 2px}.stat b{font-size:17px}.scene-title{top:8px}.rack{inset:31px 1px 35px}.tools,.tool{min-height:52px}.tool svg{height:19px}.foot{min-height:12px}}
+@media(max-width:355px){.app{padding-left:6px;padding-right:6px}.scene{border-width:2px}.tip{font-size:8px;left:5%;right:5%}.heading h1{font-size:17px}.bottle{max-width:72px}.bottles{column-gap:0}.tools{gap:5px}.tool{font-size:10px}.stat small{font-size:8px}}
+@media(min-width:650px){.app{height:min(94dvh,920px);border:4px solid #729f9a;border-radius:24px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app" aria-label="Santa's Potion Sort">
+<header class="top"><a href="../" class="back" aria-label="Back to GameBox">‹</a><div class="heading"><span>CHIP IN GAMES · NORTH POLE PUZZLES</span><h1>SANTA'S <em>POTION SORT</em></h1></div><button id="menu" class="menu" type="button">MENU</button></header>
+<div class="stats"><div class="stat"><small>LEVEL</small><b id="level">01</b></div><div class="stat"><small>MOVES</small><b id="moves">00</b></div><div class="stat"><small>FILLED</small><b id="filled">0/3</b></div><div class="stat"><small>STARS</small><b id="stars">0</b></div></div>
+<section id="scene" class="scene" aria-label="North Pole potion workshop puzzle">
+<div class="snow" aria-hidden="true"></div><img class="tree left" src="../assets/gamebox/kenney/2d/Background%20Elements%20Remastered/treePineSnow.png" alt=""><img class="tree right" src="../assets/gamebox/kenney/2d/Background%20Elements%20Remastered/treePineSnow.png" alt="">
+<span class="ornament a" aria-hidden="true">✦</span><span class="ornament b" aria-hidden="true">✧</span><div class="scene-title">THE MAGIC BOTTLING ROOM</div>
+<div class="rack"><div class="bottles" id="bottles" aria-label="Potion bottles"></div></div><canvas class="pour-canvas" id="pourCanvas" hidden aria-hidden="true"></canvas><div class="tip" id="tip">TAP A BOTTLE, THEN TAP WHERE TO POUR</div>
+</section>
+<div class="tools">
+<button type="button" class="tool" id="undo"><svg viewBox="0 0 24 24"><path d="M9 6 4 11l5 5M4 11h10a6 6 0 0 1 0 12" transform="translate(0 -3)"/></svg>UNDO</button>
+<button type="button" class="tool primary" id="hint"><svg viewBox="0 0 24 24"><path d="m9 18 3-3 3 3M12 15V8M7 8a5 5 0 1 1 10 0c0 2-1 3-2 5H9c-1-2-2-3-2-5Z"/></svg><span class="hint-label">HINT · <span id="hintCount">2</span></span></button>
+<button type="button" class="tool" id="restart"><svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2 7M4 5v6h6"/></svg>RESTART</button>
+</div>
+<footer class="foot">POUR · MATCH · COMPLETE THE CHRISTMAS POTIONS</footer>
+<div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div id="dialog" class="dialog"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+<script type="module">
+import {CAPACITY,COLORS,makeLevel,canPour,pour,isSorted,isSolved,copy,colourCounts} from "./engine.mjs";
+import {paintCanvas,animatedPour} from "./liquid-renderer.mjs";
+const $ = id => document.getElementById(id);
+const storageKey="gamebox.santas-potion-sort.v2";
+const giftsBase="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/";
+const giftArt = ["red","green","blue"];
+let saved={unlocked:1,finished:{},stars:0,sound:true,patterns:false,active:null};
+try {const modern=JSON.parse(localStorage.getItem(storageKey)||"null");const old=modern||JSON.parse(localStorage.getItem("gamebox.santas-potion-sort.v1")||"null");if(old&&typeof old==="object"){saved={...saved,...old,active:modern?.active||null};}}catch(e){}
+saved.unlocked=Math.max(1,Math.min(999,Number(saved.unlocked)||1));
+saved.finished=saved.finished&&typeof saved.finished==="object"?saved.finished:{};
+let currentLevel=1,board=[],starting=[],undoStack=[],moves=0,selected=null,busy=false,modal="intro",hinted=null,levelProof=[],proofCursor=0,threeStarTarget=26,hintsUsed=0;
+let audio;
+function sound(freq=440){if(!saved.sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;audio=audio||new A();const o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.setValueAtTime(freq,audio.currentTime);o.frequency.exponentialRampToValueAtTime(freq*1.35,audio.currentTime+.12);g.gain.setValueAtTime(.0001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.06,audio.currentTime+.015);g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+.17);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.18);}catch(e){}}
+function save(){try{saved.active={level:currentLevel,board,moves,hintsUsed};localStorage.setItem(storageKey,JSON.stringify(saved));}catch(e){}}
+function loadLevel(level,restore=false){
+ currentLevel=Math.max(1,Math.min(999,level));const p=makeLevel(currentLevel);starting=copy(p.bottles);board=copy(starting);levelProof=p.proof;threeStarTarget=p.minChallengeMoves+2;proofCursor=0;hintsUsed=0;moves=0;selected=null;hinted=null;undoStack=[];busy=false;
+ const a=saved.active;
+ if(restore&&a&&a.level===currentLevel&&Array.isArray(a.board)&&a.board.length===board.length&&Number.isInteger(a.moves)){
+  const orig=colourCounts(board),fresh=colourCounts(a.board);
+  if(a.board.every(b=>Array.isArray(b)&&b.length<=CAPACITY&&b.every(c=>Number.isInteger(c)&&c>=0&&c<p.colors))&&JSON.stringify(Object.entries(orig).sort())===JSON.stringify(Object.entries(fresh).sort())){board=copy(a.board);moves=Math.max(0,a.moves);hintsUsed=Math.min(2,Math.max(0,Number(a.hintsUsed)||0));proofCursor=-1;}
+ }
+ render();save();
+}
+function render(){
+ const target=$("bottles");target.classList.toggle("patterns",!!saved.patterns);
+ const cols=board.length<=9?3:4;
+ target.style.setProperty("--cols",cols);target.style.setProperty("--rows",Math.ceil(board.length/cols));
+ const count=board.filter(isSorted).length;
+ $("level").textContent=String(currentLevel).padStart(2,"0");
+ $("moves").textContent=String(moves).padStart(2,"0");
+ $("filled").textContent=count+"/"+(board.length-2);
+ $("stars").textContent=String(saved.stars||0);
+ $("undo").disabled=undoStack.length===0||busy;
+ $("hintCount").textContent=String(Math.max(0,2-hintsUsed));$("hint").disabled=hintsUsed>=2||busy;
+ const possible=selected===null?[]:board.map((_,i)=>i).filter(i=>canPour(board,selected,i));
+ target.innerHTML=board.map((b,i)=>{
+  const sealed=isSorted(b),pick=selected===i,tgt=possible.includes(i);
+  const top=b.length?COLORS[b.at(-1)].name:"empty";
+  return '<button class="bottle'+(pick?' selected':'')+(tgt?' target':'')+(sealed?' sealed':'')+'" data-index="'+i+'" type="button" aria-label="Bottle '+(i+1)+', '+(b.length?b.length+' layers, top '+top:'empty')+(sealed?', completed':'')+'" aria-pressed="'+pick+'"><canvas aria-hidden="true"></canvas></button>';
+ }).join("");
+ [...target.children].forEach((el,i)=>paintCanvas(el.querySelector("canvas"),board[i],{colors:COLORS,labels:!!saved.patterns,completed:isSorted(board[i])}));
+ $("tip").textContent=selected===null?"TAP A BOTTLE, THEN TAP WHERE TO POUR":"CHOOSE A GLOWING BOTTLE TO POUR INTO";
+}
+let toastTimer;function toast(message){const el=$("toast");el.textContent=message;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),1750);}
+function choose(index){
+ if(busy||modal)return;
+ if(selected===null){if(!board[index].length){toast("Choose a bottle with potion.");return;}selected=index;sound(370);render();return;}
+ if(selected===index){selected=null;render();return;}
+ if(!canPour(board,selected,index)){
+  if(board[index].length){selected=index;sound(340);render();}
+  else{const b=$("bottles").querySelector('[data-index="'+index+'"]');b?.classList.add("invalid");toast("Only matching colours can mix.");}
+  return;
+ }
+ const from=selected,before=copy(board),result=pour(board,selected,index);selected=null;busy=true;
+ const source=$("bottles").querySelector('[data-index="'+from+'"]');
+ const destination=$("bottles").querySelector('[data-index="'+index+'"]');
+ sound(480);
+ animatedPour({scene:$("scene"),overlay:$("pourCanvas"),source,target:destination,
+  fromLayers:before[from],toLayers:before[index],moved:result.moved,color:result.color,
+  colors:COLORS,labels:!!saved.patterns,onFinish:()=>{
+   const nextCursor=proofCursor>=0&&levelProof[proofCursor]?.from===from&&levelProof[proofCursor]?.to===index?proofCursor+1:-1;
+   undoStack.push({board:before,moves,proofCursor});
+   proofCursor=nextCursor;board=result.bottles;moves++;busy=false;render();save();
+   if(isSorted(board[index])&&!isSorted(before[index]))sound(780);
+   if(isSolved(board))setTimeout(win,280);
+  }});
+}
+function escapeText(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function giftHtml(){return '<div class="gifts" aria-hidden="true">'+giftArt.map(p=>'<img src="'+giftsBase+"present_small_"+p+".png"+'" alt="">').join("")+'</div>'}
+function openDialog(kind){modal=kind;$("overlay").hidden=false;const dlg=$("dialog");
+ if(kind==="intro"){dlg.innerHTML='<div class="eyebrow">SANTA’S SECRET BOTTLING ROOM</div><h2>CHRISTMAS<br><em>POTION SORT</em></h2>'+giftHtml()+'<p>The potion room has been scrambled! Untangle seven or more magical colours. You can only pour onto the same colour or into an empty bottle.</p><button class="cta" data-act="play">PLAY LEVEL '+currentLevel+'</button><button class="secondary" data-act="levels">CHOOSE LEVEL</button><p class="fine">No timer. No adverts. Progress saves automatically.</p>';}
+ else if(kind==="menu"){dlg.innerHTML='<div class="eyebrow">COCOA BREAK</div><h2>POTION <em>PAUSED</em></h2><div class="rule"><b>1</b>Tap one bottle to lift it.</div><div class="rule"><b>2</b>Tap an empty bottle, or one whose top colour matches.</div><div class="rule"><b>3</b>Fill every bottle with just one colour.</div><button class="cta" data-act="resume">RESUME GAME</button><button class="secondary" data-act="levels">CHOOSE LEVEL</button><button class="secondary" data-act="sound">SOUND: '+(saved.sound?"ON":"OFF")+'</button><button class="secondary" data-act="patterns">COLOUR LABELS: '+(saved.patterns?"ON":"OFF")+'</button><button class="secondary" data-act="new">RESTART LEVEL</button><a class="fine" href="../">BACK TO GAMEBOX</a>';}
+ else if(kind==="levels"){let options='';for(let n=1;n<=Math.min(50,Math.max(30,saved.unlocked+5));n++){const locked=n>saved.unlocked,done=!!saved.finished[n];options+='<button type="button" data-level="'+n+'" '+(locked?'disabled':'')+' class="'+(locked?'locked':done?'completed':'')+(n===currentLevel?' current':'')+'" aria-label="Level '+n+(locked?', locked':done?', completed':'')+'">'+(done?'★ ':locked?'◈ ':'')+n+'</button>'}dlg.innerHTML='<div class="eyebrow">NORTH POLE CHALLENGES</div><h2>CHOOSE <em>LEVEL</em></h2><p>Complete a potion room to unlock the next.</p><div class="level-grid">'+options+'</div><button class="secondary" data-act="resume">BACK TO GAME</button>';}
+ else if(kind==="win"){const rated=moves<=threeStarTarget?3:moves<=threeStarTarget+8?2:1;dlg.innerHTML='<div class="eyebrow">NORTH POLE MAGIC COMPLETE!</div><div class="trophy">'+('★'.repeat(rated))+'</div><h2>POTION <em>PERFECT!</em></h2><p>Every Christmas potion is sorted and ready for Santa!</p><div class="result"><span>MOVES<b>'+moves+'</b></span><span>STARS<b>'+rated+'</b></span></div><button class="cta" data-act="next">NEXT LEVEL →</button><button class="secondary" data-act="levels">CHOOSE LEVEL</button>';}
+}
+function closeDialog(){modal=null;$("overlay").hidden=true;render();}
+function win(){
+ if(modal||!isSolved(board))return;const rating=moves<=threeStarTarget?3:moves<=threeStarTarget+8?2:1;
+ const prev=Number(saved.finished[currentLevel]||0);saved.finished[currentLevel]=Math.max(prev,rating);saved.stars=Math.max(0,Number(saved.stars)||0)+Math.max(0,rating-prev);saved.unlocked=Math.max(saved.unlocked,currentLevel+1);save();sound(930);openDialog("win");
+}
+$("bottles").addEventListener("click",e=>{const button=e.target.closest("[data-index]");if(button)choose(Number(button.dataset.index));});
+$("undo").addEventListener("click",()=>{if(!undoStack.length||busy||modal)return;const prior=undoStack.pop();board=copy(prior.board);moves=prior.moves;proofCursor=prior.proofCursor;selected=null;render();save();sound(300);});
+$("restart").addEventListener("click",()=>{if(busy||modal)return;loadLevel(currentLevel);toast("Fresh start!");sound(330);});
+$("hint").addEventListener("click",()=>{
+ if(busy||modal||hintsUsed>=2)return;
+ const options=[];if(proofCursor>=0&&levelProof[proofCursor]&&canPour(board,levelProof[proofCursor].from,levelProof[proofCursor].to))options.push({...levelProof[proofCursor],score:100});for(let from=0;from<board.length;from++)for(let to=0;to<board.length;to++)if(canPour(board,from,to)){
+ const dst=board[to],src=board[from];let score=(dst.length?20:0)+(dst.length+Math.min(CAPACITY-dst.length,src.length)===CAPACITY?5:0)+(src.length===1?2:0);
+ if(dst.length===0&&isSorted(src))score-=20;
+ options.push({from,to,score});}
+ if(!options.length){toast("No legal pours. Undo or restart!");return;}
+ options.sort((a,b)=>b.score-a.score);const p=options[0];hintsUsed++;save();render();const elements=$("bottles").children;elements[p.from]?.classList.add("hint-source");elements[p.to]?.classList.add("hint-target");toast("Try bottles "+(p.from+1)+" → "+(p.to+1));sound(580);
+ setTimeout(()=>{elements[p.from]?.classList.remove("hint-source");elements[p.to]?.classList.remove("hint-target");},1500);
+});
+$("menu").addEventListener("click",()=>{if(!busy)openDialog("menu")});
+$("dialog").addEventListener("click",e=>{
+ const button=e.target.closest("button");if(!button)return;
+ const act=button.dataset.act;if(button.dataset.level){const n=Number(button.dataset.level);if(n<=saved.unlocked){loadLevel(n);closeDialog();}return;}
+ if(act==="play"||act==="resume"){closeDialog();}
+ else if(act==="levels"){openDialog("levels");}
+ else if(act==="next"){loadLevel(currentLevel+1);closeDialog();}
+ else if(act==="sound"){saved.sound=!saved.sound;save();openDialog("menu");sound(440);}
+ else if(act==="patterns"){saved.patterns=!saved.patterns;save();openDialog("menu");render();}
+ else if(act==="new"){loadLevel(currentLevel);closeDialog();}
+});
+window.addEventListener("keydown",e=>{
+ if(e.key==="Escape"&&!busy){if(modal)closeDialog();else openDialog("menu");}
+ if(e.key.toLowerCase()==="u"&&!modal)$("undo").click();
+ if(/^[1-9]$/.test(e.key)&&!modal){const i=Number(e.key)-1;if(i<board.length)choose(i);}
+});
+window.addEventListener("resize",()=>{if(!busy)render()});
+loadLevel(saved.active?.level&&saved.active.level<=saved.unlocked?saved.active.level:saved.unlocked,true);
+openDialog("intro");
+</script>
+</body></html>

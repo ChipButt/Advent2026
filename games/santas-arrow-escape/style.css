@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap');
+:root{--gold:#f9ce63;--dark:#102c2d;--pine:#143b31;--cream:#fff9e8}
+*{box-sizing:border-box}
+html,body{margin:0;min-width:280px;width:100%;height:100%;overscroll-behavior:none;overflow:hidden}
+body{color:#fff8eb;font-family:Nunito,system-ui,sans-serif;background:radial-gradient(ellipse at 52% 8%,#315e53,#153e39 44%,#09282d 100%);overflow:hidden}
+button,a{font:inherit;-webkit-tap-highlight-color:transparent}
+button{cursor:pointer}a{color:inherit;text-decoration:none}
+button:focus-visible,a:focus-visible,canvas:focus-visible{outline:3px solid #ffe9a1;outline-offset:3px}
+.gameShell{position:relative;width:100%;max-width:680px;overflow:hidden;height:100vh;height:100dvh;min-height:380px;display:flex;flex-direction:column;margin:auto;isolation:isolate;padding:env(safe-area-inset-top) max(10px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(10px,env(safe-area-inset-left))}
+.gameShell:before,.gameShell:after{content:"";position:absolute;pointer-events:none;z-index:-1;top:17%;width:210px;height:340px;opacity:.27;background:radial-gradient(ellipse,#70b4a0aa,transparent 67%)}
+.gameShell:before{left:-180px}.gameShell:after{right:-180px}
+.snowfield{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.46;background-image:radial-gradient(circle,#fff9dbaa 1.5px,transparent 2px),radial-gradient(circle,#ccefff99 1px,transparent 1.5px),radial-gradient(circle,#fff 1px,transparent 2px);background-size:115px 125px,79px 95px,157px 175px;background-position:8px 20px,42px 76px,75px 55px}
+.hud{height:68px;flex:none;display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px;z-index:2}
+.circleButton{width:46px;height:46px;display:grid;place-items:center;color:#f9ead1;border:1px solid #a7c5ab99;background:linear-gradient(#3e7665,#1a473b);border-radius:15px;box-shadow:0 4px 0 #092d2b,0 7px 20px #0006,inset 0 2px 1px #ffffff22}
+.circleButton:active{transform:translateY(3px);box-shadow:0 1px 0 #092d2b}
+.circleButton svg,.gameButton svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.levelBadge{text-align:center;min-width:0;line-height:1.1}
+.eyebrow{font-size:10px;font-weight:900;letter-spacing:1.8px;color:#f8d879}
+.levelBadge strong{display:block;font:700 clamp(24px,6vw,32px) Fredoka,system-ui;letter-spacing:.5px;text-shadow:0 3px #0d3335}
+.chapterName{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#cae4d9;font-weight:800}
+.gameMeta{height:62px;flex:none;display:flex;align-items:center;justify-content:space-between;margin:0 auto;width:min(100%,550px);gap:12px;padding:0 7px}
+.lives{display:flex;align-items:center;gap:clamp(3px,1.2vw,9px)}
+.lives svg{width:clamp(21px,5.9vw,29px);height:29px;filter:drop-shadow(0 3px 1px #02242b);fill:#f47f7f;stroke:#ffd6a0;stroke-width:1.7}
+.lives svg.empty{fill:#3f5b61;stroke:#71908d;filter:none}
+.lives svg.pulse{animation:heartHit .32s ease-out}
+.clearCount{text-align:right;display:flex;align-items:end;gap:9px;white-space:nowrap;line-height:1}
+.miniLabel{font-size:10px;letter-spacing:1.2px;color:#c4dfd6;font-weight:900;display:block;padding-bottom:5px}
+.clearCount strong{font:700 23px Fredoka;color:#ffdd87;font-variant-numeric:tabular-nums}
+.clearCount .slash,.clearCount #total{font-size:14px;color:#b7d4cd}
+.playZone{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.boardFrame{width:min(100%,530px);height:100%;max-height:100%;min-height:0;display:flex;flex-direction:column;position:relative;padding:10px 10px 12px;background:linear-gradient(116deg,#704328,#af7341 12%,#7e4c32 37%,#ad774b 65%,#683f28);border:3px solid #d29f60;border-radius:24px;box-shadow:0 7px 0 #452d27,0 15px 30px #031b20b0,inset 0 2px 0 #f2d6a088}
+.boardFrame:before{content:"";pointer-events:none;position:absolute;inset:5px;border:1px solid #f6cc8299;border-radius:18px;z-index:1}
+.stringLights{height:15px;flex:none;position:absolute;z-index:4;top:-7px;left:8%;width:84%;border-top:3px solid #284a38;border-radius:50%}
+.stringLights span{position:absolute;top:1px;width:10px;height:17px;transform:rotate(15deg);border:2px solid #fff1b2;border-radius:45% 45% 55% 55%;box-shadow:0 0 11px currentColor}
+.stringLights span:nth-child(1){left:3%;color:#e9a55f;background:#edb35f}.stringLights span:nth-child(2){left:19%;color:#80d1df;background:#73dce1}.stringLights span:nth-child(3){left:36%;color:#f0776f;background:#f77870}.stringLights span:nth-child(4){left:53%;color:#ecca61;background:#f8ce60}.stringLights span:nth-child(5){left:70%;color:#83c799;background:#8fd49f}.stringLights span:nth-child(6){left:85%;color:#f37b78;background:#f07e74}.stringLights span:nth-child(7){left:98%;color:#9ac9e9;background:#9ac9e9}
+.iceBoard{position:relative;min-height:0;flex:1;border:4px solid #3c665e;border-radius:15px;background:radial-gradient(ellipse at 55% 12%,#effbfa,#daeaf0 58%,#b8d5dd 100%);box-shadow:inset 0 6px 16px #7bafb4a0,0 3px 0 #492d21;overflow:hidden}
+.iceBoard:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 15%,#fff9 1px,transparent 2px),radial-gradient(circle at 86% 79%,#fff9 1px,transparent 2px);background-size:41px 43px,68px 64px}
+#board{position:relative;z-index:1;width:100%;height:100%;touch-action:manipulation;display:block;cursor:pointer}
+.boardLip{height:5px;flex:none}
+.boardToast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);z-index:3;background:#153f3ce8;color:#fff9e9;border:2px solid #f6d379;border-radius:999px;padding:10px 15px;white-space:nowrap;font:700 17px Fredoka;box-shadow:0 4px 19px #0a292d70;opacity:0;pointer-events:none;transition:opacity .13s,transform .13s}
+.boardToast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.forestSide{position:absolute;width:100px;height:180px;bottom:10%;pointer-events:none;z-index:-1;opacity:.74;filter:drop-shadow(0 9px 6px #081e2588)}
+.forestSide img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.forestLeft{left:-58px;transform:rotate(-7deg)}.forestRight{right:-58px;transform:scaleX(-1) rotate(-6deg)}
+.bottomBar{height:145px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative;padding-top:14px}
+.footerPresents{position:absolute;pointer-events:none;left:10px;top:16px;display:none}
+.footerPresents img{width:24px;height:24px;object-fit:contain;image-rendering:pixelated}
+.actionRow{display:flex;gap:14px;width:min(100%,510px);justify-content:center}
+.gameButton{min-height:62px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:16px;border:2px solid #fff4c2;color:#183e3f;box-shadow:0 5px 0 #997b43,0 10px 20px #031a213d,inset 0 2px 0 #fff9dd;font:700 18px Fredoka;letter-spacing:.5px;flex:1;max-width:230px}
+.gameButton:active{transform:translateY(4px);box-shadow:0 1px 0 #997b43}
+.hintBtn{background:linear-gradient(#fff1a9,#efc665)}.restartBtn{background:linear-gradient(#e2eee5,#9ec5b6);border-color:#e9f9eb;box-shadow:0 5px 0 #618d81,0 10px 20px #031a213d}
+.gameButton small{display:block;font:900 10px Nunito;letter-spacing:1.3px}
+.buttonIcon{font-size:32px;color:#bf7a2c;text-shadow:0 1px #fff9d8}
+.footerTip{font:800 12px Nunito;color:#d5e4d5;text-align:center;margin:13px 0 0;letter-spacing:.3px}
+.overlay{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:flex-start;z-index:10;background:#061b20d9;backdrop-filter:blur(7px);padding:calc(16px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));overflow-y:auto}
+.overlay.show{display:flex}
+.modal{width:min(100%,390px);max-height:none;overflow:visible;flex:0 0 auto;margin:auto 0;text-align:center;background:radial-gradient(ellipse at 50% -15%,#4c896d,#19483c 65%,#0e3035);border:3px solid #d9b775;border-radius:27px;box-shadow:inset 0 2px #fff4b844,0 8px 0 #09282a,0 30px 55px #0009;padding:23px 21px 28px}
+.modal h1,.modal h2{font:700 clamp(33px,9vw,44px)/1.02 Fredoka,system-ui;text-shadow:0 3px #0e3134;margin:7px 0 14px}
+.modal h1 em{display:block;font-style:normal;color:#fce28b}
+.modal h2{margin:8px 0 20px}
+.modal p{font-size:14px;line-height:1.45;color:#e0eee2;margin:10px 0 18px}
+.modalArt img{height:96px;max-width:120px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 10px 3px #062c29)}
+.howTo{display:grid;gap:8px;margin:16px 0 22px;text-align:left}
+.howTo div{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px;color:#eef8e8}
+.howTo b{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:50%;background:#f4d574;color:#244a46;font:700 17px Fredoka}
+.goldButton,.menuButton{width:100%;min-height:49px;border:0;border-radius:13px;display:flex;align-items:center;justify-content:center;font:700 17px Fredoka;margin-top:11px;letter-spacing:.4px}
+.goldButton{background:linear-gradient(#ffe58b,#efb547);color:#25423c;box-shadow:0 5px 0 #9f6929,inset 0 2px #fff7bf}
+.menuButton{background:linear-gradient(#e5f4e9,#aacec0);color:#19423c;box-shadow:0 4px 0 #6b9287}
+.goldButton:active,.menuButton:active{transform:translateY(3px);box-shadow:0 1px 0 #476e60}
+.menuLink{display:flex}
+.levelsModal{width:min(100%,475px)}
+.levelGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:9px 0 16px;max-height:min(60dvh,470px);overflow-y:auto;padding:4px 5px 8px}
+.levelGrid button{aspect-ratio:1;border-radius:11px;border:2px solid #f5d58b;color:#fff7dc;background:linear-gradient(#55836b,#2b594b);font:700 20px Fredoka;box-shadow:0 3px 0 #0c3336;position:relative}
+.levelGrid button.current{background:linear-gradient(#dfb961,#b07e39);color:#143a39}
+.levelGrid button:disabled{opacity:.33;filter:grayscale(.9);cursor:not-allowed}
+.levelGrid button small{position:absolute;bottom:2px;left:0;right:0;line-height:1;color:#ffdc76;font-size:9px}
+.winTree{height:95px;width:120px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 6px #122e29)}
+.stars{font-size:45px;color:#ffdb69;letter-spacing:3px;text-shadow:0 4px #8a632d;white-space:nowrap}
+.winModal p{font-size:15px}
+@keyframes heartHit{0%{transform:scale(1.15)}60%{transform:scale(.7)}100%{transform:scale(1)}}
+@media(max-height:725px){.hud{height:55px}.gameMeta{height:44px}.bottomBar{height:112px;padding-top:10px}.gameButton{min-height:49px;font-size:16px}.footerTip{margin-top:9px;font-size:11px}.boardFrame{padding:8px 8px 9px}.modal{padding:15px 18px 19px}.modalArt img{height:65px}.howTo{gap:5px;margin:8px 0 12px}.modal h1{font-size:34px}}
+@media(max-height:530px) and (orientation:landscape){.gameShell{max-width:1100px;display:grid;grid-template-columns:190px minmax(0,1fr) 180px;grid-template-rows:65px minmax(0,1fr)}.hud{grid-column:1;grid-row:1;display:flex}.hud .levelBadge{flex:1}.hud .back{display:none}.gameMeta{grid-column:1;grid-row:2;flex-direction:column;justify-content:center;height:auto;align-items:center}.lives{flex-wrap:wrap;justify-content:center}.clearCount{flex-direction:column;align-items:center}.playZone{grid-column:2;grid-row:1 / span 2}.boardFrame{width:min(100%,480px)}.bottomBar{grid-column:3;grid-row:1 / span 2;height:auto;justify-content:center;padding:10px}.actionRow{flex-direction:column;align-items:center}.gameButton{width:100%;min-height:60px}.footerTip{line-height:1.3}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+@media(max-width:374px){.modal{padding:14px 16px 18px}.modalArt img{height:58px}.modal h1{font-size:30px;margin:4px 0 9px}.modal p{font-size:12px;line-height:1.3;margin:6px 0 9px}.howTo{gap:4px;margin:7px 0 10px}.howTo div{font-size:12px}.howTo b{width:24px;height:24px;flex-basis:24px;line-height:24px}.goldButton,.menuButton{min-height:43px;margin-top:8px}.modal h2{font-size:30px}}

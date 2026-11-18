@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Block Breaker · Reference Match Review</title>
+<style>
+html,body{margin:0;background:#10181d;color:#fff;font-family:Arial,sans-serif}body{padding:16px}
+h1{margin:0 0 5px;font-size:23px}p{margin:0 0 16px;color:#a9b7bf}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{background:#17242b;border:1px solid #40535e;border-radius:10px;overflow:hidden}
+.card h2{font-size:14px;margin:0;padding:9px 11px;background:#0c1419}
+canvas{display:block;width:100%;height:auto}
+</style>
+</head><body>
+<h1>Block Breaker · 12 Reference-Matched Levels</h1>
+<p>This page reads the same level-art-v13.js masks as the live game.</p>
+<div id="grid" class="grid"></div>
+<script src="level-art-v13.js"></script>
+<script>
+const T={R:[220,36,62,.60],G:[46,142,114,.58],Y:[254,172,62,.58],W:[242,241,246,.25],B:[82,188,239,.58],O:[205,108,15,.58],K:[15,22,38,.80],N:[255,228,209,.58],P:[248,110,127,.58]};
+const grid=document.getElementById('grid');
+(window.BLOCK_BREAKER_LEVEL_ART||[]).forEach(function(level,i){
+ const card=document.createElement('section');card.className='card';
+ const h=document.createElement('h2');h.textContent=(i+1)+'. '+level.name;card.appendChild(h);
+ const c=document.createElement('canvas');c.width=390;c.height=360;card.appendChild(c);grid.appendChild(card);
+ const x=c.getContext('2d');x.fillStyle='#111a20';x.fillRect(0,0,c.width,c.height);
+ const bw=17,bh=11,g=3,total=18*bw+17*g,ox=(390-total)/2,oy=38;
+ level.rows.forEach(function(row,r){row.split('').forEach(function(ch,col){
+   if(ch==='.')return; const q=T[ch]||T.B,px=ox+col*(bw+g),py=oy+r*(bh+g);
+   x.fillStyle='rgba('+q[0]+','+q[1]+','+q[2]+','+q[3]+')';
+   x.strokeStyle='rgba(225,248,255,.82)';x.lineWidth=1;
+   x.beginPath();x.roundRect(px,py,bw,bh,3);x.fill();x.stroke();
+   x.fillStyle='rgba(255,255,255,.34)';x.fillRect(px+2,py+1,bw-4,1);
+ });
+ });
+ x.fillStyle='#eef8ff';x.beginPath();x.arc(195,316,8,0,Math.PI*2);x.fill();
+ x.fillStyle='#d6e0e5';x.beginPath();x.roundRect(154,337,82,11,5);x.fill();
+});
+</script></body></html>

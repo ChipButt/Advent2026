@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Nunito:wght@500;600;700;800;900&display=swap');
+:root{font-family:Nunito,system-ui,sans-serif;color:#204638;background:#e0f0e9;font-synthesis:none}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;width:100%}button,a{font:inherit;-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:focus-visible,a:focus-visible,canvas:focus-visible{outline:3px solid #e68c27;outline-offset:3px}
+[hidden]{display:none!important}.snow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 8% 10%,#ffffffdc 0 3px,transparent 4px),radial-gradient(circle at 90% 30%,#ffffffaf 0 2px,transparent 3px),radial-gradient(circle at 67% 16%,#ffffffba 0 3px,transparent 4px),linear-gradient(115deg,#d8ede6,#f4f5eb 45%,#d6ebdf)}
+.shell{position:relative;max-width:1110px;min-height:100dvh;margin:0 auto;background:linear-gradient(180deg,#e9f2e7,#fdf7e8);box-shadow:0 10px 60px #1f53452e;overflow:hidden}
+.topbar{height:75px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#ffefd0;background:#214a40;border-bottom:5px solid #ca8245;position:relative}.topbar:after{content:'';height:8px;bottom:-13px;left:0;right:0;position:absolute;background:repeating-linear-gradient(90deg,#d85248 0 27px,#f8e7cf 27px 54px);z-index:3}.back{color:#e7ffe7;text-decoration:none;border:1px solid #aad0ad87;padding:8px 10px;border-radius:12px;font:900 26px/1 'Barlow Condensed';white-space:nowrap}.back span{font:900 12px Nunito;vertical-align:middle}.brand{text-align:center;font:800 clamp(17px,2.5vw,30px)/.85 'Barlow Condensed';letter-spacing:2px}.brand b{display:block;color:#ffcd80;font:900 1.5em/.94 'Barlow Condensed';letter-spacing:1.5px}.brandStar{color:#e7b85e}.menuControl{border:1px solid #aad0ad87;background:#2e6656;color:#f9e5be;border-radius:12px;width:44px;height:43px;font-size:22px;flex-shrink:0}
+.scorestrip{height:66px;background:#c9dfd0;display:flex;align-items:center;justify-content:center;gap:12px;padding:11px 17px 8px;border-bottom:2px solid #99beab}.scorestrip>div{border:2px solid #bad5c2;background:#eff9ef;border-radius:13px;display:flex;align-items:center;gap:7px;padding:6px 12px;box-shadow:0 3px 0 #89b19e;color:#1b5848}.scorestrip small{font:900 10px Nunito;letter-spacing:1px;color:#5d8478}.scorestrip b{font:900 23px 'Barlow Condensed';font-variant-numeric:tabular-nums}.scorestrip .scorecash{background:#ffebbc;border-color:#dfbe80}.scorecash b{color:#875027}
+.counter{display:grid;grid-template-columns:208px minmax(0,1fr);gap:15px;padding:17px 23px 12px;background:linear-gradient(#ebf4e7,#d4e8d8);border-bottom:4px solid #bbcfb8;position:relative}
+.customerWindow{height:174px;overflow:hidden;position:relative;border-radius:65px 65px 12px 12px;border:9px solid #a06446;border-bottom-width:13px;box-shadow:inset 0 0 0 4px #f2c7a0,0 5px 0 #704334;background:linear-gradient(#a9dee0,#eff7ec);align-self:end}
+.windowBackdrop{position:absolute;inset:0;overflow:hidden}.mountain{position:absolute;bottom:25px;width:120px;height:90px;background:#e7f6ee;clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.9}.leftM{left:-40px}.rightM{right:-37px;transform:scale(1.2)}.treeWin{position:absolute;color:#6b9783;left:10px;bottom:8px;font-size:80px}.snowdots{position:absolute;right:17px;top:13px;color:#fff;letter-spacing:12px;font-size:16px}.windowSill{position:absolute;bottom:0;left:0;right:0;height:12px;background:#ad714e;box-shadow:0 -3px 0 #eac69a}.customerPortrait{position:absolute;left:50%;bottom:0;width:148px;height:155px;transform:translateX(-50%);filter:drop-shadow(0 4px 3px #42726345);animation:customerBob 3s ease-in-out infinite}.customerPortrait svg{width:100%;height:100%;overflow:visible}@keyframes customerBob{50%{transform:translate(-50%,3px)}}.orderTicket{min-height:162px;background:#fff8e5;border:2px solid #e1be8e;border-radius:14px 14px 21px 21px;padding:13px 19px 9px;position:relative;box-shadow:0 6px 0 #b9a486,inset 0 0 0 4px #fffbf2}.orderTicket:before{content:'✦';position:absolute;top:-8px;left:13px;width:24px;height:18px;border-radius:0 0 8px 8px;background:#d4584d;color:#ffebae;font-size:12px;text-align:center}.ticketTop,.ticketBottom{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#775846;font-size:11px;font-weight:900;letter-spacing:.7px}.ticketTop b{color:#a2473a}.ticketTop span:last-child{white-space:nowrap;font-size:11px;color:#419578}.orderTicket p{margin:12px 0 9px;color:#3b3d2f;font-size:clamp(14px,1.8vw,19px);line-height:1.4;font-weight:900;min-height:49px}.patienceTrack{width:100%;height:8px;border-radius:8px;background:#d5d4b3;overflow:hidden}.patienceTrack span{height:100%;width:100%;display:block;background:linear-gradient(90deg,#75b98d,#b4d994);transition:width .15s linear}.ticketBottom{margin-top:8px;font-size:10px}.ticketBottom span:last-child{font:900 17px 'Barlow Condensed';color:#904e35}
+.workspace{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(310px,.86fr);gap:18px;padding:20px 24px 14px;align-items:start}.prepArea{border:3px solid #bc895c;background:linear-gradient(135deg,#b98051 0%,#e2ae72 48%,#ad744b 100%);padding:12px;border-radius:24px;box-shadow:0 8px 0 #8f5e3d,0 12px 18px #563f282b,inset 0 2px 0 #ffe3b0}
+.stationHead{display:flex;align-items:center;justify-content:space-between;gap:7px;font:900 13px 'Barlow Condensed';letter-spacing:1.1px;color:#fff7d7;padding:0 4px 9px}.stationStamp{font-size:9px;color:#fff4c1}.boardWrap{position:relative;width:100%;aspect-ratio:1;background:repeating-linear-gradient(0deg,transparent 0 50px,#ddc4a446 51px 52px),repeating-linear-gradient(90deg,#edd3a1 0 58px,#f5dfb5 58px 114px);border-radius:18px;border:5px solid #825739;box-shadow:inset 0 5px 14px #7a4f3d59,0 2px 0 #f7c88b;overflow:hidden;touch-action:manipulation}.boardGarnish{position:absolute;top:6%;right:7%;font:900 50px Georgia;color:#c5a87555;pointer-events:none}#pizzaCanvas{display:block;width:100%;height:100%;touch-action:manipulation;position:relative;z-index:1;cursor:crosshair}.canvasHint{position:absolute;left:8%;right:8%;bottom:3%;pointer-events:none;border-radius:15px;padding:5px 10px;text-align:center;background:#f5ebd9e9;color:#80593e;font:900 11px Nunito;z-index:2}.costBar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 4px 0;color:#ffefc3;font:900 11px Nunito;letter-spacing:.4px}.costBar b{font-size:15px}.costBar span:last-child{color:#ffd27e}
+.stationSide{min-width:0;background:#fff9e9;border:2px solid #d8c6a5;border-radius:24px;box-shadow:0 5px 0 #b7b99e;padding:18px;display:flex;flex-direction:column;gap:12px}.stageHeading{display:flex;align-items:center;justify-content:space-between;gap:8px}.stageHeading small{display:block;color:#ce7660;letter-spacing:2px;font-weight:900;font-size:10px}.stageHeading h2{font:900 clamp(25px,3vw,36px)/1 'Barlow Condensed';color:#305943;margin:4px 0 0}.stageHeading>span{font:900 15px 'Barlow Condensed';padding:7px;background:#dcebd5;border-radius:8px;color:#49816e;white-space:nowrap}.stageInstructions{font-weight:800;color:#89755e;font-size:12px;line-height:1.5;margin:0}.ingredients{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ingredientBtn{min-height:92px;background:linear-gradient(#f5dfbf,#ead0a7);border:2px solid #cba777;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#694735;box-shadow:0 3px 0 #b08c61}.ingredientBtn:disabled{opacity:.45;cursor:default}.ingredientBtn.selected{border-color:#287b60;outline:3px solid #83d1a3;background:#e3efd2;box-shadow:0 3px 0 #52896e}.foodIcon{font-size:34px;filter:drop-shadow(0 2px 1px #583b3337)}.ingredientBtn span:last-child{font:900 11px Nunito;text-align:center;line-height:1.15}.actionPanel{display:flex;flex-direction:column;gap:11px}.littleActions{display:flex;gap:9px}.littleActions button{flex:1;min-height:40px;border:1px solid #d8cab0;background:#eae8d8;color:#55604d;border-radius:10px;font:900 11px Nunito}.primaryBtn,.secondaryBtn{border:2px solid #f5d887;background:linear-gradient(#e9a44f,#bc693b);box-shadow:0 5px 0 #895035;color:#fff9de;border-radius:14px;min-height:57px;font:900 23px 'Barlow Condensed';letter-spacing:1.25px;display:flex;justify-content:center;align-items:center;gap:12px}.primaryBtn:active,.secondaryBtn:active{transform:translateY(4px);box-shadow:0 1px 0 #895035}.secondaryBtn{background:linear-gradient(#66a487,#327b64);box-shadow:0 5px 0 #1e584d;border-color:#b1dac0}.primaryBtn:disabled{opacity:.5;cursor:default}.tipCard{display:flex;gap:10px;align-items:flex-start;background:#e9f2dc;border-radius:14px;padding:10px;color:#426652}.tipSpark{font-size:27px;color:#c58e38}.tipCard small{font-size:10px;letter-spacing:1px;font-weight:900}.tipCard p{font-size:11px;font-weight:800;line-height:1.42;margin:3px 0 0}.bottom{display:flex;justify-content:space-between;gap:10px;padding:17px 25px;font:900 9px Nunito;letter-spacing:1.1px;color:#859880}.ovenPanel,.slicePanel{background:#e9ebe1;border-radius:14px;padding:12px;border:2px solid #c2d7c9}.ovenMouth{height:122px;background:radial-gradient(ellipse at center bottom,#ed964f,#653d35 48%,#252b29 76%);border:9px solid #8d6e55;border-radius:90px 90px 18px 18px;position:relative;overflow:hidden;box-shadow:inset 0 -8px 0 #302a28}.ovenPizza{position:absolute;width:100px;height:31px;border-radius:50%;bottom:8px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,#ffda7c 0 48%,#cb7b38 65%,#a85f2d 75%);box-shadow:0 6px 0 #4b302b}.ovenMouth i{position:absolute;left:0;right:0;top:15px;color:#ffd3a7;font:900 12px 'Barlow Condensed';text-align:center;letter-spacing:2px}.ovenText{display:flex;justify-content:space-between;font:900 14px 'Barlow Condensed';margin:9px 0 4px}.ovenText strong{color:#965c3e}.ovenTrack{height:16px;background:#b6baa9;border:3px solid #fff8e8;border-radius:13px;position:relative;overflow:hidden}.ovenTrack>span{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#78a97a,#eab65b,#dd7b3b,#ab4444);transition:width .12s linear}.ovenSweetspot{position:absolute;left:47%;width:23%;height:100%;background:#feefa777;border-left:2px solid #fffbd2;border-right:2px solid #fffbd2}.ovenPanel p,.slicePanel p{font-size:11px;font-weight:800;line-height:1.4;color:#7a6554;margin:8px 0 0}.sliceBadge{background:#fff7d6;padding:12px;border-radius:12px;text-align:center;color:#b16844;font:900 22px 'Barlow Condensed'}.sliceBadge b{font-size:35px;color:#2b765d}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#122e30cf;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);z-index:20;padding:20px;overflow:auto;overscroll-behavior:contain}.overlay.show{display:flex}.modal{width:min(100%,470px);max-height:calc(100dvh - 35px);overflow:auto;position:relative;background:radial-gradient(ellipse at 50% 0,#f7f6dc 0%,#e9efe1 62%,#cedece);border:6px solid #f6dca7;border-radius:28px;padding:25px 28px 27px;box-shadow:0 9px 0 #ac7146,0 30px 65px #062c2e91;align-self:center;text-align:center}.modal:before{content:'';position:absolute;inset:7px;border:2px dashed #c7aa7799;border-radius:19px;pointer-events:none}.modalEyebrow{font:900 11px Nunito;letter-spacing:1.6px;color:#a76141}.modal h1,.modal h2{font:900 clamp(47px,9vw,68px)/.85 'Barlow Condensed';color:#275d4c;margin:15px 0}.modal h1 em{font-style:normal;color:#ce7048;display:block}.modal h2{font-size:clamp(42px,9vw,60px)}.modal p{font-weight:800;font-size:14px;line-height:1.6;color:#697566}.welcomeArt{height:150px;display:grid;place-items:center;position:relative}.welcomePie{width:147px;height:147px;background:radial-gradient(circle at 47% 46%,#f3ca71 0 58%,#ae673c 59% 62%,#eabe75 64% 72%,transparent 73%);border-radius:50%;transform:rotate(-13deg);box-shadow:0 10px 0 #b6895f99,0 12px 25px #304c3b4a;position:relative}.welcomePie:before{content:'';position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle at 34% 32%,#c34b40 0 7px,transparent 8px),radial-gradient(circle at 72% 54%,#c34b40 0 10px,transparent 11px),radial-gradient(circle at 47% 78%,#c34b40 0 8px,transparent 9px),radial-gradient(circle at 53% 15%,#c34b40 0 8px,transparent 9px),radial-gradient(circle at 29% 66%,#c34b40 0 8px,transparent 9px),#f7d57b}.welcomeSpark{position:absolute;right:23%;top:7%;color:#e5ad55;font-size:40px}.miniHat{position:absolute;left:19%;top:15%;width:60px;height:47px;background:#c64c47;clip-path:polygon(10% 100%,52% 0,100% 100%);transform:rotate(-17deg);z-index:2}.welcomeSteps{display:flex;justify-content:space-around;gap:5px;margin:18px auto 23px}.welcomeSteps span{display:flex;flex-direction:column;align-items:center;font-size:21px}.welcomeSteps b{font-size:10px;letter-spacing:1px;color:#446d53}.modalMain,.modalAlt{width:100%;min-height:54px;border:2px solid #fbe6a4;background:linear-gradient(#e5b869,#cd8448);border-radius:13px;color:#fffbea;font:900 21px 'Barlow Condensed';letter-spacing:1px;box-shadow:0 5px 0 #996440;margin:8px 0;display:flex;justify-content:center;align-items:center;text-decoration:none}.modalMain:active,.modalAlt:active{transform:translateY(3px);box-shadow:0 2px 0 #996440}.modalAlt{background:linear-gradient(#558e76,#32715f);box-shadow:0 4px 0 #1e554a;border-color:#cae5be;font-size:18px}.welcomeModal>small{font-weight:800;color:#86927d;font-size:10px}.reviewStars{font-size:46px;letter-spacing:4px;color:#d7a04b;margin:11px 0 1px}.receipt{background:#fff9e9;border:2px dashed #ccb993;border-radius:14px;padding:11px 17px;text-align:left;margin:17px 0}.receipt>div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:12px;color:#7c7560;font-weight:800}.receipt b{font-size:15px;color:#345f45}.receipt .receiptTotal{border-top:2px solid #d8c9a9;margin-top:3px;font-size:14px;color:#304e3c}.receipt .receiptTotal b{font-size:19px}.shiftStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}.shiftStats>div{background:#fff5da;border:2px solid #d7c9a7;border-radius:12px;padding:9px 4px}.shiftStats small{display:block;font-size:9px;font-weight:900;color:#917c61}.shiftStats b{display:block;font:900 25px 'Barlow Condensed';color:#356a52}.dayModal h3{font:900 20px 'Barlow Condensed';margin:19px 0 8px;color:#905b3d}.upgradeList{display:grid;gap:7px}.upgradeItem{display:flex;gap:8px;justify-content:space-between;align-items:center;text-align:left;background:#fbf7e8;border:1px solid #d9c7a0;border-radius:12px;padding:9px}.upgradeItem strong{font-size:13px;display:block;color:#3f6853}.upgradeItem small{font-weight:700;font-size:10px;color:#8b8370}.upgradeItem button{flex-shrink:0;border:none;border-radius:9px;padding:9px 11px;background:#467f63;color:#fff;font:900 13px Nunito}.upgradeItem button:disabled{background:#c1c9b4;color:#6b816e}.unlockNote{margin:10px 0;font-size:12px;font-weight:900;color:#4c896e}.toast{position:fixed;left:50%;bottom:17px;transform:translate(-50%,15px);opacity:0;transition:all .17s;pointer-events:none;background:#285b45;color:#fff4d7;border:2px solid #d9b775;border-radius:14px;padding:12px 20px;font-weight:900;font-size:13px;z-index:30;text-align:center;box-shadow:0 6px 20px #234f3b55}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:720px){.topbar{height:63px;padding:0 10px}.back{padding:7px;font-size:21px}.back span{font-size:9px}.brand{letter-spacing:1px;font-size:18px}.menuControl{width:37px;height:39px}.scorestrip{gap:6px;height:57px;padding:7px 8px}.scorestrip>div{gap:4px;padding:6px 7px;flex:1;justify-content:center}.scorestrip small{font-size:8px}.scorestrip b{font-size:19px}.counter{grid-template-columns:101px minmax(0,1fr);gap:9px;padding:14px 9px 10px}.customerWindow{height:145px;border-width:5px;border-bottom-width:11px;border-radius:45px 45px 10px 10px}.customerPortrait{width:124px;height:140px}.orderTicket{min-height:144px;padding:10px 9px 8px;border-width:1px}.ticketTop,.ticketBottom{font-size:9px}.ticketTop span:last-child{font-size:9px}.orderTicket p{font-size:12px;line-height:1.36;min-height:66px;margin:9px 0 8px}.ticketBottom{margin-top:6px}.workspace{display:flex;flex-direction:column;gap:15px;padding:13px 11px}.prepArea,.stationSide{width:100%}.prepArea{max-width:540px;margin:0 auto;padding:8px}.stationHead{font-size:12px}.boardWrap{max-height:420px;max-width:420px;margin:0 auto}.stationSide{padding:14px}.ingredients{grid-template-columns:repeat(3,1fr)}.ingredientBtn{min-height:76px}.foodIcon{font-size:30px}.bottom{font-size:8px;padding:8px 12px 18px}.modal{padding:20px 19px;max-height:calc(100dvh - 25px)}.welcomeArt{height:114px}.welcomePie{transform:scale(.78) rotate(-13deg)}}
+@media(max-width:365px){.scorestrip>div{flex-direction:column;gap:0;padding:4px}.scorestrip{height:60px}.scorestrip b{font-size:20px}.counter{grid-template-columns:86px minmax(0,1fr)}.customerPortrait{width:114px}.ticketTop{flex-wrap:wrap}.orderTicket p{font-size:11px}.boardWrap{max-height:330px}.stationStamp{display:none}.welcomeSteps{margin:7px auto 10px}.modal h1{font-size:43px}.modal p{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Keep the customer's order within view on mobile prep screens. */
+.orderReminder{background:#fff0c8;border:1px dashed #cba66b;border-radius:12px;padding:9px 11px;color:#6a5841;display:flex;flex-direction:column;gap:3px}
+.orderReminder b{font:900 10px Nunito;letter-spacing:1px;color:#bc6c43}
+.orderReminder span{font-size:12px;font-weight:900;line-height:1.35}
+@media(min-width:721px){.orderReminder{max-height:91px;overflow:auto}}
+
+/* Single-screen game layout.  The browser page is never vertically scrollable;
+   only the end-of-day modal may scroll if its contents do not fit. */
+html,body{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
+.shell{height:100dvh;min-height:0;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.topbar,.scorestrip,.counter{flex-shrink:0}
+.topbar{height:58px}
+.scorestrip{height:52px;padding:7px 13px;gap:8px}
+.counter{height:142px;grid-template-columns:140px minmax(0,1fr);padding:8px 15px;gap:12px;min-height:0}
+.customerWindow{height:100%;max-height:none;width:100%}
+.customerPortrait{width:124px;height:134px}
+.orderTicket{height:100%;min-height:0;padding:10px 14px;display:flex;flex-direction:column;justify-content:space-around}
+.orderTicket p{margin:5px 0;min-height:0;font-size:clamp(13px,1.5vw,16px);line-height:1.23}
+.ticketBottom{margin-top:3px}
+.workspace{flex:1;min-height:0;overflow:hidden;padding:13px 15px 15px;gap:13px;align-items:stretch;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)}
+.prepArea{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 10px}
+.stationHead,.costBar{width:100%;flex-shrink:0}
+.stationHead{padding-bottom:5px}
+.costBar{padding-top:5px}
+.boardWrap{flex:1 1 auto;min-height:0;min-width:0;height:0;width:auto;max-width:100%;aspect-ratio:1;align-self:center}
+.boardWrap #pizzaCanvas{width:100%;height:100%}
+.stationSide{min-height:0;overflow:hidden;gap:8px;padding:11px;justify-content:space-between}
+.stationSide .stageHeading{flex-shrink:0}
+.stationSide .orderReminder{flex-shrink:0;padding:6px 9px}
+.stationSide .orderReminder span{font-size:11px}
+.stationSide .stageInstructions{display:none}
+.stationSide .tipCard{display:none}
+.ingredients{flex:1;min-height:0;align-content:center;grid-auto-rows:minmax(0,1fr);gap:6px}
+.ingredientBtn{min-height:0;padding:4px 2px}
+.ingredientBtn .foodIcon{font-size:clamp(22px,3.2vh,31px)}
+.ingredientBtn span:last-child{font-size:10px}
+.actionPanel{flex-shrink:0;gap:5px}
+.littleActions{gap:5px}
+.littleActions button{min-height:32px;font-size:10px}
+.primaryBtn,.secondaryBtn{min-height:47px;font-size:21px}
+.ovenPanel{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.slicePanel{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.bottom{display:none}
+
+/* Phones: the order sits above a large touch pizza, then a compact tray of
+   ingredients/action controls. Everything is visible simultaneously. */
+@media(max-width:720px){
+  .topbar{height:47px;padding:0 9px}
+  .topbar:after{height:5px;bottom:-7px;background:repeating-linear-gradient(90deg,#d85248 0 20px,#f8e7cf 20px 40px)}
+  .brand{font-size:16px}.brand b{font-size:1.35em}
+  .back{font-size:19px;padding:5px 7px}.back span{font-size:9px}
+  .menuControl{height:33px;width:35px}
+  .scorestrip{height:44px;gap:5px;padding:5px 7px}
+  .scorestrip>div{min-width:0;padding:3px 4px;border-radius:9px;gap:4px}
+  .scorestrip small{font-size:8px;letter-spacing:0}
+  .scorestrip b{font-size:18px}
+  .counter{height:110px;grid-template-columns:82px minmax(0,1fr);gap:7px;padding:7px 7px 6px;border-bottom-width:2px}
+  .customerWindow{height:100%;min-height:0;border-width:4px;border-bottom-width:8px;border-radius:35px 35px 8px 8px}
+  .customerPortrait{height:102px;width:99px}
+  .orderTicket{padding:5px 7px;border-width:1px;border-radius:10px;box-shadow:0 2px 0 #b9a486}
+  .orderTicket:before{display:none}
+  .ticketTop,.ticketBottom{font-size:8px;letter-spacing:0}
+  .ticketTop span:last-child{font-size:8px}
+  .ticketBottom span:last-child{font-size:14px}
+  .orderTicket p{font-size:clamp(9px,2.65vw,11.5px);line-height:1.2;min-height:0;margin:2px 0}
+  .patienceTrack{height:5px;flex-shrink:0}
+  .workspace{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;min-height:0;align-items:stretch;padding:6px 8px 7px;gap:5px}
+  .prepArea{height:100%;min-height:0;width:100%;max-width:none;margin:0;padding:4px 7px;border-radius:15px;box-shadow:0 3px 0 #8f5e3d}
+  .stationHead{padding-bottom:2px;font-size:10px}
+  .stationStamp{font-size:8px}
+  .costBar{padding-top:2px;font-size:9px}
+  .costBar b{font-size:11px}
+  .boardWrap{height:0;flex:1 1 auto;width:auto;max-width:100%;min-width:0;max-height:none;aspect-ratio:1;border-width:3px;border-radius:12px}
+  .canvasHint{font-size:8px;padding:3px 5px;bottom:1%;border-radius:6px}
+  .stationSide{width:100%;height:auto;min-height:0;padding:6px 8px;gap:5px;border-radius:13px;box-shadow:0 2px 0 #b7b99e}
+  .stageHeading{min-height:22px}
+  .stageHeading small,.stageHeading>span{display:none}
+  .stageHeading h2{font-size:20px;margin:0}
+  .stationSide .orderReminder{display:none}
+  .ingredients{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:52px;gap:5px;flex:none}
+  .ingredientBtn{height:52px;min-height:0;gap:0;border-radius:10px;padding:2px}
+  .ingredientBtn .foodIcon{font-size:23px;line-height:1}
+  .ingredientBtn span:last-child{font-size:9px}
+  .littleActions button{min-height:28px;font-size:10px}
+  .primaryBtn,.secondaryBtn{min-height:44px;font-size:20px}
+  .ovenPanel,.slicePanel{flex:none;min-height:0;padding:6px}
+  .ovenMouth{height:64px;border-width:5px}
+  .ovenPizza{height:18px;width:77px}
+  .ovenMouth i{font-size:9px;top:3px}
+  .ovenText{margin:4px 0 3px}
+  .ovenPanel p,.slicePanel p{display:none}
+  .sliceBadge{padding:5px}
+  .sliceBadge b{font-size:25px}
+}
+@media(max-width:720px) and (max-height:760px){
+  .topbar{height:42px}
+  .scorestrip{height:41px}
+  .counter{height:94px}
+  .customerPortrait{height:87px;width:92px}
+  .ticketTop,.ticketBottom{font-size:7.5px}
+  .orderTicket p{font-size:10px;line-height:1.13}
+  .workspace{padding:4px 7px 5px;gap:4px}
+  .prepArea{padding:3px 5px}
+  .stationHead{font-size:9px}
+  .stationSide{padding:4px 6px;gap:4px}
+  .stageHeading{min-height:20px}.stageHeading h2{font-size:18px}
+  .ingredients{grid-auto-rows:43px;gap:3px}
+  .ingredientBtn{height:43px;padding:1px}
+  .ingredientBtn .foodIcon{font-size:19px}
+  .ingredientBtn span:last-child{font-size:8px}
+  .actionPanel{gap:3px}
+  .littleActions button{min-height:26px;font-size:9px}
+  .primaryBtn,.secondaryBtn{min-height:39px;font-size:18px}
+  .ovenMouth{height:45px}.ovenText{font-size:12px}
+}
+@media(max-width:720px) and (max-height:610px){
+  .topbar{height:38px}
+  .scorestrip{height:35px}.scorestrip>div{padding:2px}.scorestrip small{font-size:7px}.scorestrip b{font-size:16px}
+  .counter{height:77px;padding:4px 5px}
+  .customerPortrait{width:78px;height:77px}
+  .orderTicket p{font-size:9px;line-height:1.1;margin:1px 0}
+  .ticketBottom{display:none}
+  .workspace{padding:3px 5px;gap:3px}
+  .stationHead{padding-bottom:0}.costBar{padding-top:0}
+  .stationSide{padding:3px 5px;gap:3px}
+  .stageHeading{min-height:18px}.stageHeading h2{font-size:16px}
+  .ingredients{grid-auto-rows:37px;gap:3px}
+  .ingredientBtn{height:37px;padding:1px}
+  .ingredientBtn .foodIcon{font-size:16px}
+  .ingredientBtn span:last-child{font-size:7.5px}
+  .littleActions button{min-height:23px;font-size:9px}
+  .primaryBtn,.secondaryBtn{min-height:37px;font-size:17px}
+  .ovenMouth{height:37px}.ovenPanel{padding:4px}
+}
+@media(min-width:721px) and (max-height:720px){
+  .topbar{height:49px}.scorestrip{height:44px}.counter{height:100px}
+  .workspace{padding:7px 12px;gap:9px}
+  .stationSide{gap:5px;padding:8px}
+  .orderReminder{display:none}
+  .ingredients{gap:4px}.ingredientBtn{min-height:0}
+  .primaryBtn{min-height:39px}.littleActions button{min-height:26px}
+  .tipCard{display:none}
+}
+
+/* The board gets its exact square size from the available station space.
+   This prevents a squeezed viewport turning the circular pizza into an oval. */
+.boardWrap,.workspace .boardWrap{
+  flex:0 0 auto;
+  width:var(--pizza-size,210px);
+  height:var(--pizza-size,210px);
+  min-width:0;
+  min-height:0;
+  max-width:100%;
+  max-height:100%;
+  aspect-ratio:1;
+}
+
+/* Keep the two-line logo inside the compact, fixed-height game header. */
+.topbar .brand{font-size:20px;line-height:1.02;white-space:nowrap}
+.topbar .brand b{font-size:1.3em;line-height:.93}
+@media(max-width:720px){
+  .topbar .brand{font-size:14px;line-height:1}
+  .topbar .brand b{font-size:1.35em;line-height:.98}
+}
+@media(max-width:720px) and (max-height:610px){
+  .topbar .brand{font-size:13px}
+}
+
+/* Drawing over dough must track the finger instead of scrolling or pinching. */
+#pizzaCanvas,.boardWrap{touch-action:none;user-select:none;-webkit-user-select:none}

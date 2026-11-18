@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#11191e">
+<link rel="preload" as="image" href="assets/pieces/special-atlas.png?v=12">
+<title>Snowy Sweets · GameBox</title>
+<link rel="stylesheet" href="style.css?v=13">
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <a class="roundAsset hudButton backButtonAsset" href="../" aria-label="Back to GameBox"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/arrowLeft.png" alt=""></a>
+    <div class="titleStack"><span class="edition">CHRISTMAS EDITION</span><h1>SNOWY SWEETS</h1><strong>MATCH · COMBINE · CLEAR</strong></div>
+    <button id="menuButton" class="roundAsset hudButton settingsButtonAsset" type="button" aria-label="Open game menu"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/gear.png" alt=""></button>
+  </header>
+  <main class="stage">
+    <section class="gameFrame" aria-label="Snowy Sweets match three puzzle">
+      <div class="levelHead">
+        <button id="levelPicker" type="button" class="levelBadge" aria-label="Choose level"><small>LEVEL</small><b id="levelNumber">01</b></button>
+        <div class="mission"><div class="missionHeading"><img id="missionIcon" src="assets/tile_0014.png" alt=""><small id="missionLabel">COLLECT DOUGHNUTS</small></div><div class="missionTrack"><div id="missionFill"></div></div><strong id="missionProgress">0 / 12</strong></div>
+        <div class="movesBadge"><small>MOVES</small><b id="movesValue">20</b></div>
+      </div>
+      <div class="scoreLine"><span>SCORE <b id="scoreValue">0</b></span><span>BEST <b id="bestValue">0</b></span></div>
+      <div class="boardShell">
+        <div id="board" class="board" role="grid" aria-label="8 by 8 sweets puzzle board"></div>
+        <div id="gameToast" class="gameToast" role="status" aria-live="polite"></div>
+      </div>
+      <div class="bottomBar">
+        <div class="progressStars" aria-label="Level score stars"><span id="star1">★</span><span id="star2">★</span><span id="star3">★</span></div>
+        <button id="hintButton" class="assetAction hintAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/target.png" alt=""><span>HINT</span></button>
+        <button id="restartQuick" class="assetAction restartAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/return.png" alt=""><span>RESTART</span></button>
+      </div>
+      <div class="footerCaption">Swap neighbouring sweets to match 3 or more</div>
+    </section>
+  </main>
+</div>
+<div id="startSheet" class="sheet show" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+  <section class="panel splashPanel">
+    <img class="christmasMark" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <span class="eyebrow">A CHRISTMAS PUZZLE</span><h2 id="startTitle">Snowy Sweets</h2>
+    <div class="splashPieces" aria-hidden="true">
+      <img src="assets/tile_0014.png" alt="">
+      <img src="assets/candy-cane-complete.png" alt="">
+      <img src="assets/tile_0080.png" alt="">
+      <img src="assets/tile_0082.png" alt="">
+    </div>
+    <p>Swap Christmas treats, crack the ice and set off cascading candy combos.</p>
+    <button id="playButton" class="assetAction primaryAction" type="button"><span>Play Level 1</span></button>
+    <button id="startLevels" class="assetAction secondaryAction" type="button"><span>Choose a Level</span></button>
+    <span class="testNote">TEST EDITION · ALL 12 LEVELS AVAILABLE</span>
+  </section>
+</div>
+<div id="menuSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+  <section class="panel">
+    <button class="roundAsset closeButton backButtonAsset" id="closeMenu" type="button" aria-label="Close menu"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/cross.png" alt=""></button>
+    <img class="panelMark" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <span class="eyebrow">CHRISTMAS PUZZLE</span><h2 id="menuTitle">Game Menu</h2>
+    <div class="menuStat">BEST SCORE <strong id="menuBest">0</strong></div>
+    <button id="soundButton" class="assetAction secondaryAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/audioOn.png" alt=""><span id="soundLabel">Sound On</span></button>
+    <button id="helpButton" class="assetAction secondaryAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/target.png" alt=""><span>How to Play</span></button>
+    <button id="openLevels" class="assetAction secondaryAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/menuGrid.png" alt=""><span>Level Select</span></button>
+    <button id="menuRestart" class="assetAction dangerAction" type="button"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/return.png" alt=""><span>Restart Level</span></button>
+    <a href="../" class="assetAction secondaryAction"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/home.png" alt=""><span>GameBox</span></a>
+  </section>
+</div>
+<div id="helpSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <section class="panel">
+    <span class="eyebrow">HOW TO PLAY</span><h2 id="helpTitle">Sweet Moves</h2>
+    <div class="howSteps">
+      <p><b>1</b><span><strong>Swap</strong> two neighbouring sweets by swiping or tapping both.</span></p>
+      <p><b>2</b><span><strong>Match 3+</strong> of the same sweet in a row or column to collect them.</span></p>
+      <p><b>3</b><span><strong>Match 4 or 5</strong> to make powerful striped or burst sweets.</span></p>
+      <p><b>4</b><span><strong>Crack the ice</strong> by matching sweets on its squares. Finish the goal before moves run out.</span></p>
+    </div>
+    <button id="closeHelp" class="assetAction primaryAction" type="button"><span>Let's Play</span></button>
+  </section>
+</div>
+<div id="levelsSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="levelsTitle">
+  <section class="panel levelsPanel">
+    <span class="eyebrow">CHRISTMAS CHALLENGES</span><h2 id="levelsTitle">Choose a Level</h2>
+    <p class="levelsCaption">All levels are open for testing.</p>
+    <div id="levelsGrid" class="levelsGrid"></div>
+    <button id="closeLevels" class="assetAction secondaryAction" type="button"><span>Back to Game</span></button>
+  </section>
+</div>
+<div id="resultSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+  <section class="panel resultPanel">
+    <img class="resultMark" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="" aria-hidden="true">
+    <span class="eyebrow" id="resultEyebrow">SWEET SUCCESS</span><h2 id="resultTitle">Level Complete!</h2>
+    <div class="resultStars" id="resultStars" aria-label="Stars earned">★★★</div>
+    <div class="resultFigures"><div><small>SCORE</small><strong id="resultScore">0</strong></div><div><small>BEST</small><strong id="resultBest">0</strong></div></div>
+    <p id="resultMessage">A wonderful Christmas combo!</p>
+    <button id="resultPrimary" class="assetAction primaryAction" type="button"><span id="resultPrimaryLabel">Next Level</span></button>
+    <button id="resultRetry" class="assetAction secondaryAction" type="button"><span>Play Again</span></button>
+    <button id="resultLevels" class="assetAction secondaryAction" type="button"><span>Choose Level</span></button>
+  </section>
+</div>
+<script src="game.js?v=13"></script>
+</body>
+</html>

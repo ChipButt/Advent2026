@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#102c44">
+<title>Snowy Crossing · GameBox</title>
+<style>
+:root{color-scheme:dark;--navy:#102f47;--deep:#092236;--ice:#dff8ff;--gold:#ffda76;--red:#e64e5e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b253b;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;overscroll-behavior:none}
+button,a{font:inherit}button{cursor:pointer}
+body{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#245473 0%,#092135 85%);touch-action:none}
+#shell{position:relative;aspect-ratio:11/20;width:min(100vw,55dvh);max-height:100dvh;isolation:isolate;overflow:hidden;background:#acd7e5;box-shadow:0 12px 70px #020c19a8}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:none}
+#hud{position:absolute;z-index:4;inset:0 0 auto;display:flex;align-items:flex-start;gap:6px;padding:calc(11px + env(safe-area-inset-top)) 11px 0;pointer-events:none}
+.hudIcon{pointer-events:auto;display:grid;place-items:center;flex:0 0 39px;height:39px;border:2px solid #d9f5fd;border-bottom:5px solid #102f47;border-radius:12px;background:#214b67;color:#fff;text-decoration:none;font-size:20px;box-shadow:0 3px 0 #0719299c}
+.hudIcon img{height:20px;width:20px;object-fit:contain;image-rendering:pixelated}
+.hudIcon:active{transform:translateY(2px);border-bottom-width:3px}
+.hudStat{display:flex;flex:1;min-width:0;align-items:center;justify-content:center;flex-direction:column;padding:5px 3px 7px;border:2px solid #d3edf7;border-bottom:5px solid #407996;border-radius:12px;color:#fff;background:#133c58ed;box-shadow:0 4px 12px #0b24384d;text-shadow:0 2px 0 #061c30}
+.hudStat small{font-size:8px;font-weight:1000;letter-spacing:1px;color:#b5e4f3}
+.hudStat strong{font-weight:1000;font-size:20px;line-height:1.05;font-variant-numeric:tabular-nums}
+.hudStat.gold strong{color:var(--gold)}
+#controls{position:absolute;z-index:3;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;padding:0 14px;opacity:.86}
+.dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,42px);pointer-events:auto}
+.move{height:42px;width:48px;border:2px solid #dff5ffb5;border-bottom:5px solid #24506de6;border-radius:11px;background:#173a56c9;color:white;font-size:19px;font-weight:900;text-shadow:0 2px #163449;box-shadow:0 2px 8px #102c4477;touch-action:none}
+.move:active,.move.pressed{transform:translateY(2px);border-bottom-width:3px;background:#37819c}
+[data-move="up"]{grid-column:2;grid-row:1}[data-move="left"]{grid-column:1;grid-row:2}[data-move="down"]{grid-column:2;grid-row:2}[data-move="right"]{grid-column:3;grid-row:2}
+#swipeHint{align-self:flex-end;padding-bottom:15px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;text-shadow:1px 2px #173952;opacity:.9}
+.overlay{position:absolute;inset:0;z-index:10;display:none;place-items:center;padding:70px 19px 22px;background:linear-gradient(#0a283a85,#071d31bf);backdrop-filter:blur(1.5px);overflow-y:auto}
+.overlay.show{display:grid}
+.panel{width:100%;max-width:340px;display:flex;align-items:center;flex-direction:column;gap:10px;border:4px solid #e5f8ff;border-bottom:9px solid #487c9a;border-radius:23px;padding:21px 20px 23px;background:linear-gradient(155deg,#255c7d,#113750 76%);box-shadow:0 8px 0 #09273b,0 20px 54px #0718278c;color:#fff;text-align:center}
+.kicker{margin:0;color:#fed875;font-size:11px;font-weight:1000;letter-spacing:3px}
+.title{font-size:clamp(37px,11vw,51px);font-weight:1000;line-height:.93;letter-spacing:-2px;margin:4px 0;text-shadow:0 4px 0 #071e30}
+.title em{font-style:normal;color:#c6f3ff}
+.panel p{margin:2px 0;font-size:13px;line-height:1.45;color:#d8f1fa;font-weight:700}
+.logoArt{position:relative;width:130px;height:86px;overflow:hidden;border:3px solid #a8e1f5;border-bottom:6px solid #366a86;border-radius:12px;background:#b2d9e7 url('../workshop-watch/assets/vendor/gherwit/winter/Winter-Download/Winter-tiles.png') -288px -24px / 336px 288px no-repeat;image-rendering:pixelated}
+.logoSnow{position:absolute;bottom:3px;left:10px;width:48px;height:52px;background:url('../workshop-watch/assets/vendor/admurin/pack82/Monster%20Pack%2082%20(Event)/Snowmen/Christmas_Snowman_C_Idle.png') -74px -75px no-repeat;image-rendering:pixelated}
+.logoGift{position:absolute;right:9px;bottom:10px;width:34px;height:34px;object-fit:contain;image-rendering:pixelated}
+.action{width:100%;min-height:51px;padding:10px 15px;border:2px solid #fff6d0;border-bottom:6px solid #d48e26;border-radius:14px;color:#17384c;background:linear-gradient(#ffecaa,#ffbf57);font-size:17px;font-weight:1000;text-shadow:0 1px #fff7e4;letter-spacing:.5px;box-shadow:0 4px 0 #102b3f}
+.action:active{transform:translateY(3px);border-bottom-width:3px}
+.action.alt{background:linear-gradient(#c4ecfa,#80cce6);border-color:#e9faff;border-bottom-color:#3b86a5}
+.action.dark{background:linear-gradient(#326b89,#204760);color:#effaff;border-color:#83bdcf;border-bottom-color:#102f43;text-shadow:0 1px #0e3146}
+.action:disabled{opacity:.5;filter:grayscale(.6);cursor:wait}
+.statsLine{display:flex;gap:5px;justify-content:center;color:#c7eaf6;font-size:12px;font-weight:900;letter-spacing:.8px;flex-wrap:wrap}
+.statsLine b{color:#ffe18a}
+.helpMini{display:flex;gap:8px;justify-content:center;align-items:center;color:#c8f1fb;font-size:11px;font-weight:800;margin-top:6px}
+.helpArrow{display:grid;place-items:center;width:35px;height:31px;background:#326983;border:2px solid #a7deec;border-bottom:4px solid #112f43;border-radius:8px;font-size:18px}
+.tip{font-size:11px!important;opacity:.83}
+.resultNum{font-size:52px;font-weight:1000;color:#ffda76;text-shadow:0 4px #1a3140}
+#loadState{font-size:12px;color:#daeff8;min-height:18px}
+#toast{position:absolute;z-index:6;top:calc(74px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-12px);min-width:110px;max-width:85%;background:#173e57e8;border:2px solid #e4f8ff;border-radius:30px;padding:8px 15px;text-align:center;color:#fff;font-weight:1000;font-size:13px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .13s,transform .13s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#fade{position:absolute;z-index:8;inset:0;pointer-events:none;background:white;opacity:0}
+#pauseOverlay,#overOverlay{z-index:13}
+#shell.defeated #controls{opacity:0;pointer-events:none}
+#shell.defeated #pause{pointer-events:none;opacity:.65}
+#rules{font-size:12px!important;text-align:left;line-height:1.6!important}
+#rules strong{color:#ffdc7b}
+#assetError{color:#ffdebc!important;font-size:11px!important}
+@media (max-height:650px){.panel{padding:12px 17px 14px;gap:7px}.title{font-size:34px}.logoArt{height:66px}.action{min-height:43px;font-size:15px}#hud{padding-top:6px}.hudIcon{height:34px;flex-basis:34px}.hudStat strong{font-size:17px}.overlay{padding-top:42px}}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+<main id="shell" aria-label="Snowy Crossing">
+<canvas id="game" width="352" height="640" role="img" aria-label="Snowy Crossing game world. Swipe or use arrow buttons to hop."></canvas>
+<header id="hud">
+<a href="../" class="hudIcon" aria-label="Back to GameBox"><img alt="" src="../assets/gamebox/kenney/icons/Game%20Icons/White/2x/home.png"></a>
+<div class="hudStat"><small>STEPS</small><strong id="distance">0</strong></div>
+<div class="hudStat gold"><small>PRESENTS</small><strong id="presents">0</strong></div>
+<div class="hudStat"><small>BEST</small><strong id="best">0</strong></div>
+<button type="button" class="hudIcon" id="pause" aria-label="Pause or menu"><img alt="" src="../assets/gamebox/kenney/icons/Game%20Icons/White/2x/gear.png"></button>
+</header>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="fade"></div>
+<div id="controls" aria-label="Movement controls">
+<div class="dpad">
+<button class="move" data-move="up" aria-label="Move forward">▲</button>
+<button class="move" data-move="left" aria-label="Move left">◀</button>
+<button class="move" data-move="down" aria-label="Move back">▼</button>
+<button class="move" data-move="right" aria-label="Move right">▶</button>
+</div>
+<div id="swipeHint">Swipe to hop</div>
+</div>
+<section class="overlay show" id="startOverlay" aria-label="Start Snowy Crossing">
+<div class="panel">
+<div class="logoArt" aria-hidden="true"><span class="logoSnow"></span><img class="logoGift" src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt=""></div>
+<p class="kicker">CHIP IN · GAMEBOX</p><h1 class="title">SNOWY<br><em>CROSSING</em></h1>
+<p>Hop through the winter woods. Dodge the Christmas creatures. Ride the drifting ice and collect presents.</p>
+<button type="button" id="start" class="action" disabled>LOADING WINTER…</button>
+<div id="loadState">Gathering game artwork…</div><div class="statsLine">BEST RUN <b id="startBest">0</b></div>
+<div class="helpMini"><span class="helpArrow">◀</span><span>TAP FORWARD / SWIPE TO TURN<br>OR USE THE ARROWS</span><span class="helpArrow">▶</span></div>
+<p class="tip">Red creature shadows = danger. The whole ice floe = safe landing. Keep moving!</p><p id="assetError"></p>
+</div>
+</section>
+<section class="overlay" id="pauseOverlay" aria-label="Paused" aria-hidden="true">
+<div class="panel"><p class="kicker">WINTER BREAK</p><h2 class="title">PAUSED</h2>
+<button type="button" id="resume" class="action">RESUME RUN</button>
+<button type="button" id="restart" class="action alt">RESTART RUN</button>
+<button type="button" id="sound" class="action dark">SOUND: ON</button>
+<p id="rules"><strong>CONTROLS</strong> — Swipe in any direction, use the arrows or WASD.<br><strong>SNOW</strong> — Safe, but avoid creatures.<br><strong>RED FOOTPRINTS</strong> — These show where creatures can hit you.<br><strong>ICY WATER</strong> — The entire visible top of each moving floe is safe.<br><strong>PRESENTS</strong> — Worth 15 bonus points.<br><strong>SNOWSTORM</strong> — Advance before it catches you.</p>
+<a href="../" class="action dark" style="text-decoration:none;display:grid;place-items:center">BACK TO GAMEBOX</a></div>
+</section>
+<section class="overlay" id="overOverlay" aria-label="Game over" aria-hidden="true">
+<div class="panel"><p class="kicker" id="overKicker">RUN OVER</p><h2 class="title">SNOWED<br><em>OUT!</em></h2><div class="resultNum" id="total">0</div>
+<div class="statsLine">DISTANCE <b id="endSteps">0</b> · PRESENTS <b id="endPresents">0</b> · BEST <b id="endBest">0</b></div>
+<p id="overReason">A frosty finish!</p><button type="button" id="again" class="action">TRY AGAIN</button>
+<a href="../" class="action dark" style="text-decoration:none;display:grid;place-items:center">GAMEBOX</a></div>
+</section>
+</main>
+<script>
+(()=>{
+'use strict';
+const W=352,H=640,T=32,COLS=11,ROWS=20;
+const cvs=document.getElementById('game'),ctx=cvs.getContext('2d',{alpha:false});
+ctx.imageSmoothingEnabled=false;
+const $=id=>document.getElementById(id);
+const ASSET={
+ winter:'../workshop-watch/assets/vendor/gherwit/winter/Winter-Download/Winter-tiles.png',
+ hero:'../workshop-watch/assets/vendor/admurin/pack82/Monster%20Pack%2082%20(Event)/Snowmen/Christmas_Snowman_C_Idle.png',
+ heroMove:'../workshop-watch/assets/vendor/admurin/pack82/Monster%20Pack%2082%20(Event)/Snowmen/Christmas_Snowman_C_Move.png',
+ ginger:'../workshop-watch/assets/vendor/admurin/pack85/Monster%20Pack%2085%20(Event%203)/Spritesheets/Gingerbread/Christmas_Gingerbread_Move.png',
+ slime:'../workshop-watch/assets/vendor/admurin/pack85/Monster%20Pack%2085%20(Event%203)/Spritesheets/Slime/Christmas_Slime_Move.png',
+ devil:'../workshop-watch/assets/vendor/admurin/pack85/Monster%20Pack%2085%20(Event%203)/Spritesheets/Devil/Christmas_Devil_Move.png',
+ giftR:'../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png',
+ giftG:'../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_green.png',
+ giftB:'../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_blue.png'
+};
+const imgs={},key='gb-snowy-crossing-best-v1',soundKey='gb-snowy-crossing-sound-v1';
+let best=0,sound=true;
+try{best=Number(localStorage.getItem(key))||0;sound=localStorage.getItem(soundKey)!=='off'}catch(e){}
+$('best').textContent=$('startBest').textContent=best;
+let audio=null;
+function blip(freq=420,duration=.075,type='square',volume=.025){
+ if(!sound)return;
+ try{
+  audio=audio||new (window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==='suspended')audio.resume();
+  const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;
+  o.type=type;o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(70,freq*.65),t+duration);
+  g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);
+  o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+duration+.005);
+ }catch(e){}
+}
+function buzz(n=15){try{if(navigator.vibrate)navigator.vibrate(n)}catch(e){}}
+function seeded(seed){let v=seed>>>0;return ()=>{v=(1664525*v+1013904223)>>>0;return v/4294967296}}
+const imgLoad=(name,url)=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{if(!im.naturalWidth){reject(new Error(name+' has no pixels'));return}imgs[name]=im;resolve()};im.onerror=()=>reject(new Error(name+' failed to load'));im.src=url});
+let loaded=false;
+async function loadAll(){
+ $('assetError').textContent='';$('start').disabled=true;
+ $('start').textContent='LOADING WINTER…';
+ try{
+  await Promise.all(Object.entries(ASSET).map(([name,url])=>imgLoad(name,url)));
+  loaded=true;$('loadState').textContent='';$('start').disabled=false;$('start').textContent='START HOPPING';
+ }catch(err){loaded=false;$('start').disabled=false;$('start').textContent='RETRY ARTWORK';$('assetError').textContent='Art did not load: '+err.message+'. Check your connection.';console.error(err)}
+}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const randRange=(r,a,b)=>a+(b-a)*r();
+let lanes=new Map(),player={x:5,row:2,fromX:5,fromRow:2,hop:0,dir:'down'},mode='start';
+let seed=0,rng=Math.random,maxRow=2,camera=0,camAim=0,score=0,collect=0,worldTime=0,lastMove=0,storm=0,particles=[],toastUntil=0,toastMsg='',flash=0,pending=[];
+const HERO_RADIUS=8;
+const CREATURE_RADIUS={slime:10,ginger:11,devil:13};
+const DEATH_DURATION={monster:1.2,water:1.35,storm:1.55};
+let defeat=null;
+const GROUND=[[12,1],[12,1],[12,1],[12,1],[12,1],[12,1],[12,1],[12,1]];
+function valueNoise(a,b){let n=(Math.imul(a+37,374761393)^Math.imul(b+11,668265263))|0;n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296}
+function makeLane(row){
+ const q=rng();
+ let type='snow';
+ if(row>4){
+  const prev=lanes.get(row-1),r=Math.min(row/90,1);
+  if(q<.29+r*.08)type='parade';
+  else if(q<.47+r*.09)type='river';
+  if(prev&&prev.type==='river'&&type==='river'&&row>12&&rng()<.55)type='snow';
+  if(prev&&prev.type==='parade'&&type==='parade'&&row<14)type='snow';
+ }
+ const dir=rng()<.5?-1:1,difficulty=Math.min(row/100,1);
+ const lane={row,type,dir,objects:[],gift:-1,trees:[],detail:[]};
+ if(type==='parade'){
+  const count=2+(row>18&&rng()>.6?1:0)+(row>60&&rng()>.75?1:0);
+  const speed=(.50+rng()*.5+difficulty*.63)*T*dir;
+  const offset=rng()*W;
+  const spacing=(W+160)/count;
+  for(let i=0;i<count;i++)lane.objects.push({x:offset+i*spacing-65,speed,kind:rng()<.53?'slime':rng()<.8?'ginger':'devil',phase:rng()*8});
+ }else if(type==='river'){
+  const count=3+(rng()<.3?1:0);
+  const speed=(.36+rng()*.34+difficulty*.25)*T*dir;
+  const period=W+220,offset=rng()*period;
+  for(let i=0;i<count;i++)lane.objects.push({x:offset+i*period/count-60,speed,width:(rng()>.55?2.9:3.6)*T,phase:0});
+ }else{
+  for(let x=0;x<COLS;x++){
+   if((x<=1||x>=9)&&row>5&&rng()<.33)lane.trees.push(x);
+   if(rng()<.09)lane.detail.push([x,rng()>.6?0:1]);
+  }
+  if(row>3&&rng()<.48)lane.gift=2+Math.floor(rng()*7);
+ }
+ return lane;
+}
+function ensureRows(to){
+ for(let i=Math.max(0,Math.floor(camera)-7);i<=to;i++)if(!lanes.has(i))lanes.set(i,makeLane(i));
+ for(const row of lanes.keys())if(row<Math.max(0,Math.floor(camera)-7))lanes.delete(row);
+}
+function newRun(){
+ rng=seeded((Date.now()^Math.floor(Math.random()*2147483647))>>>0);
+ lanes=new Map();maxRow=2;camera=0;camAim=0;worldTime=0;lastMove=0;storm=-6;collect=0;score=0;particles=[];pending=[];flash=0;defeat=null;$('shell').classList.remove('defeated');
+ player={x:5,row:2,fromX:5,fromRow:2,hop:0,dir:'down'};
+ ensureRows(ROWS+8);for(let i=0;i<4;i++)lanes.get(i).trees=[];
+ mode='playing';toggle('startOverlay',false);toggle('overOverlay',false);toggle('pauseOverlay',false);
+ $('distance').textContent=Math.max(0,maxRow-2);$('presents').textContent=collect;
+ updateHud();blip(620,.11);buzz(8);
+}
+function toggle(id,on){$(id).classList.toggle('show',on);$(id).setAttribute('aria-hidden',on?'false':'true')}
+function updateHud(){
+ score=Math.max(0,maxRow-2)+collect*15;$('distance').textContent=Math.max(0,maxRow-2);$('presents').textContent=collect;$('best').textContent=Math.max(best,score)
+}
+function toast(t){toastMsg=t;toastUntil=worldTime+1.05;$('toast').textContent=t;$('toast').classList.add('show')}
+function move(dir){
+ if(mode!=='playing'||player.hop>0){if(mode==='playing'&&pending.length===0)pending.push(dir);return}
+ const d={up:[0,1],down:[0,-1],left:[-1,0],right:[1,0]}[dir];
+ if(!d)return;
+ const x=player.x+d[0],row=player.row+d[1];
+ if(x<0||x>=COLS||row<0)return;
+ const lane=lanes.get(row);
+ if(lane&&lane.trees.includes(x))return;
+ player.fromX=player.x;player.fromRow=player.row;player.x=x;player.row=row;player.hop=.16;player.dir=dir;
+ lastMove=worldTime;
+ if(row>maxRow){maxRow=row;camAim=Math.max(0,maxRow-6);ensureRows(maxRow+ROWS+5);updateHud()}
+ blip(290+(row%5)*20,.045,'triangle',.012);
+}
+function entityX(o,now){const period=W+220,dist=((o.x+o.speed*now+70)%period+period)%period;return dist-70}
+// Use the exact pixel footprint drawn for a floe, including its visible edges.
+// The entire snowy top is landable; the subtle rim is decoration, not a hazard.
+function floeBounds(o,shift=0){
+ const left=Math.round(entityX(o,worldTime)+shift);
+ return {left,right:left+Math.ceil(o.width)};
+}
+function platformAt(lane,x){
+ for(const o of lane.objects){
+  for(const shift of [-W-220,0,W+220]){
+   const {left,right}=floeBounds(o,shift);
+   if(x>=left&&x<=right)return o;
+  }
+ }return null;
+}
+function makeBurst(cx,cy,kind){
+ const colours=kind==='water'?['#ebfdff','#87dcef','#479ac2']:kind==='monster'?['#fff8da','#e8faff','#9edbeb','#f8c0ae']:['#ffffff','#c1eefa','#70b3cf'];
+ const amount=kind==='storm'?54:38;
+ for(let i=0;i<amount;i++){
+  const a=Math.PI*2*(i/amount)+(Math.random()-.5)*.3;
+  const speed=kind==='storm'?38+Math.random()*135:36+Math.random()*125;
+  particles.push({x:cx,y:cy,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed-(kind==='water'?45:65),life:.45+Math.random()*.8,
+   maxLife:1.25,size:i%5===0?5:2+(i%3),color:colours[i%colours.length]});
+ }
+}
+function death(reason,kind='monster'){
+ if(mode!=='playing')return;
+ const cx=(player.x+(player.floater||0)+.5)*T,cy=worldY(player.row)+T/2;
+ defeat={kind,reason,cx,cy,elapsed:0,duration:DEATH_DURATION[kind]||1.2,dir:player.dir};
+ mode='dying';pending.length=0;player.hop=0;flash=kind==='monster'?.45:.12;
+ $('shell').classList.add('defeated');
+ makeBurst(cx,cy,kind);
+ if(kind==='water'){blip(270,.24,'sine',.04);buzz([18,45,25])}
+ else if(kind==='storm'){blip(205,.35,'sawtooth',.025);buzz([30,40,60])}
+ else {blip(135,.23,'square',.04);buzz([25,50,65])}
+ if(score>best){best=score;try{localStorage.setItem(key,String(best))}catch(e){}$('overKicker').textContent='NEW PERSONAL BEST!'}
+ else $('overKicker').textContent='RUN OVER';
+ $('best').textContent=best;$('startBest').textContent=best;$('total').textContent=score;
+ $('endSteps').textContent=Math.max(0,maxRow-2);$('endPresents').textContent=collect;$('endBest').textContent=best;
+ $('overReason').textContent=reason;
+}
+function getWorldX(){return player.fromX+(player.x-player.fromX)*(1-player.hop/.16)}
+function getWorldRow(){return player.fromRow+(player.row-player.fromRow)*(1-player.hop/.16)}
+function tick(dt){
+ if(flash>0)flash=Math.max(0,flash-dt*2);
+ if(mode==='dying'){
+  defeat.elapsed=Math.min(defeat.duration,defeat.elapsed+dt);
+  advanceParticles(dt);
+  if(defeat.elapsed>=defeat.duration){mode='over';toggle('overOverlay',true)}
+  return;
+ }
+ if(mode!=='playing')return;
+ worldTime+=dt;
+ if(player.hop>0){player.hop=Math.max(0,player.hop-dt);if(player.hop===0){onLanding();if(pending.length&&mode==='playing'){const d=pending.shift();move(d)}}}
+ if(mode!=='playing')return;
+ if(player.hop===0){
+  const lane=lanes.get(player.row);
+  if(lane&&lane.type==='river'){
+   const plat=platformAt(lane,(player.x+(player.floater||0)+.5)*T);
+   if(!plat){death('You slipped into the icy water.','water');return}
+   if(!Number.isFinite(player.floater))player.floater=0;
+   player.floater+=plat.speed*dt/T;
+   if(Math.abs(player.floater)>.48){
+    const dx=Math.sign(player.floater);
+    player.floater-=dx;player.x+=dx;player.fromX=player.x;
+    if(player.x+(player.floater||0)<-.3||player.x+(player.floater||0)>COLS-.7){death('The drifting ice carried you away.','water');return}
+   }
+  }else{player.floater=0}
+  if(lane&&lane.type==='parade'&&hitMonster(lane)){death('A Christmas creature caught you!');return}
+ }
+ if(worldTime-lastMove>5&&maxRow>5){storm+=dt*(.42+Math.min(maxRow/110,.40))}
+ storm=Math.max(storm,Math.max(0,maxRow-15));
+ if(storm>player.row-.35){death('The snowstorm caught up!','storm');return}
+ camAim=Math.max(camAim,Math.max(0,maxRow-6),storm+1);
+ camera+=(camAim-camera)*Math.min(1,dt*5.5);
+ ensureRows(Math.ceil(camera)+ROWS+6);
+ if(camera>player.row+1.1){death('You fell behind the crossing.','storm');return}
+ advanceParticles(dt);
+ if(worldTime>toastUntil)$('toast').classList.remove('show');
+}
+function advanceParticles(dt){
+ particles=particles.filter(p=>(p.life-=dt)>0);
+ for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=dt*40}
+}
+function monsterTouches(kind,monsterX,heroX){
+ return Math.abs(monsterX-heroX)<HERO_RADIUS+(CREATURE_RADIUS[kind]||11);
+}
+function hitMonster(lane){
+ const px=(player.x+(player.floater||0)+.5)*T;
+ for(const o of lane.objects){
+  const x=entityX(o,worldTime);
+  for(const shift of [-W-220,0,W+220]){
+   if(monsterTouches(o.kind,x+shift+16,px))return true;
+  }
+ }return false;
+}
+function onLanding(){
+ const lane=lanes.get(player.row);player.fromX=player.x;player.fromRow=player.row;
+ if(!lane)return;
+ // Floe drift stops immediately when the character reaches dry ground.
+ if(lane.type!=='river')player.floater=0;
+ if(lane.type==='river'&&!platformAt(lane,(player.x+.5)*T)){death('You missed the moving ice!','water');return}
+ if(lane.type==='parade'&&hitMonster(lane)){death('You bumped into a Christmas creature!');return}
+ if(lane.type==='snow'&&lane.gift===player.x){
+  lane.gift=-1;collect++;updateHud();blip(860,.13,'sine',.035);buzz(12);toast('+15 PRESENT!');
+  for(let i=0;i<13;i++)particles.push({x:(player.x+.5)*T,y:worldY(player.row)+T/2,life:.3+Math.random()*.3,vx:(Math.random()-.5)*90,vy:-Math.random()*90});
+ }else if(maxRow>2&&(maxRow-2)%25===0&&player.row===maxRow){toast((maxRow-2)+' STEPS!')}
+}
+function worldY(row){return H-T-(row-camera)*T}
+function atlas(col,row,x,y,w=T,h=T){
+ if(!imgs.winter)return;
+ ctx.drawImage(imgs.winter,col*16,row*16,16,16,Math.round(x),Math.round(y),Math.ceil(w),Math.ceil(h))
+}
+function drawTree(x,y){
+ for(let r=0;r<3;r++)for(let c=0;c<3;c++)atlas(9+c,6+r,x+(c-1)*T,y+(r-2)*T,T,T);
+}
+function dangerFootprint(cx,cy,kind){
+ const radius=HERO_RADIUS+(CREATURE_RADIUS[kind]||11);
+ // Grounded red collision footprint: its width precisely matches the hit test.
+ ctx.save();
+ ctx.fillStyle='rgba(161,50,68,.46)';
+ ctx.beginPath();ctx.ellipse(cx,cy+11,radius,7,0,0,Math.PI*2);ctx.fill();
+ ctx.lineWidth=2;ctx.strokeStyle='#ffecb7';
+ ctx.beginPath();ctx.ellipse(cx,cy+11,radius,7,0,0,Math.PI*2);ctx.stroke();
+ ctx.fillStyle='#fff5d2';
+ ctx.fillRect(Math.round(cx-2),Math.round(cy+9),4,4);
+ ctx.restore();
+}
+function drawRow(lane){
+ const y=worldY(lane.row),r=lane.row;
+ if(y<-80||y>H+35)return;
+ if(lane.type==='river'){
+  const water=ctx.createLinearGradient(0,y,0,y+T);
+  water.addColorStop(0,'#4f9fc2');water.addColorStop(.5,'#216f9b');water.addColorStop(1,'#3b8fb2');
+  ctx.fillStyle=water;ctx.fillRect(0,Math.floor(y),W,T+1);
+  ctx.fillStyle='#8cdbef';
+  for(let i=0;i<12;i++){let k=valueNoise(i,r),z=((worldTime*7*(i%2?.6:1)+i*71+r*19)%W);ctx.fillRect(Math.floor(z),Math.floor(y+7+(i%3)*9),8+Math.floor(k*13),2)}
+  for(const o of lane.objects){
+   const x=entityX(o,worldTime);
+   for(const shift of [-W-220,0,W+220]){
+    const {left,right}=floeBounds(o,shift);
+    const width=right-left;
+    if(left>W+10||right< -10)continue;
+    // Full-width snowy face: every visible pixel between left and right is safe.
+    ctx.fillStyle='#d7f8ff';ctx.fillRect(left,Math.round(y+4),width,T-7);
+    for(let xx=left+4;xx<right-4;xx+=T-2){
+     atlas(12,1,xx,y+6,Math.min(T-4,right-xx-2),T-12);
+    }
+    // Thin frost glint across the whole platform; side shading is purely depth.
+    ctx.fillStyle='#fffef1';ctx.fillRect(left,Math.round(y+4),width,2);
+    ctx.fillStyle='#84cee0';ctx.fillRect(left,Math.round(y+T-6),width,2);
+    ctx.fillStyle='#66a8c7';ctx.fillRect(left+2,Math.round(y+T-4),Math.max(0,width-4),1);
+   }
+  }
+ }else{
+  for(let c=0;c<COLS;c++){
+   atlas(lane.type==='parade'?7:12,lane.type==='parade'?1:1,c*T,y);
+   if(lane.type==='snow'){
+    if(valueNoise(r,c)>.89)atlas((r+c)%3===0?0:1,1,c*T,y);
+   }
+  }
+  if(lane.type==='parade'){
+   // Repeated tread marks use the winter track art, not CSS road blocks.
+   for(let c=0;c<COLS;c+=3){ctx.fillStyle='#9aafae55';ctx.fillRect(c*T,Math.round(y+T-5),T+11,2)}
+   const ordered=lane.objects.map(o=>({o,x:entityX(o,worldTime)}));
+   for(const {o,x} of ordered){
+    for(const shift of [-W-220,0,W+220]){
+     const px=x+shift;if(px<-64||px>W+55)continue;
+     const cx=Math.round(px+16),cy=Math.round(y+T*.50);
+     dangerFootprint(cx,cy,o.kind);
+     sprite(o.kind,cx,cy,Math.floor(worldTime*7+o.phase)%6,(o.speed<0?1:2),80);
+    }
+   }
+  }else{
+   for(const x of lane.trees)drawTree(x*T,y);
+   for(const [x,k] of lane.detail)atlas(k?1:0,1,x*T,y);
+   if(lane.gift>=0){const img=imgs[['giftR','giftG','giftB'][r%3]];if(img){let b=Math.sin(worldTime*3+r)*2;ctx.drawImage(img,lane.gift*T+4,Math.round(y+4+b),T-8,T-8)}}
+  }
+ }
+ if(lane.type==='parade'&&r>10&&r%6===0){ctx.fillStyle='#fff9';ctx.fillRect(0,Math.round(y),W,2)}
+}
+function sprite(kind,x,y,frame=0,dir=0,scale=86){
+ const im=imgs[kind];if(!im)return;
+ const cols=(kind==='hero'||kind==='heroMove'?4:6),rows=Math.max(1,Math.floor(im.naturalHeight/128));
+ const cf=frame%cols,rf=clamp(dir,0,rows-1),base=128;
+ ctx.drawImage(im,cf*base,rf*base,base,base,Math.round(x-scale/2),Math.round(y-scale/2),scale,scale)
+}
+function drawDefeat(){
+ if(!defeat)return;
+ const d=defeat,t=clamp(d.elapsed/d.duration,0,1);
+ const ease=1-Math.pow(1-t,3),cx=d.cx,cy=d.cy;
+ ctx.save();
+ if(d.kind==='monster'){
+  // Impact ring, recoil, tumble, then a settling flurry.
+  ctx.strokeStyle='rgba(255,241,179,'+(1-t)+')';
+  ctx.lineWidth=3;
+  ctx.beginPath();ctx.ellipse(cx,cy+10,8+t*43,5+t*13,0,0,Math.PI*2);ctx.stroke();
+  const knockout=clamp(t/.65,0,1);
+  ctx.translate(cx+(d.dir==='left'?1:-1)*knockout*17,cy-Math.sin(knockout*Math.PI)*15+Math.max(0,t-.5)*29);
+  ctx.rotate((d.dir==='left'?-1:1)*Math.PI*.48*ease);
+  ctx.globalAlpha=1-clamp((t-.67)/.25,0,1);
+  sprite('heroMove',0,0,Math.floor(t*14)%4,3,92);
+ }else if(d.kind==='water'){
+  // Two ripples frame the snowman's visible plunge through the river surface.
+  for(let k=0;k<2;k++){
+   const spread=clamp(t*1.6-k*.2,0,1);
+   ctx.strokeStyle='rgba(226,251,255,'+(1-spread)*.8+')';ctx.lineWidth=k?2:4;
+   ctx.beginPath();ctx.ellipse(cx,cy+10,8+spread*36,3+spread*11,0,0,Math.PI*2);ctx.stroke();
+  }
+  ctx.translate(cx,cy+t*46);
+  ctx.rotate(-t*.45);
+  ctx.globalAlpha=1-clamp((t-.24)/.5,0,1);
+  sprite('heroMove',0,0,Math.floor(t*10)%4,3,92*(1-.55*ease));
+ }else{
+  // The blizzard wraps around the sprite until it disappears into a snow drift.
+  ctx.translate(cx+Math.sin(t*37)*(1-t)*5,cy+ease*20);
+  ctx.rotate(Math.sin(t*25)*.12*(1-t));
+  ctx.globalAlpha=1-clamp((t-.33)/.46,0,1);
+  sprite('heroMove',0,0,Math.floor(t*12)%4,0,92);
+ }
+ ctx.restore();
+ if(d.kind==='storm'){
+  // Existing Gherwit snow detail becomes the final drift covering the snowman.
+  const v=clamp((t-.40)/.52,0,1);
+  if(v>0){ctx.save();ctx.globalAlpha=v;atlas(0,1,cx-16,cy+8,32,32);ctx.restore()}
+ }
+}
+function drawStorm(){
+ let sy=worldY(storm);
+ if(sy>H+22)return;
+ ctx.fillStyle='#e7f5f6ac';ctx.fillRect(0,Math.max(0,Math.floor(sy+T)),W,Math.max(0,H-sy));
+ ctx.fillStyle='#d5faff';ctx.fillRect(0,Math.round(sy+T),W,4);
+ for(let i=0;i<24;i++){
+  const x=(i*79+Math.floor(worldTime*32))%W;
+  const yy=((Math.floor(worldTime*41)+i*41)%(H+70));
+  if(yy>sy){ctx.fillStyle=i%3===0?'#ffffff':'#bde8f4';ctx.fillRect(x,yy,i%4===0?4:2,2)}
+ }
+}
+function render(){
+ ctx.fillStyle='#d9eef5';ctx.fillRect(0,0,W,H);
+ ensureRows(Math.ceil(camera)+ROWS+4);
+ const start=Math.max(0,Math.floor(camera)-2),end=Math.ceil(camera)+ROWS+2;
+ for(let r=end;r>=start;r--){const lane=lanes.get(r);if(lane)drawRow(lane)}
+ drawStorm();
+ if(imgs.hero){
+  if(mode==='dying'||mode==='over')drawDefeat();
+  else{
+   let posX=(getWorldX()+(player.floater||0))*T+T/2,posY=worldY(getWorldRow())+T/2;
+   const inHop=mode==='playing'&&player.hop>0;
+   if(inHop)posY-=Math.sin((1-player.hop/.16)*Math.PI)*11;
+   ctx.fillStyle='#173f5866';ctx.beginPath();ctx.ellipse(posX,posY+12,HERO_RADIUS,5,0,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='#d8ffffaa';ctx.lineWidth=1;ctx.stroke();
+   const dir={up:0,left:1,right:2,down:3}[player.dir]||0;
+   sprite(inHop?'heroMove':'hero',posX,posY,Math.floor(worldTime*7)%4,dir,92);
+  }
+ }
+ for(const p of particles){
+  ctx.fillStyle=p.color||'#ffe8a3';ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size||4,p.size||4)
+ }
+ if(mode==='playing'&&worldTime-lastMove>3.5){
+  const v=clamp((worldTime-lastMove-3.5)/2.2,0,1);
+  ctx.fillStyle='rgba(9,43,67,'+(.3*v)+')';ctx.fillRect(0,0,W,H);
+ }
+ if(flash>0){ctx.fillStyle='rgba(255,255,255,'+(flash*.28)+')';ctx.fillRect(0,0,W,H)}
+}
+let prev=0;
+function loop(ms){if(!document.hidden){const dt=Math.min(.042,Math.max(0,(ms-prev)/1000||0));if(mode==='playing'||mode==='start'||mode==='dying'||mode==='over')tick(dt);render()}prev=ms;requestAnimationFrame(loop)}
+document.addEventListener('visibilitychange',()=>{prev=performance.now();if(document.hidden&&mode==='playing'){mode='paused';toggle('pauseOverlay',true)}});
+$('start').addEventListener('click',()=>{if(!loaded){loadAll();return}newRun()});
+$('again').addEventListener('click',newRun);
+$('pause').addEventListener('click',()=>{if(mode==='playing'){mode='paused';toggle('pauseOverlay',true)}else if(mode==='paused'){mode='playing';toggle('pauseOverlay',false)}});
+$('resume').addEventListener('click',()=>{mode='playing';toggle('pauseOverlay',false)});
+$('restart').addEventListener('click',newRun);
+$('sound').addEventListener('click',()=>{sound=!sound;$('sound').textContent='SOUND: '+(sound?'ON':'OFF');try{localStorage.setItem(soundKey,sound?'on':'off')}catch(e){}if(sound)blip(660,.09)});
+$('sound').textContent='SOUND: '+(sound?'ON':'OFF');
+const KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyW:'up',KeyA:'left',KeyS:'down',KeyD:'right'};
+document.addEventListener('keydown',e=>{if(KEYS[e.code]){e.preventDefault();if(!e.repeat)move(KEYS[e.code])}else if(e.code==='Escape'||e.code==='KeyP'){e.preventDefault();if(mode==='playing'){$('pause').click()}else if(mode==='paused')$('resume').click()}else if((e.code==='Enter'||e.code==='Space')&&mode==='start'&&loaded){e.preventDefault();newRun()}});
+for(const button of document.querySelectorAll('[data-move]')){
+ const d=button.dataset.move;button.addEventListener('pointerdown',e=>{e.preventDefault();button.classList.add('pressed');move(d)});
+ button.addEventListener('pointerup',()=>button.classList.remove('pressed'));
+ button.addEventListener('pointercancel',()=>button.classList.remove('pressed'));
+}
+let down=null;
+cvs.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};try{cvs.setPointerCapture(e.pointerId)}catch(err){}});
+cvs.addEventListener('pointerup',e=>{if(!down)return;const dx=e.clientX-down.x,dy=e.clientY-down.y;down=null;if(Math.max(Math.abs(dx),Math.abs(dy))<12){move('up');return}move(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up')});
+cvs.addEventListener('pointercancel',()=>down=null);
+loadAll();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

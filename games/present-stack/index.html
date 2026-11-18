@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#11363c">
+<meta name="description" content="Sort Santa's falling presents, push gifts into rows and keep the workshop running in this original Stack Attack-inspired arcade game.">
+<title>Santa's Present Stack · GameBox</title>
+<style>
+:root{color-scheme:dark;--cream:#fff2ce;--gold:#ffd77d;--pine:#1b5547;--deep:#0c2b38;--red:#d65c56}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:system-ui,"Trebuchet MS",sans-serif;overscroll-behavior:none;background:#0c2834;color:var(--cream)}
+body{min-height:100dvh;display:flex;justify-content:center;align-items:center;background:radial-gradient(ellipse at 50% 36%,#285354,#09252f 78%);touch-action:pan-y}
+button,a{font:inherit}button{cursor:pointer}
+.shell{width:min(100vw,430px,calc(70.3125dvh - 129.375px));min-width:min(300px,100vw);padding:5px 7px calc(5px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.top{display:flex;align-items:center;gap:8px;min-height:38px}
+.home{display:flex;align-items:center;justify-content:center;flex:0 0 39px;height:39px;text-decoration:none;color:#fff3ce;background:#235151;border:2px solid #6c9e93;border-bottom:5px solid #092b32;border-radius:12px;font-size:25px;line-height:1}
+.titleGroup{flex:1;min-width:0;text-align:left}.eyebrow{display:block;color:#eec779;font-size:9px;font-weight:1000;letter-spacing:2px}
+.titleGroup h1{font-weight:1000;font-size:clamp(15px,4.6vw,21px);letter-spacing:-.6px;margin:0;white-space:nowrap;text-shadow:0 2px 0 #0b222a}
+.menu{height:39px;padding:0 12px;border-radius:11px;border:2px solid #9bc8b4;border-bottom:5px solid #0d3034;color:#e7f8e9;background:#286055;font-weight:1000;font-size:13px}
+.menu:active,.home:active{transform:translateY(2px);border-bottom-width:3px}
+.hud{display:grid;grid-template-columns:1.3fr .85fr .85fr 1fr;gap:5px}
+.stat{min-height:44px;text-align:center;background:#1e4b4e;border:2px solid #537e78;border-bottom:5px solid #102d37;border-radius:10px;padding:3px 4px 5px;box-shadow:inset 0 1px 0 #527f71}
+.stat span{display:block;color:#a9d5c7;font-size:8px;font-weight:900;letter-spacing:1.2px}
+.stat strong{display:block;color:#fff4d7;font-variant-numeric:tabular-nums;font-size:17px;line-height:1.2;font-weight:1000}
+.stat.score strong{color:#ffda81}.stat.life strong{color:#ff8c80;font-size:17px;white-space:nowrap;letter-spacing:-2px}
+.stage{position:relative;overflow:hidden;isolation:isolate;border:4px solid #b68557;border-radius:10px;box-shadow:0 5px 0 #06252b,0 10px 35px #051923a0, inset 0 2px #fff0be;background:#193c44;aspect-ratio:360/512}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:none}
+.overlay{position:absolute;inset:0;z-index:4;background:linear-gradient(180deg,#061d23b8,#082833dd 36%,#061922e8);display:grid;place-items:center;padding:10px;overflow:auto}
+.overlay[hidden],[hidden]{display:none!important}
+.panel{width:min(100%,310px);border-radius:21px;border:3px solid #ffe6ad;border-bottom:8px solid #7e5d41;background:linear-gradient(160deg,#316c60,#173f48 88%);box-shadow:0 5px 0 #122f32,0 15px 35px #00151ab0,inset 0 1px 2px #ffffff3a;padding:18px 16px 16px;text-align:center}
+.panel .tag{display:block;font-size:10px;letter-spacing:3px;font-weight:1000;color:#ffe6a6}
+.panel h2{font-size:clamp(27px,7vw,39px);line-height:.95;letter-spacing:-1.4px;margin:11px 0 6px;text-shadow:0 3px #0e2a32;color:#fff1c9}
+.panel h2 b{color:#ffd276}
+.panel p{color:#e3f4e4;font-size:13px;line-height:1.44;margin:8px 0;font-weight:650}
+.giftHero{margin:8px auto 6px;display:flex;justify-content:center;align-items:flex-end;gap:2px;min-height:64px}
+.giftHero img{width:58px;height:58px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 5px 0 #0c3134)}
+.giftHero img:nth-child(2){transform:translateY(-8px);width:65px;height:65px}
+.rules{display:grid;gap:6px;text-align:left;margin:12px 0 15px}
+.rule{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;color:#f2edda}
+.rule .key{flex:0 0 45px;display:grid;place-items:center;padding:5px 4px;border-radius:7px;background:#173b43;border:1px solid #79a89c;color:#ffdf93;font-size:15px}
+.primary,.secondary{display:block;width:100%;min-height:46px;border-radius:12px;font-weight:1000;letter-spacing:.6px}
+.primary{border:2px solid #ffedbd;border-bottom:6px solid #aa6a36;background:linear-gradient(#ffe59c,#f9b955);color:#193c3d;text-shadow:0 1px #fff0b4;font-size:17px;box-shadow:0 4px 0 #153138}
+.secondary{margin-top:8px;border:2px solid #98d4be;border-bottom:5px solid #143b40;background:#317868;color:#fff5dd}
+.primary:active,.secondary:active{transform:translateY(3px);border-bottom-width:3px}
+.result{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.result div{border:1px solid #6c9f91;background:#17444c;border-radius:10px;padding:8px 5px}
+.result span{display:block;font-size:9px;letter-spacing:1.4px;color:#bbdfd0;font-weight:900}
+.result strong{font-size:25px;color:#ffdc8b;font-weight:1000}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:3px 6px 0;min-height:68px;touch-action:none}
+.moveGroup{display:flex;gap:10px}
+.control{display:grid;place-items:center;min-width:64px;height:61px;border:2px solid #8dc4b9;border-bottom:6px solid #092c36;border-radius:16px;background:linear-gradient(155deg,#336a68,#204b57);box-shadow:inset 0 2px #8fc1ab55,0 3px 8px #051f2a;user-select:none;touch-action:none;position:relative}
+.control svg{width:30px;height:30px;fill:#f7eed5;filter:drop-shadow(0 3px 0 #153b41)}
+.control.jump{min-width:116px;background:linear-gradient(#ffdf83,#ec9e47);border-color:#fff0bd;border-bottom-color:#99532d;flex-direction:column;gap:0}
+.control.jump svg{fill:#163d40}
+.control.jump strong{color:#133e40;font-weight:1000;font-size:11px;letter-spacing:1.4px;line-height:1}
+.control.held,.control:active{transform:translateY(3px);border-bottom-width:3px;filter:brightness(1.16)}
+@media(min-width:400px){.control{min-width:78px;height:67px}.control.jump{min-width:131px}}
+@media(max-height:700px){.shell{gap:4px}.stat{min-height:36px;padding:2px 3px}.stat strong{font-size:15px}.controls{min-height:56px}.control{height:52px;min-width:58px}.control.jump{min-width:102px}.panel{padding:12px 14px 12px}.panel h2{font-size:28px}.giftHero{min-height:44px}.giftHero img{width:44px;height:44px}.giftHero img:nth-child(2){width:49px;height:49px}.rule{font-size:11px}.rules{gap:4px;margin:7px 0}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell" aria-label="Santa's Present Stack">
+<header class="top">
+<a class="home" href="../" aria-label="Back to GameBox">‹</a>
+<div class="titleGroup"><span class="eyebrow">SANTA'S WORKSHOP</span><h1>PRESENT STACK</h1></div>
+<button id="pauseButton" class="menu" type="button" aria-label="Pause game">Ⅱ &nbsp; MENU</button>
+</header>
+<div class="hud" aria-label="Game score and lives">
+<div class="stat score"><span>SCORE</span><strong id="score">00000</strong></div>
+<div class="stat"><span>SHIFT</span><strong id="shift">01</strong></div>
+<div class="stat"><span>ROWS</span><strong id="lines">00</strong></div>
+<div class="stat life"><span>HEARTS</span><strong id="hearts">♥ ♥ ♥</strong></div>
+</div>
+<div class="stage">
+<canvas id="game" width="360" height="512" aria-label="Side-view Santa workshop arcade game. Push falling presents into complete rows and jump to break boxes above you."></canvas>
+<div id="overlay" class="overlay">
+<section id="intro" class="panel" aria-label="Start game">
+<span class="tag">NORTH POLE ARCADE</span><h2>SANTA'S<br><b>PRESENT STACK</b></h2>
+<div class="giftHero" aria-hidden="true">
+<img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt="">
+<img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_green.png" alt="">
+<img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_blue.png" alt="">
+</div>
+<p>Help the elf keep the wrapping line moving!</p>
+<div class="rules">
+<div class="rule"><span class="key">◀ ▶</span><span>Walk into presents to push them.</span></div>
+<div class="rule"><span class="key">↑</span><span>Jump up through a box to break it.</span></div>
+<div class="rule"><span class="key">10</span><span>Fill a whole row to clear it.</span></div>
+</div>
+<button id="start" class="primary" type="button">START SHIFT</button>
+</section>
+<section id="paused" class="panel" hidden aria-label="Paused">
+<span class="tag">COCOA BREAK</span><h2>SHIFT <b>PAUSED</b></h2>
+<p>The wrapping line is waiting for you.</p>
+<button id="resume" class="primary" type="button">RESUME SHIFT</button>
+<button id="soundButton" class="secondary" type="button">SOUND ON</button>
+<a class="secondary" href="../" style="display:grid;place-items:center;text-decoration:none">BACK TO GAMEBOX</a>
+</section>
+<section id="end" class="panel" hidden aria-label="Game over">
+<span class="tag">WORKSHOP REPORT</span><h2 id="endTitle">END OF SHIFT</h2>
+<div class="result">
+<div><span>YOUR SCORE</span><strong id="finalScore">00000</strong></div>
+<div><span>ROWS SORTED</span><strong id="finalLines">0</strong></div>
+</div>
+<p>PERSONAL BEST &nbsp; <strong id="finalBest">00000</strong></p>
+<button id="again" class="primary" type="button">TRY AGAIN</button>
+<a class="secondary" href="../" style="display:grid;place-items:center;text-decoration:none">BACK TO GAMEBOX</a>
+</section>
+</div>
+</div>
+<div class="controls" aria-label="Touch game controls">
+<div class="moveGroup">
+<button class="control" type="button" data-hold="left" aria-label="Move elf left"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20 3 5 16l15 13v-8h7V11h-7z"/></svg></button>
+<button class="control" type="button" data-hold="right" aria-label="Move elf right"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 3 15 13-15 13v-8H5V11h7z"/></svg></button>
+</div>
+<button class="control jump" type="button" data-hold="jump" aria-label="Jump or break present"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 2 18h9v11h10V18h9z"/></svg><strong>JUMP</strong></button>
+</div>
+</main>
+<script src="engine.js?v=1"></script>
+<script src="game.js?v=1"></script>
+</body>
+</html>

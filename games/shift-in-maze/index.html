@@ -1,0 +1,3235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- GameBox source base: preserve the original root URL context. -->
+<base href="../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#071326">
+<title>Shift In Maze · GameBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/*
+  MAZE SHIFT — PROFESSIONAL GAME UI STANDARD
+  1. Gameplay owns the screen. Permanent UI must earn its space.
+  2. Top = glanceable HUD. Centre = game. Bottom = frequent thumb actions.
+  3. Show only controls relevant to the current phase.
+  4. Replace permanent explanation with visual state, motion, highlight and transient feedback.
+  5. Put infrequent actions, rules, network detail and exit controls behind a single game menu.
+  6. Use a coherent tactile design system: layered materials, hard + soft depth, bespoke controls,
+     strong typography, deliberate colour roles and clear pressed/selected/disabled states.
+  7. Avoid web-form/card-soup composition during play.
+  8. Preserve one-handed reach, safe areas, readable contrast and responsive proportions.
+*/
+:root{
+  color-scheme:dark;
+  --ink:#f7fbff;
+  --ink-dark:#071326;
+  --muted:#91a5ba;
+  --muted-dark:#607086;
+  --line:rgba(255,255,255,.10);
+  --line-dark:#d9e2eb;
+  --chrome:#071326;
+  --chrome2:#0d2239;
+  --navy:#0a315e;
+  --teal:#08a97d;
+  --teal2:#08785f;
+  --teal-soft:#dff8ef;
+  --gold:#f7bd18;
+  --gold2:#e49a00;
+  --gold-soft:#fff3c8;
+  --danger:#d94a4a;
+  --paper:#f7fafc;
+  --panel:#ffffff;
+  --maze:#175247;
+  --maze2:#0c302d;
+  --path:#e2c98f;
+  --shadow-soft:0 18px 45px rgba(0,0,0,.18);
+  --shadow-deep:0 26px 70px rgba(0,0,0,.34);
+  --shadow-hard:0 5px 0 rgba(0,0,0,.28);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#06111d}
+body{
+  min-height:100dvh;
+  background:
+    radial-gradient(circle at 18% -10%,rgba(8,169,125,.14),transparent 25rem),
+    radial-gradient(circle at 100% 10%,rgba(247,189,24,.08),transparent 25rem),
+    linear-gradient(180deg,#0a1a2a 0%,#07131f 58%,#050d16 100%);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+button,select{font:inherit}
+button{-webkit-tap-highlight-color:transparent;cursor:pointer}
+button:disabled{cursor:not-allowed}
+.hidden{display:none!important}
+.app{width:min(100%,820px);min-height:100dvh;margin:0 auto;padding:0 14px 34px}
+.view{animation:viewIn .22s cubic-bezier(.2,.8,.2,1)}
+.shellHeader{
+  min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 0;
+}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brandMark{
+  width:35px;height:35px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.16);
+  border-radius:10px;background:linear-gradient(145deg,#11385b,#08213a);
+  box-shadow:0 6px 14px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.12);
+  color:var(--gold);font:700 13px Fredoka,sans-serif;letter-spacing:-.04em
+}
+.brandCopy{display:grid;line-height:1}
+.brandCopy strong{font:700 16px Fredoka,sans-serif}
+.brandCopy span{margin-top:4px;color:#88a0b8;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.iconBtn{
+  width:42px;height:42px;padding:0;display:grid;place-items:center;border:1px solid rgba(255,255,255,.13);
+  border-radius:12px;background:rgba(255,255,255,.055);color:#fff;
+  box-shadow:inset 0 1px rgba(255,255,255,.05);
+  font-size:18px;font-weight:900;transition:transform .1s ease,background .14s ease,border-color .14s ease;
+}
+.iconBtn:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.22)}
+.iconBtn:active{transform:translateY(1px) scale(.97)}
+.hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:212px;padding:24px 21px;border:1px solid rgba(255,255,255,.10);border-radius:27px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  background:
+    radial-gradient(circle at 82% 22%,rgba(247,189,24,.30),transparent 18%),
+    radial-gradient(circle at 15% 8%,rgba(40,211,161,.18),transparent 28%),
+    linear-gradient(135deg,#0a1c31 0%,#123c4b 52%,#0b5649 100%);
+  box-shadow:var(--shadow-deep),inset 0 1px rgba(255,255,255,.08);
+}
+.hero:before{
+  content:"";position:absolute;right:-54px;top:-62px;z-index:-1;width:225px;height:225px;
+  border:26px solid rgba(255,255,255,.055);border-radius:52px;transform:rotate(31deg);
+}
+.heroEyebrow{color:#91e9ca;font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.hero h1{margin:7px 0 0;font:700 clamp(42px,11vw,64px)/.88 Fredoka,sans-serif;letter-spacing:-.055em}
+.heroTag{margin-top:10px;color:#c7d7e6;font-size:12px;font-weight:600}
+.modeSelect{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:14px}
+.modeTile{
+  position:relative;min-height:154px;padding:16px;border:1px solid rgba(255,255,255,.11);border-radius:19px;
+  background:linear-gradient(155deg,rgba(255,255,255,.10),rgba(255,255,255,.035));
+  color:#fff;text-align:left;overflow:hidden;
+  box-shadow:0 10px 28px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.06);
+  transition:transform .14s ease,border-color .14s ease,background .14s ease;
+}
+.modeTile:hover{transform:translateY(-2px);border-color:rgba(94,230,190,.38);background:linear-gradient(155deg,rgba(255,255,255,.13),rgba(255,255,255,.05))}
+.modeTile:active{transform:translateY(1px) scale(.99)}
+.modeSymbol{
+  width:45px;height:45px;display:grid;place-items:center;margin-bottom:18px;border-radius:13px;
+  background:linear-gradient(145deg,#0db083,#07765e);box-shadow:0 7px 16px rgba(0,0,0,.23),inset 0 1px rgba(255,255,255,.22);
+  font:700 16px Fredoka,sans-serif
+}
+.modeTile.alt .modeSymbol{background:linear-gradient(145deg,#1c4f83,#092b51)}
+.modeTile strong{display:block;font:700 19px/1 Fredoka,sans-serif}
+.modeTile small{display:block;margin-top:7px;color:#9db2c7;font-size:11px;font-weight:650;line-height:1.35}
+.modeChevron{position:absolute;right:15px;bottom:12px;color:#71879d;font-size:22px}
+.setupTop{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin:7px 0 15px
+}
+.setupTitle span{display:block;color:#6fd7b7;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.setupTitle h2{margin:4px 0 0;font:700 27px Fredoka,sans-serif}
+.backBtn{
+  min-height:39px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  background:rgba(255,255,255,.055);color:#d9e4ef;font-size:11px;font-weight:900;
+}
+.setupPanel{
+  padding:15px;border:1px solid rgba(255,255,255,.10);border-radius:17px;
+  background:linear-gradient(155deg,rgba(255,255,255,.085),rgba(255,255,255,.04));
+  box-shadow:0 11px 26px rgba(0,0,0,.12),inset 0 1px rgba(255,255,255,.05)
+}
+.setupPanel+.setupPanel{margin-top:10px}
+.panelLabel{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;
+  color:#dfe8f1;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase
+}
+.panelLabel span{color:#758ba1;font-size:9px}
+.playerGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.choice{
+  min-height:50px;border:1px solid rgba(255,255,255,.12);border-radius:11px;
+  background:rgba(255,255,255,.055);color:#d8e3ed;font-weight:800;
+  box-shadow:inset 0 1px rgba(255,255,255,.03);
+  transition:transform .1s ease,border-color .13s ease,background .13s ease;
+}
+.choice:active{transform:scale(.985)}
+.choice.selected{
+  border-color:#4dd1aa;background:linear-gradient(180deg,rgba(8,169,125,.28),rgba(8,169,125,.17));
+  color:#fff;box-shadow:inset 0 0 0 1px rgba(77,209,170,.12),0 0 20px rgba(8,169,125,.09)
+}
+.field{display:grid;gap:6px}
+.field label{color:#8095aa;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.field select{
+  width:100%;min-height:47px;border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  appearance:none;background:#0b1c2d;color:#f3f7fb;padding:0 36px 0 11px;
+  font-size:15px;font-weight:800;outline:none;
+  background-image:linear-gradient(45deg,transparent 50%,#8ca1b6 50%),linear-gradient(135deg,#8ca1b6 50%,transparent 50%);
+  background-position:calc(100% - 17px) 20px,calc(100% - 12px) 20px;background-size:5px 5px;background-repeat:no-repeat;
+}
+.field select:focus{border-color:#49c9a3;box-shadow:0 0 0 3px rgba(8,169,125,.12)}
+.twoCols{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.7fr);gap:10px}
+.primaryBtn,.secondaryBtn,.dangerBtn{
+  min-height:50px;border-radius:11px;padding:0 15px;font-weight:900;
+  transition:transform .1s ease,filter .14s ease,box-shadow .1s ease;
+}
+.primaryBtn{
+  border:1px solid #0cba8a;background:linear-gradient(180deg,#11b889,#079b72);color:#fff;
+  box-shadow:0 5px 0 #05694f,0 10px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.20);
+}
+.primaryBtn:hover{filter:brightness(1.05)}
+.primaryBtn:active{transform:translateY(3px);box-shadow:0 2px 0 #05694f,0 5px 10px rgba(0,0,0,.18)}
+.primaryBtn:disabled{opacity:.35;filter:saturate(.5);box-shadow:none}
+.secondaryBtn{
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#e0e8f0;
+}
+.dangerBtn{border:1px solid rgba(217,74,74,.42);background:rgba(217,74,74,.10);color:#ffb7b7}
+.full{width:100%}
+.setupActions{display:flex;gap:8px;margin-top:12px}
+.statusLine{
+  min-height:42px;display:flex;align-items:center;gap:9px;margin-top:10px;padding:9px 11px;
+  border:1px solid rgba(255,255,255,.10);border-radius:10px;background:rgba(255,255,255,.045);
+  color:#8fa4b9;font-size:11px;font-weight:750;
+}
+.statusLine:before{content:"";width:8px;height:8px;border-radius:50%;background:#64788c;box-shadow:0 0 0 4px rgba(100,120,140,.10)}
+.statusLine.good{border-color:rgba(8,169,125,.25);background:rgba(8,169,125,.10);color:#82e0c2}
+.statusLine.good:before{background:#18c896;box-shadow:0 0 0 4px rgba(24,200,150,.11)}
+.statusLine.warn{border-color:rgba(247,189,24,.24);background:rgba(247,189,24,.08);color:#f2d47c}
+.statusLine.warn:before{background:var(--gold)}
+.lobbyList,.hostList{display:grid;gap:7px}
+.lobbyRow,.hostCard{
+  min-height:56px;border:1px solid rgba(255,255,255,.10);border-radius:11px;background:rgba(255,255,255,.045);
+}
+.lobbyRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px}
+.lobbyDot{width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+.lobbyCopy{min-width:0}
+.lobbyCopy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.lobbyCopy span{display:block;margin-top:2px;color:#74899e;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.readyTag{padding:5px 7px;border-radius:6px;background:rgba(8,169,125,.16);color:#70ddb9;font-size:9px;font-weight:900;text-transform:uppercase}
+.hostCard{
+  width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 10px;color:#fff;text-align:left
+}
+.hostCard strong{display:block;font-size:13px}
+.hostCard small{display:block;margin-top:3px;color:#7890a6;font-size:10px}
+.joinTag{padding:7px 9px;border-radius:7px;background:#0ba77c;color:#fff;font-size:9px;font-weight:900;text-transform:uppercase}
+.emptyState{
+  min-height:72px;display:grid;place-items:center;text-align:center;padding:12px;
+  border:1px dashed rgba(255,255,255,.10);border-radius:10px;color:#6f8498;font-size:11px
+}
+
+/* PLAY SCREEN */
+body.playing{overflow:hidden;background:#040b13}
+body.playing .app{width:100%;max-width:none;height:100dvh;min-height:100dvh;padding:0;overflow:hidden}
+.playScreen{
+  position:relative;height:100dvh;min-height:100dvh;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  padding:max(7px,env(safe-area-inset-top)) 6px max(7px,env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 50% 38%,rgba(18,91,76,.22),transparent 34rem),
+    linear-gradient(180deg,#07131f 0%,#050d16 100%);
+}
+.gameHud{
+  z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;
+  min-height:52px;padding:2px 3px 6px;
+}
+.turnHud{
+  min-width:0;display:flex;align-items:center;gap:8px;padding:5px 8px 5px 6px;border-radius:13px;
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);
+  box-shadow:inset 0 1px rgba(255,255,255,.04)
+}
+.turnDot{width:30px;height:30px;flex:0 0 auto;border:3px solid rgba(255,255,255,.84);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.turnText{min-width:0}
+.turnText span{display:block;color:#72889e;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.turnText strong{display:block;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 15px Fredoka,sans-serif}
+.phaseBadge{
+  min-height:38px;padding:0 10px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(247,189,24,.25);
+  border-radius:11px;background:rgba(247,189,24,.10);color:#f3d574;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+}
+.phaseBadge.waiting{border-color:rgba(255,255,255,.09);background:rgba(255,255,255,.05);color:#768ba0}
+.menuBtn{width:38px;height:38px;border-radius:11px}
+.boardStage{
+  min-height:0;display:grid;place-items:center;position:relative;padding:0;
+}
+.boardFrame{
+  position:relative;width:min(calc(100vw - 12px),calc(100dvh - 190px),720px);aspect-ratio:1;
+  padding:5px;border:1px solid rgba(255,255,255,.11);border-radius:18px;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(29,121,102,.38),transparent 60%),
+    linear-gradient(145deg,#0b2a39,#061a27);
+  box-shadow:0 22px 48px rgba(0,0,0,.40),inset 0 1px rgba(255,255,255,.06),inset 0 0 0 1px rgba(0,0,0,.32);
+  transition:transform .15s ease,filter .15s ease;
+}
+.boardFrame.boardPulse{animation:boardPulse .22s cubic-bezier(.2,.8,.2,1)}
+.boardGrid{
+  width:100%;height:100%;display:grid;
+  grid-template-columns:7.3% repeat(7,minmax(0,1fr)) 7.3%;
+  grid-template-rows:7.3% repeat(7,minmax(0,1fr)) 7.3%;
+  gap:1px;align-items:stretch;justify-items:stretch;
+}
+.cell{
+  position:relative;min-width:0;min-height:0;padding:0;overflow:hidden;border:1px solid rgba(255,255,255,.055);border-radius:5px;
+  background:
+    radial-gradient(circle at 27% 20%,rgba(255,255,255,.065),transparent 30%),
+    linear-gradient(145deg,#1b584c,#0e352f);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),inset 0 -4px 8px rgba(0,0,0,.10);
+  transition:transform .11s ease,filter .12s ease,box-shadow .14s ease,opacity .14s ease;
+}
+.cell:disabled{cursor:default}
+.cell.fixed:after{content:"";position:absolute;right:3px;top:3px;width:3px;height:3px;border-radius:50%;background:rgba(247,189,24,.55);z-index:6}
+.cell.reachable{
+  cursor:pointer;z-index:3;box-shadow:inset 0 0 0 3px #5ce4ba,0 0 12px rgba(92,228,186,.34);
+  animation:reachableGlow 1.45s ease-in-out infinite
+}
+.cell.reachable:active{transform:scale(.95);filter:brightness(1.12)}
+.cell.currentCell{box-shadow:inset 0 0 0 3px rgba(247,189,24,.96),0 0 15px rgba(247,189,24,.27)}
+.pathCenter,.pathArm{
+  position:absolute;z-index:1;
+  background:
+    linear-gradient(90deg,rgba(90,62,25,.14),transparent 22%,transparent 78%,rgba(90,62,25,.12)),
+    linear-gradient(180deg,#efdcae,#d9bd82 48%,#c49f62);
+  box-shadow:inset 0 0 0 1px rgba(94,66,28,.12);
+}
+.pathCenter{left:28%;top:28%;width:44%;height:44%;border-radius:34%}
+.pathArm.n{left:35%;top:-3%;width:30%;height:39%}
+.pathArm.s{left:35%;bottom:-3%;width:30%;height:39%}
+.pathArm.e{right:-3%;top:35%;height:30%;width:39%}
+.pathArm.w{left:-3%;top:35%;height:30%;width:39%}
+.relicToken{
+  position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);
+  min-width:34%;aspect-ratio:1;display:grid;place-items:center;border:1px solid rgba(109,74,9,.55);border-radius:50%;
+  background:radial-gradient(circle at 34% 28%,#fff3a0 0 10%,#f4c72f 35%,#c78307 100%);
+  color:#593900;box-shadow:0 2px 5px rgba(0,0,0,.30),inset 0 1px rgba(255,255,255,.62);
+  font-size:clamp(5px,1.6vw,10px);font-weight:1000;letter-spacing:-.05em;pointer-events:none;
+}
+.pawns{position:absolute;z-index:8;inset:3px;display:flex;align-content:flex-start;gap:1px;flex-wrap:wrap;pointer-events:none}
+.pawn{
+  width:clamp(8px,2.5vw,15px);height:clamp(8px,2.5vw,15px);border:2px solid rgba(255,255,255,.96);border-radius:50%;
+  box-shadow:0 2px 4px rgba(0,0,0,.58),0 0 0 1px rgba(0,0,0,.20)
+}
+.insertBtn{
+  align-self:center;justify-self:center;width:74%;height:74%;padding:0;display:grid;place-items:center;
+  border:1px solid #e1a300;border-radius:8px;background:linear-gradient(180deg,#ffd64d,#f0aa00);
+  color:#4b3500;font:900 clamp(10px,3vw,18px) Fredoka,sans-serif;
+  box-shadow:0 3px 0 #835c00,0 5px 9px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.45);
+  animation:insertReady 1.65s ease-in-out infinite;transition:transform .09s ease,opacity .12s ease,filter .12s ease;
+}
+.insertBtn:active{transform:translateY(2px) scale(.95);box-shadow:0 1px 0 #835c00}
+.insertBtn.blocked{opacity:.08;animation:none;pointer-events:none}
+.insertBtn:disabled{opacity:.11;animation:none;box-shadow:none}
+.thumbDock{
+  z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;
+  min-height:94px;padding:8px 8px max(8px,env(safe-area-inset-bottom));
+  border:1px solid rgba(255,255,255,.10);border-radius:19px 19px 13px 13px;
+  background:linear-gradient(180deg,rgba(17,36,54,.96),rgba(7,21,34,.98));
+  box-shadow:0 -13px 32px rgba(0,0,0,.23),inset 0 1px rgba(255,255,255,.06);
+  backdrop-filter:blur(14px);
+}
+.objectiveMini{
+  min-width:0;display:grid;grid-template-columns:47px minmax(0,1fr) auto;gap:9px;align-items:center;
+}
+.targetToken{
+  width:47px;height:47px;display:grid;place-items:center;border:1px solid #bc8515;border-radius:14px;
+  background:radial-gradient(circle at 34% 25%,#fff3a0 0 8%,#f3c62f 35%,#bd7807 100%);
+  color:#533400;box-shadow:0 4px 0 #6f4807,0 7px 13px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.55);
+  font:900 12px Fredoka,sans-serif;letter-spacing:-.04em
+}
+.objectiveText{min-width:0}
+.objectiveText span{display:block;color:#6f879d;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.objectiveText strong{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 16px Fredoka,sans-serif}
+.objectiveScore{
+  min-width:40px;padding:6px 7px;border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.055);
+  color:#9fb2c5;font-size:9px;font-weight:900;text-align:center
+}
+.actionZone{display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.spareTile{
+  width:55px;height:55px;position:relative;overflow:hidden;flex:0 0 auto;border:2px solid #997538;border-radius:11px;
+  background:linear-gradient(145deg,var(--maze),var(--maze2));
+  box-shadow:0 4px 0 #3f3016,0 7px 12px rgba(0,0,0,.30),inset 0 1px rgba(255,255,255,.08)
+}
+.rotateBtn{
+  width:48px;height:48px;padding:0;border:1px solid #1e5573;border-radius:14px;
+  background:linear-gradient(180deg,#194766,#0a2b47);color:#fff;font:700 22px Fredoka,sans-serif;
+  box-shadow:0 4px 0 #041725,0 7px 12px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.12);
+  transition:transform .09s ease,filter .12s ease,box-shadow .09s ease
+}
+.rotateBtn:active{transform:translateY(3px);box-shadow:0 1px 0 #041725}
+.rotateBtn:disabled{opacity:.22;box-shadow:none}
+.stayBtn{
+  min-height:50px;min-width:118px;padding:0 14px;border:1px solid #16b789;border-radius:13px;
+  background:linear-gradient(180deg,#12b98a,#078f6b);color:#fff;
+  box-shadow:0 4px 0 #05654d,0 8px 14px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.18);
+  font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase
+}
+.waitDock{
+  min-height:50px;min-width:130px;padding:0 12px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.045);
+  color:#7d92a7;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em
+}
+.phaseHint{
+  position:absolute;z-index:10;left:50%;bottom:8px;transform:translateX(-50%);
+  min-height:27px;padding:0 9px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.10);border-radius:999px;
+  background:rgba(5,15,24,.76);color:#9db2c5;backdrop-filter:blur(7px);
+  font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+  pointer-events:none;opacity:.92
+}
+
+/* OVERLAYS */
+.overlay{
+  position:fixed;z-index:90;inset:0;display:grid;place-items:end center;
+  background:rgba(1,7,13,.72);backdrop-filter:blur(9px);
+  padding:12px
+}
+.sheet{
+  width:min(100%,520px);max-height:min(82dvh,720px);overflow:auto;
+  border:1px solid rgba(255,255,255,.12);border-radius:23px;
+  background:linear-gradient(180deg,#11283e,#091927);
+  box-shadow:0 28px 80px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.06);
+  animation:sheetIn .22s cubic-bezier(.2,.8,.2,1)
+}
+.sheetGrip{width:42px;height:4px;margin:9px auto 1px;border-radius:99px;background:rgba(255,255,255,.17)}
+.sheetHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px 10px}
+.sheetHead h3{margin:0;font:700 21px Fredoka,sans-serif}
+.sheetSection{padding:12px 14px;border-top:1px solid rgba(255,255,255,.08)}
+.sheetLabel{margin-bottom:9px;color:#698096;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.menuPlayers{display:grid;gap:7px}
+.menuPlayer{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;
+  min-height:43px;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.04)
+}
+.menuPlayer strong{font-size:12px}
+.menuPlayer small{color:#768da2;font-size:9px}
+.menuPlayer b{color:#96aabd;font-size:10px}
+.ruleSteps{display:grid;gap:8px}
+.ruleStep{display:grid;grid-template-columns:27px 1fr;gap:9px;align-items:start;color:#a6b7c7;font-size:11px;line-height:1.4}
+.ruleStep b{
+  width:27px;height:27px;display:grid;place-items:center;border-radius:8px;background:rgba(247,189,24,.12);
+  color:#f4d166;font-size:10px
+}
+.menuMeta{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.metaPill{padding:9px;border-radius:9px;background:rgba(255,255,255,.04)}
+.metaPill span{display:block;color:#657c92;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}
+.metaPill strong{display:block;margin-top:3px;font-size:11px}
+.handoff{
+  position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:20px;
+  background:rgba(1,7,13,.90);backdrop-filter:blur(13px)
+}
+.handoffCard{
+  width:min(100%,390px);overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:24px;
+  background:linear-gradient(180deg,#10283e,#081827);box-shadow:0 30px 85px rgba(0,0,0,.48);
+  animation:modalIn .23s cubic-bezier(.2,.8,.2,1)
+}
+.handoffArt{
+  min-height:155px;padding:20px;display:grid;place-items:center;align-content:center;text-align:center;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(8,169,125,.25),transparent 48%),
+    linear-gradient(145deg,#0a1f34,#0e493f)
+}
+.handoffOrb{
+  width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);border-radius:18px;
+  background:rgba(255,255,255,.075);color:var(--gold);font:700 16px Fredoka,sans-serif;
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 10px 24px rgba(0,0,0,.18)
+}
+.handoffArt span{margin-top:13px;color:#71dabb;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.handoffArt h2{margin:4px 0 0;font:700 29px Fredoka,sans-serif}
+.handoffBody{padding:15px}
+.winCard .handoffArt{
+  background:radial-gradient(circle at 50% 18%,rgba(247,189,24,.34),transparent 44%),linear-gradient(145deg,#14283e,#473708)
+}
+.toast{
+  position:fixed;z-index:120;left:50%;top:max(65px,calc(env(safe-area-inset-top) + 54px));transform:translate(-50%,-10px);
+  max-width:calc(100vw - 30px);padding:9px 12px;border:1px solid rgba(247,189,24,.28);border-radius:999px;
+  background:rgba(20,31,40,.93);color:#ffe58b;box-shadow:0 12px 28px rgba(0,0,0,.28);
+  font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
+  opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+button:focus-visible,select:focus-visible{outline:3px solid rgba(91,221,182,.38);outline-offset:2px}
+@keyframes viewIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes sheetIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes boardPulse{50%{transform:scale(.985);filter:brightness(1.09)}}
+@keyframes reachableGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.10)}}
+@keyframes insertReady{0%,100%{filter:brightness(1)}50%{filter:brightness(1.09)}}
+@media(max-width:600px){
+  .app{padding:0 9px 25px}.hero{min-height:183px;padding:20px 17px}.hero h1{font-size:45px}
+  .modeTile{min-height:139px;padding:14px}.modeSymbol{margin-bottom:14px}
+  .setupTop{margin-top:3px}.twoCols{grid-template-columns:1fr}
+  .playScreen{padding-left:4px;padding-right:4px}
+  .boardFrame{width:min(calc(100vw - 8px),calc(100dvh - 183px))}
+  .gameHud{grid-template-columns:minmax(0,1fr) auto auto}
+  .thumbDock{min-height:88px;padding-left:7px;padding-right:7px}
+  .objectiveMini{grid-template-columns:43px minmax(0,1fr) auto;gap:7px}
+  .targetToken{width:43px;height:43px;border-radius:12px}
+  .spareTile{width:51px;height:51px}.rotateBtn{width:44px;height:44px}
+}
+@media(max-width:390px){
+  .modeSelect{grid-template-columns:1fr}.modeTile{min-height:110px}
+  .modeSymbol{float:left;margin:0 12px 0 0}.modeTile strong{padding-top:4px}
+  .gameHud{gap:5px}.turnHud{padding-right:6px}.turnDot{width:27px;height:27px}.turnText strong{font-size:14px}
+  .phaseBadge{padding:0 7px}.menuBtn{width:36px;height:36px}
+  .objectiveText strong{font-size:14px}.objectiveScore{min-width:35px;padding-left:5px;padding-right:5px}
+  .actionZone{gap:5px}.spareTile{width:47px;height:47px}.rotateBtn{width:41px;height:41px}
+}
+@media(max-height:720px) and (orientation:portrait){
+  .gameHud{min-height:45px}.turnDot{width:27px;height:27px}
+  .thumbDock{min-height:78px;padding-top:6px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+  .targetToken{width:39px;height:39px}.spareTile{width:45px;height:45px}.rotateBtn{width:40px;height:40px}
+  .boardFrame{width:min(calc(100vw - 8px),calc(100dvh - 160px))}
+}
+@media(orientation:landscape) and (max-height:600px){
+  .playScreen{grid-template-columns:minmax(0,1fr) 170px;grid-template-rows:auto minmax(0,1fr);gap:5px}
+  .gameHud{grid-column:1/2;grid-row:1/2}.boardStage{grid-column:1/2;grid-row:2/3}
+  .thumbDock{grid-column:2/3;grid-row:1/3;align-self:stretch;grid-template-columns:1fr;align-content:center;border-radius:18px}
+  .objectiveMini{grid-template-columns:1fr;text-align:center}.targetToken{justify-self:center}.objectiveScore{justify-self:center}
+  .actionZone{flex-wrap:wrap;justify-content:center}.boardFrame{width:min(calc(100dvh - 60px),calc(100vw - 190px))}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* MAZE SHIFT ART ASSET INTEGRATION */
+.relicArt{
+  position:absolute;z-index:5;left:50%;top:50%;width:68%;height:68%;
+  transform:translate(-50%,-50%);object-fit:contain;pointer-events:none;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.50));
+}
+.homeGoal{
+  position:absolute;z-index:3;left:50%;top:50%;width:56%;height:56%;
+  transform:translate(-50%,-50%);object-fit:contain;pointer-events:none;
+  opacity:.62;filter:drop-shadow(0 0 5px rgba(247,189,24,.40));
+  animation:homeGoalPulse 1.35s ease-in-out infinite;
+}
+
+/* Gameplay composition: board begins directly below the glanceable HUD. */
+.boardStage{
+  display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start!important;
+  gap:7px;padding-top:5px!important;
+}
+.phaseHint{
+  position:static!important;left:auto!important;bottom:auto!important;transform:none!important;
+  margin-top:2px;min-height:25px!important;opacity:.72!important;
+}
+
+/* Full-colour player figurines.
+   The visual anchor is the projected centre of the circular stone base, not the PNG centre.
+   In these assets that point sits about 70% down the square image. */
+.pawns{position:absolute;z-index:10;inset:0;display:block;pointer-events:none;overflow:visible}
+.pawnWrap{
+  position:absolute;left:50%;top:50%;width:78%;height:78%;
+  transform:translate(-50%,-50%);overflow:visible;
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.58));
+  transition:opacity .12s ease;
+}
+.pawnArt{
+  position:absolute;left:50%;top:50%;width:100%;height:100%;object-fit:contain;
+  transform:translate(-50%,-70%);pointer-events:none;
+}
+.pawnWrap.count2.slot0{transform:translate(-76%,-50%) scale(.72)}
+.pawnWrap.count2.slot1{transform:translate(-24%,-50%) scale(.72)}
+.pawnWrap.count3.slot0{transform:translate(-50%,-76%) scale(.60)}
+.pawnWrap.count3.slot1{transform:translate(-78%,-27%) scale(.60)}
+.pawnWrap.count3.slot2{transform:translate(-22%,-27%) scale(.60)}
+.pawnWrap.count4.slot0{transform:translate(-76%,-74%) scale(.54)}
+.pawnWrap.count4.slot1{transform:translate(-24%,-74%) scale(.54)}
+.pawnWrap.count4.slot2{transform:translate(-76%,-24%) scale(.54)}
+.pawnWrap.count4.slot3{transform:translate(-24%,-24%) scale(.54)}
+
+/* Shift arrows remain readable but subordinate to the maze and relics. */
+.insertBtn{
+  width:66%!important;height:66%!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;overflow:visible;opacity:.72;
+}
+.insertBtn img{
+  width:100%;height:100%;object-fit:contain;pointer-events:none;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.48)) saturate(.86) brightness(.94);
+  transition:transform .10s ease,filter .12s ease,opacity .12s ease;
+}
+.insertBtn.side-left img{transform:rotate(0deg)}
+.insertBtn.side-right img{transform:rotate(180deg)}
+.insertBtn.side-top img{transform:rotate(90deg)}
+.insertBtn.side-bottom img{transform:rotate(-90deg)}
+.insertBtn:not(:disabled):hover{opacity:1}
+.insertBtn:not(:disabled):hover img{filter:drop-shadow(0 2px 3px rgba(0,0,0,.52)) saturate(1) brightness(1.06)}
+.insertBtn:active{transform:scale(.90)!important;box-shadow:none!important}
+.insertBtn.blocked{opacity:.035!important}
+.insertBtn:disabled{opacity:.065!important}
+
+.targetToken{
+  width:50px!important;height:50px!important;padding:2px;border:0!important;border-radius:12px!important;
+  background:rgba(255,255,255,.025)!important;box-shadow:none!important;overflow:visible;
+}
+.objectiveArt{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))}
+.objectiveArt.homeArt{width:92%;height:92%}
+
+.rotateBtn{
+  display:grid!important;place-items:center;padding:7px!important;background:linear-gradient(180deg,#122f47,#091d30)!important;
+  border:1px solid rgba(99,197,220,.18)!important;overflow:visible;
+}
+.rotateBtn img{
+  width:68%;height:68%;object-fit:contain;pointer-events:none;opacity:.80;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.45)) saturate(.82) brightness(.93);
+}
+.rotateBtn:not(:disabled):hover img{opacity:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.45)) saturate(1) brightness(1.05)}
+.rotateBtn.rotateRight img{transform:none}
+
+/* HUD and menu reuse the same full-colour figurine assets. */
+.turnDot{
+  width:34px!important;height:34px!important;flex:0 0 auto;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  background-color:transparent!important;background-size:contain!important;
+  background-position:center!important;background-repeat:no-repeat!important;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.48));
+}
+.menuPawn{
+  width:30px;height:34px;object-fit:contain;display:block;flex:0 0 auto;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.42));
+}
+
+.toast{
+  display:flex!important;align-items:center;gap:8px;text-transform:none!important;letter-spacing:0!important;
+  font-size:11px!important;
+}
+.toast img{width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.42))}
+.toast img.hidden{display:none!important}
+@keyframes homeGoalPulse{0%,100%{opacity:.48;transform:translate(-50%,-50%) scale(.94)}50%{opacity:.82;transform:translate(-50%,-50%) scale(1.03)}}
+
+/* MATERIAL PASS — carved enamel maze tiles */
+.cell,.spareTile{
+  border:1px solid rgba(100,190,159,.19)!important;
+  border-radius:4px!important;
+  background:
+    radial-gradient(circle at 24% 18%,rgba(255,255,255,.10),transparent 24%),
+    radial-gradient(circle at 78% 82%,rgba(0,0,0,.18),transparent 38%),
+    linear-gradient(145deg,#206353 0%,#13483e 46%,#0b332f 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.13),
+    inset 1px 0 0 rgba(255,255,255,.035),
+    inset 0 -3px 5px rgba(0,0,0,.24),
+    0 1px 2px rgba(0,0,0,.42)!important;
+}
+.cell:before{
+  content:"";position:absolute;z-index:0;inset:2px;border-radius:3px;
+  border:1px solid rgba(255,255,255,.035);box-shadow:inset 0 0 8px rgba(0,0,0,.14);
+  pointer-events:none;
+}
+.cell.fixed:after{
+  right:4px!important;top:4px!important;width:4px!important;height:4px!important;
+  background:#c99a32!important;box-shadow:0 0 0 1px rgba(59,38,4,.65),0 1px 2px rgba(0,0,0,.35);
+}
+.pathCenter,.pathArm{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.10),transparent 22%,transparent 76%,rgba(93,58,17,.12)),
+    linear-gradient(145deg,#f2ddb0 0%,#d5b778 48%,#b78e50 100%)!important;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.42),
+    inset -1px -2px 2px rgba(88,57,22,.24),
+    0 1px 2px rgba(0,0,0,.24)!important;
+}
+.pathCenter{z-index:2!important;left:31%!important;top:31%!important;width:38%!important;height:38%!important;border-radius:5px!important}
+.pathArm.n{left:36%!important;top:-2%!important;width:28%!important;height:38%!important;border-radius:0 0 4px 4px}
+.pathArm.s{left:36%!important;bottom:-2%!important;width:28%!important;height:38%!important;border-radius:4px 4px 0 0}
+.pathArm.e{right:-2%!important;top:36%!important;height:28%!important;width:38%!important;border-radius:4px 0 0 4px}
+.pathArm.w{left:-2%!important;top:36%!important;height:28%!important;width:38%!important;border-radius:0 4px 4px 0}
+.boardGrid{gap:2px!important}
+.boardFrame{
+  padding:7px!important;border-color:rgba(81,153,154,.22)!important;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(31,116,98,.25),transparent 60%),
+    linear-gradient(145deg,#0a2534,#071923)!important;
+  box-shadow:0 20px 42px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.055),inset 0 0 0 1px rgba(0,0,0,.42)!important;
+}
+
+/* All insertion arrows use a fixed square footprint, so orientation cannot change their apparent size. */
+.insertBtn{
+  width:clamp(25px,7vw,40px)!important;height:clamp(25px,7vw,40px)!important;aspect-ratio:1!important;
+}
+.insertBtn img{width:100%!important;height:100%!important}
+
+/* Moving figurine overlay follows the actual connected route.
+   Its left/top point is the projected centre of the stone base. */
+.movingPawn{
+  position:absolute;z-index:70;pointer-events:none;object-fit:contain;
+  transform:translate(-50%,-70%);
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.62));
+}
+
+/* COMPACT GAMEPLAY COMPOSITION
+   HUD -> board -> thumb controls. No flexible dead-space row. */
+.playScreen{
+  grid-template-rows:auto auto auto!important;
+  align-content:start!important;
+  gap:7px!important;
+}
+.gameHud{
+  grid-template-columns:minmax(0,1fr) auto!important;
+  min-height:48px!important;
+  padding:2px 3px 1px!important;
+}
+.boardStage{
+  min-height:auto!important;
+  gap:0!important;
+  padding-top:0!important;
+}
+.boardFrame{
+  width:min(calc(100vw - 12px),calc(100dvh - 178px),720px)!important;
+}
+.thumbDock{
+  width:calc(100% - 8px);
+  justify-self:center;
+  min-height:76px!important;
+  margin:0!important;
+  padding:7px 9px max(7px,env(safe-area-inset-bottom))!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,rgba(16,34,51,.86),rgba(7,20,32,.92))!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.045)!important;
+}
+.objectiveMini{
+  grid-template-columns:52px minmax(0,1fr) auto!important;
+  gap:8px!important;
+}
+.targetToken{width:52px!important;height:52px!important}
+.objectiveText strong{font-size:16px!important}
+.actionZone{
+  min-width:118px;
+  justify-content:flex-end!important;
+  gap:10px!important;
+}
+.spareTile{
+  width:56px!important;height:56px!important;
+}
+.rotateBtn{
+  width:50px!important;height:50px!important;
+  border-radius:50%!important;
+}
+.waitDock{
+  min-width:118px!important;min-height:48px!important;
+}
+@media(max-width:390px){
+  .playScreen{gap:5px!important}
+  .thumbDock{width:calc(100% - 6px);min-height:70px!important;padding-left:7px!important;padding-right:7px!important}
+  .objectiveMini{grid-template-columns:46px minmax(0,1fr) auto!important;gap:6px!important}
+  .targetToken{width:46px!important;height:46px!important}
+  .objectiveText strong{font-size:14px!important}
+  .actionZone{min-width:105px;gap:7px!important}
+  .spareTile{width:50px!important;height:50px!important}
+  .rotateBtn{width:46px!important;height:46px!important}
+}
+
+/* WIDER CARVED MAZE CHANNELS
+   The playable paths should feel like substantial routes cut into the tile, not thin CSS pipes. */
+.pathCenter,.pathArm{
+  border:1px solid rgba(92,61,25,.20)!important;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.02) 18%,transparent 42%,rgba(77,48,17,.10) 82%,rgba(77,48,17,.18)),
+    linear-gradient(180deg,#f4dfb0 0%,#e3c789 46%,#c9a363 100%)!important;
+  box-shadow:
+    0 0 0 1px rgba(45,29,12,.12),
+    inset 1px 1px 0 rgba(255,255,255,.48),
+    inset -1px -2px 3px rgba(91,60,23,.28),
+    0 2px 3px rgba(0,0,0,.25)!important;
+}
+.pathCenter{
+  left:27%!important;top:27%!important;width:46%!important;height:46%!important;
+  border-radius:7px!important;
+}
+.pathArm.n{
+  left:32%!important;top:-3%!important;width:36%!important;height:36%!important;
+  border-radius:0 0 6px 6px!important;
+}
+.pathArm.s{
+  left:32%!important;bottom:-3%!important;width:36%!important;height:36%!important;
+  border-radius:6px 6px 0 0!important;
+}
+.pathArm.e{
+  right:-3%!important;top:32%!important;height:36%!important;width:36%!important;
+  border-radius:6px 0 0 6px!important;
+}
+.pathArm.w{
+  left:-3%!important;top:32%!important;height:36%!important;width:36%!important;
+  border-radius:0 6px 6px 0!important;
+}
+
+/* THREE-ZONE THUMB DECK — Target / Tile / Rotate */
+.thumbDock{
+  width:calc(100% - 8px)!important;
+  min-height:118px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.45fr) minmax(94px,.72fr) 70px!important;
+  gap:9px!important;
+  align-items:stretch!important;
+  padding:8px!important;
+  border-radius:18px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+.targetZone,.tileZone,.rotateZone{
+  min-width:0;
+  border:1px solid rgba(255,255,255,.09);
+  background:linear-gradient(180deg,rgba(16,34,51,.92),rgba(7,20,32,.96));
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.045);
+}
+.targetZone{
+  display:grid;
+  grid-template-columns:82px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:10px 11px;
+  border-radius:17px;
+}
+.targetToken{
+  width:82px!important;height:82px!important;padding:0!important;
+  background:transparent!important;
+}
+.objectiveArt{width:100%!important;height:100%!important}
+.objectiveText span{
+  font-size:9px!important;letter-spacing:.13em!important;
+}
+.objectiveText strong{
+  margin-top:4px!important;font-size:20px!important;line-height:1!important;
+}
+.objectiveScore{
+  align-self:end;
+  min-width:48px!important;padding:7px 8px!important;
+  font-size:10px!important;
+}
+.tileZone{
+  display:grid;
+  grid-template-rows:auto 1fr;
+  place-items:center;
+  padding:8px 8px 9px;
+  border-radius:17px;
+}
+.zoneLabel{
+  color:#6f879d;font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+}
+.spareTile{
+  width:84px!important;height:84px!important;
+  align-self:center;
+  border-width:2px!important;
+  box-shadow:0 5px 0 rgba(70,49,19,.78),0 10px 18px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.10)!important;
+}
+.rotateZone{
+  display:grid;
+  place-items:center;
+  padding:8px 6px;
+  border-radius:17px;
+}
+.rotateBtn{
+  width:60px!important;height:60px!important;
+  padding:8px!important;
+  border-radius:50%!important;
+}
+.rotateBtn img{width:72%!important;height:72%!important}
+.stayBtn{
+  width:100%!important;min-width:0!important;min-height:58px!important;
+  padding:0 8px!important;border-radius:13px!important;
+  line-height:1.1!important;
+}
+.waitDock{
+  width:100%!important;min-width:0!important;min-height:58px!important;padding:0 6px!important;
+  line-height:1.2!important;text-align:center!important;
+}
+
+/* When shift controls are hidden, keep the deck balanced rather than leaving visual debris. */
+.tileZone:has(.spareTile.hidden){opacity:.28}
+.rotateZone:has(.rotateBtn.hidden) .rotateBtn{display:none!important}
+
+@media(max-width:430px){
+  .thumbDock{
+    grid-template-columns:minmax(0,1.38fr) 88px 62px!important;
+    gap:6px!important;padding:6px!important;min-height:106px!important;
+  }
+  .targetZone{
+    grid-template-columns:68px minmax(0,1fr) auto!important;
+    gap:7px!important;padding:8px!important;
+  }
+  .targetToken{width:68px!important;height:68px!important}
+  .objectiveText strong{font-size:17px!important}
+  .objectiveScore{min-width:43px!important;padding:6px!important}
+  .tileZone{padding:7px 5px!important}
+  .spareTile{width:72px!important;height:72px!important}
+  .rotateZone{padding:6px 4px!important}
+  .rotateBtn{width:54px!important;height:54px!important}
+}
+@media(max-width:360px){
+  .thumbDock{grid-template-columns:minmax(0,1.32fr) 76px 56px!important}
+  .targetZone{grid-template-columns:58px minmax(0,1fr) auto!important}
+  .targetToken{width:58px!important;height:58px!important}
+  .objectiveText strong{font-size:15px!important}
+  .spareTile{width:64px!important;height:64px!important}
+  .rotateBtn{width:48px!important;height:48px!important}
+}
+
+/* FINAL RASTER MAZE TILES */
+.cell{
+  overflow:hidden!important;
+  background:#071923!important;
+  border:1px solid rgba(255,255,255,.035)!important;
+  isolation:isolate;
+}
+.cell.fixed:after{content:none!important;display:none!important}
+.pathCenter,.pathArm{display:none!important}
+.tileRaster{
+  position:absolute;z-index:1;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;pointer-events:none;
+  transform:rotate(calc(var(--tile-rot) * 90deg));
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+}
+.relicArt,.homeGoal,.pawns{z-index:8!important}
+.spareTile{
+  overflow:hidden!important;background:#071923!important;
+}
+.spareTile .tileRaster{border-radius:8px}
+
+/* SHIFT PHASE PHYSICAL BOARD MOTION */
+.boardFrame{overflow:visible}
+.boardFrame.shifting .insertBtn{opacity:.13!important;animation:none!important;pointer-events:none!important}
+.shiftGhost{
+  position:absolute!important;z-index:60!important;margin:0!important;padding:0!important;
+  display:block!important;overflow:hidden!important;border-radius:5px!important;
+  pointer-events:none!important;will-change:transform,opacity;
+  transform-origin:center center!important;
+  box-shadow:0 5px 12px rgba(0,0,0,.30)!important;
+}
+.shiftGhost.shiftSpareGhost{
+  z-index:65!important;background:#071923!important;border:1px solid rgba(255,255,255,.05)!important;
+}
+.shiftGhost .tileRaster{width:100%!important;height:100%!important}
+
+/* TARGET PANEL — text above, artwork given the width */
+.targetZone{
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:5px 8px!important;
+}
+.targetZone .objectiveText{
+  grid-column:1;
+  grid-row:1;
+  align-self:start;
+  min-width:0;
+}
+.targetZone .objectiveText span{
+  display:block!important;
+  margin:0 0 2px!important;
+}
+.targetZone .objectiveText strong{
+  margin:0!important;
+}
+.targetZone .objectiveScore{
+  grid-column:2;
+  grid-row:1;
+  align-self:start!important;
+}
+.targetZone .targetToken{
+  grid-column:1 / -1;
+  grid-row:2;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  overflow:visible!important;
+}
+.targetZone .objectiveArt{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:86px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+}
+@media(max-width:430px){
+  .targetZone{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:4px 6px!important;
+  }
+  .targetZone .objectiveArt{max-height:78px!important}
+}
+
+/* MAZE SHIFT BOTTOM HUD — applied from maze-shift-bottom-hud-v2 editor JSON
+   Grid: 24 columns × 16 rows. */
+.thumbDock{
+  position:relative!important;
+  display:block!important;
+  width:calc(100% - 8px)!important;
+  height:clamp(180px,56.4103vw,240px)!important;
+  min-height:clamp(180px,56.4103vw,240px)!important;
+  padding:0!important;
+  margin:0 auto!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+
+/* TARGET PANEL — x0 y0 w12 h16 */
+.targetZone{
+  position:absolute!important;
+  left:0!important;top:0!important;
+  width:50%!important;height:100%!important;
+  min-width:0!important;
+  display:block!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:17px!important;
+  background:linear-gradient(180deg,rgba(16,34,51,.92),rgba(7,20,32,.96))!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.045)!important;
+  overflow:visible!important;
+}
+
+/* objectiveText is a structural wrapper only. Its two children are placed independently. */
+.targetZone .objectiveText{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;height:100%!important;
+  min-width:0!important;
+  display:block!important;
+  padding:0!important;margin:0!important;
+  z-index:6!important;
+  pointer-events:none!important;
+}
+
+/* TARGET label — x1 y0 w7 h1 */
+.targetZone .objectiveText span{
+  position:absolute!important;
+  left:8.333333%!important;top:0!important;
+  width:58.333333%!important;height:6.25%!important;
+  display:flex!important;align-items:center!important;
+  margin:0!important;padding:0!important;
+  overflow:hidden!important;white-space:nowrap!important;
+  color:#6f879d!important;
+  font-size:9px!important;line-height:1!important;font-weight:900!important;
+  letter-spacing:.13em!important;text-transform:uppercase!important;
+}
+
+/* Dynamic target name — x1 y1 w8 h2 */
+.targetZone .objectiveText strong{
+  position:absolute!important;
+  left:8.333333%!important;top:6.25%!important;
+  width:66.666667%!important;height:12.5%!important;
+  display:flex!important;align-items:center!important;
+  margin:0!important;padding:0!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+  font:700 20px/1 Fredoka,sans-serif!important;
+}
+
+/* Target artwork — x1 y3 w11 h13 */
+.targetZone .targetToken{
+  position:absolute!important;
+  left:8.333333%!important;top:18.75%!important;
+  width:91.666667%!important;height:81.25%!important;
+  min-width:0!important;min-height:0!important;
+  padding:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  overflow:visible!important;
+  z-index:4!important;
+}
+.targetZone .objectiveArt{
+  width:100%!important;height:100%!important;
+  max-width:100%!important;max-height:100%!important;
+  display:block!important;
+  object-fit:contain!important;object-position:center!important;
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))!important;
+}
+
+/* Score — x9 y0 w3 h3 */
+.targetZone .objectiveScore{
+  position:absolute!important;
+  left:75%!important;top:0!important;
+  width:25%!important;height:18.75%!important;
+  min-width:0!important;
+  padding:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#9fb2c5!important;
+  font-size:18px!important;line-height:1!important;font-weight:900!important;text-align:center!important;
+  z-index:7!important;
+}
+
+/* TILE PANEL — x12 y0 w12 h16 */
+.tileZone{
+  position:absolute!important;
+  left:50%!important;top:0!important;
+  width:50%!important;height:100%!important;
+  min-width:0!important;
+  display:block!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:17px!important;
+  background:linear-gradient(180deg,rgba(16,34,51,.92),rgba(7,20,32,.96))!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.045)!important;
+  opacity:1!important;
+  overflow:visible!important;
+}
+
+/* YOUR TILE — global x13 y1 w4 h1 -> local x1 y1 */
+.tileZone .zoneLabel{
+  position:absolute!important;
+  left:8.333333%!important;top:6.25%!important;
+  width:33.333333%!important;height:6.25%!important;
+  display:flex!important;align-items:center!important;
+  overflow:hidden!important;white-space:nowrap!important;
+  color:#6f879d!important;
+  font-size:8px!important;line-height:1!important;font-weight:900!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;
+  z-index:6!important;
+}
+
+/* Spare tile — global x13 y3 w10 h12 -> local x1 y3 */
+.tileZone .spareTile{
+  position:absolute!important;
+  left:8.333333%!important;top:18.75%!important;
+  width:83.333333%!important;height:75%!important;
+  min-width:0!important;min-height:0!important;
+  margin:0!important;
+  border-width:2px!important;border-radius:11px!important;
+  overflow:hidden!important;background:#071923!important;
+  box-shadow:0 5px 0 rgba(70,49,19,.78),0 10px 18px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.10)!important;
+  z-index:4!important;
+}
+.tileZone .spareTile .tileRaster{
+  width:100%!important;height:100%!important;
+  object-fit:cover!important;border-radius:8px!important;
+}
+
+/* Controls panel is hidden. The wrapper remains only as a transparent full-workspace layer. */
+.rotateZone{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;height:100%!important;
+  display:block!important;
+  padding:0!important;
+  border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  pointer-events:none!important;
+  z-index:8!important;
+}
+
+/* Rotate — x21 y0 w2 h2 */
+.rotateZone .rotateBtn{
+  position:absolute!important;
+  left:87.5%!important;top:0!important;
+  width:8.333333%!important;height:12.5%!important;
+  min-width:0!important;min-height:0!important;
+  padding:3px!important;
+  border-radius:50%!important;
+  pointer-events:auto!important;
+}
+.rotateZone .rotateBtn img{
+  width:72%!important;height:72%!important;object-fit:contain!important;
+}
+
+/* Move / waiting — x19 y2 w5 h4 */
+.rotateZone .stayBtn,
+.rotateZone .waitDock{
+  position:absolute!important;
+  left:79.166667%!important;top:12.5%!important;
+  width:20.833333%!important;height:25%!important;
+  min-width:0!important;min-height:0!important;
+  margin:0!important;padding:0 5px!important;
+  pointer-events:auto!important;
+  line-height:1.05!important;text-align:center!important;
+}
+.rotateZone .stayBtn{font-size:10px!important;font-weight:900!important}
+.rotateZone .waitDock{font-size:9px!important;font-weight:900!important}
+
+/* This HUD now owns 16 rows, so reserve that real vertical space for it. */
+.boardFrame{
+  width:min(calc(100vw - 12px),calc(100dvh - 300px),720px)!important;
+}
+@media(max-height:700px){
+  .thumbDock{
+    height:clamp(160px,48vw,200px)!important;
+    min-height:clamp(160px,48vw,200px)!important;
+  }
+  .boardFrame{
+    width:min(calc(100vw - 12px),calc(100dvh - 270px),720px)!important;
+  }
+}
+
+
+/* ACTIVE TARGET HIGHLIGHT — shown only to the player whose turn it is */
+.targetRelicGlow{
+  position:absolute;z-index:4;left:50%;top:50%;
+  width:82%;height:82%;transform:translate(-50%,-50%);
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,
+    rgba(255,255,225,.88) 0%,
+    rgba(255,239,151,.58) 28%,
+    rgba(247,189,24,.24) 52%,
+    rgba(247,189,24,0) 74%);
+  filter:blur(3px);
+  animation:targetRelicGlow 1.45s ease-in-out infinite;
+}
+.relicArt.targetRelic{
+  z-index:6!important;
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,230,.95))
+    drop-shadow(0 0 8px rgba(255,220,95,.70))
+    drop-shadow(0 2px 2px rgba(0,0,0,.48))!important;
+}
+@keyframes targetRelicGlow{
+  0%,100%{opacity:.62;transform:translate(-50%,-50%) scale(.92)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
+}
+
+/* BOTTOM HUD — remove visible outer box lines */
+.thumbDock .targetZone,
+.thumbDock .tileZone,
+.thumbDock .objectiveScore,
+.thumbDock .spareTile,
+.thumbDock .rotateBtn,
+.thumbDock .stayBtn,
+.thumbDock .waitDock{
+  border-color:transparent!important;
+  outline:0!important;
+}
+.thumbDock .targetZone,
+.thumbDock .tileZone{
+  border:0!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.16)!important;
+}
+.thumbDock .objectiveScore{
+  border:0!important;
+}
+.thumbDock .spareTile{
+  border:0!important;
+  box-shadow:0 7px 14px rgba(0,0,0,.26)!important;
+}
+.thumbDock .rotateBtn{
+  border:0!important;
+}
+.thumbDock .stayBtn,
+.thumbDock .waitDock{
+  border:0!important;
+}
+
+/* BOTTOM HUD — fully transparent component backgrounds */
+.thumbDock,
+.thumbDock .targetZone,
+.thumbDock .tileZone,
+.thumbDock .rotateZone,
+.thumbDock .objectiveScore,
+.thumbDock .spareTile,
+.thumbDock .rotateBtn,
+.thumbDock .stayBtn,
+.thumbDock .waitDock{
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.thumbDock .targetZone,
+.thumbDock .tileZone,
+.thumbDock .objectiveScore,
+.thumbDock .spareTile,
+.thumbDock .rotateBtn,
+.thumbDock .stayBtn,
+.thumbDock .waitDock{
+  border:0!important;
+  outline:0!important;
+}
+
+/* SINGLE MAZE SHIFT UI BACKGROUND
+   Recover the real portrait dungeon artwork deleted in September 2026.
+   The approved composite maze_shift_ui.png can still overlay it when present. */
+.playScreen{
+  isolation:isolate!important;
+  background:
+    linear-gradient(180deg,rgba(3,10,16,.22) 0%,rgba(3,11,18,.34) 42%,rgba(2,8,14,.48) 100%),
+    url('shift-in-maze/assets/04_portrait_dungeon_background.png') center top / cover no-repeat,
+    #050c15!important;
+}
+.mazeShiftUiArt{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:fill!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+}
+/* Restored original HUD frame artwork. Keep all artwork below the actual
+   interactive controls and display only while the full-screen composite is absent. */
+.mazeHudFrame{
+  position:absolute!important;
+  display:block;
+  z-index:10!important;
+  width:100%!important;
+  object-fit:fill!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+}
+.mazeHudFrameTop{
+  left:0!important;
+  top:2.1%!important;
+  height:7.4%!important;
+}
+.mazeHudFrameBottom{
+  left:0!important;
+  top:68.8%!important;
+  height:24.2%!important;
+}
+.mazeHudFrame[hidden],
+.mazeShiftUiArt:not([hidden]) ~ .mazeHudFrame{
+  display:none!important;
+}
+/* Every real game element is explicitly above the complete background composition. */
+.playScreen>.gameHud{z-index:30!important}
+.playScreen>.boardStage{z-index:40!important}
+.playScreen>.thumbDock{z-index:50!important}
+.playScreen:before{display:none!important}
+
+/* CONFIRMED MAZE SHIFT FULL-SCREEN V3 LAYOUT
+   Applied directly from the user's editor JSON. */
+
+/* The single maze_shift_ui.png layer supplies all decorative UI framing. */
+/* Top HUD positioning plane */
+.gameHud{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  display:block!important;
+  padding:0!important;
+  margin:0!important;
+  pointer-events:none!important;
+  z-index:30!important;
+}
+.turnHud{
+  position:absolute!important;
+  left:6.2%!important;
+  top:3.35%!important;
+  width:79.8%!important;
+  height:5.1%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  z-index:50!important;
+  pointer-events:none!important;
+}
+.menuBtn{
+  position:absolute!important;
+  left:87.7%!important;
+  top:3.55%!important;
+  width:8.1%!important;
+  height:4.5%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  z-index:60!important;
+  pointer-events:auto!important;
+}
+
+/* Board gameplay remains at its confirmed position. */
+.boardStage{
+  position:absolute!important;
+  left:3%!important;
+  top:15%!important;
+  width:94%!important;
+  height:48%!important;
+  min-width:0!important;
+  min-height:0!important;
+  display:block!important;
+  padding:0!important;
+  margin:0!important;
+  z-index:70!important;
+}
+.boardFrame{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.boardGrid{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+}
+
+/* Bottom HUD is a full-screen positioning plane. */
+.thumbDock{
+  position:absolute!important;
+  inset:0!important;
+  left:0!important;
+  top:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  display:block!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+  z-index:80!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.thumbDock:before{display:none!important}
+/* Remove wrapper stacking contexts so editor z-order maps correctly. */
+.targetZone,
+.tileZone,
+.rotateZone{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+  z-index:auto!important;
+}
+.targetZone .objectiveText{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  pointer-events:none!important;
+  z-index:auto!important;
+}
+
+/* Target label — x22.5 y71 w12 h2 */
+.targetZone .objectiveText span{
+  position:absolute!important;
+  left:17.5%!important;
+  top:70.9%!important;
+  width:18%!important;
+  height:2.1%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0!important;
+  color:#a8b8c7!important;
+  font-size:2.3cqw!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.9)!important;
+  z-index:110!important;
+}
+
+/* Target name — x11.5 y73 w34 h4 */
+.targetZone .objectiveText strong{
+  position:absolute!important;
+  left:11.2%!important;
+  top:73.2%!important;
+  width:30.5%!important;
+  height:3.6%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0!important;
+  font:700 5.1cqw/1 Fredoka,sans-serif!important;
+  color:#fff!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 5px rgba(0,0,0,.9)!important;
+  z-index:120!important;
+}
+
+/* Target artwork — x19 y78.5 w30 h14 */
+.targetZone .targetToken{
+  position:absolute!important;
+  left:16.2%!important;
+  top:78.1%!important;
+  width:20.5%!important;
+  height:10.8%!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+  z-index:100!important;
+}
+.targetZone .objectiveArt{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+
+/* Score — x6.5 y82.5 w11 h5 */
+.targetZone .objectiveScore{
+  position:absolute!important;
+  left:6.8%!important;
+  top:82.2%!important;
+  width:9.2%!important;
+  height:4.1%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#9fb2c5!important;
+  font-size:4.1cqw!important;
+  line-height:1!important;
+  font-weight:900!important;
+  text-align:center!important;
+  text-shadow:0 2px 5px rgba(0,0,0,.9)!important;
+  z-index:140!important;
+}
+
+/* YOUR TILE — x62 y75 w20 h2 */
+.tileZone .zoneLabel{
+  position:absolute!important;
+  left:61.5%!important;
+  top:74.4%!important;
+  width:18%!important;
+  height:2.1%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0!important;
+  color:#a8b8c7!important;
+  font-size:2.1cqw!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.9)!important;
+  z-index:130!important;
+}
+
+/* Spare tile — x53.5 y78.5 w32 h14.5 */
+.tileZone .spareTile{
+  position:absolute!important;
+  left:54.3%!important;
+  top:79.0%!important;
+  width:24.8%!important;
+  height:11.8%!important;
+  aspect-ratio:1/1!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+  z-index:80!important;
+}
+.tileZone .spareTile .tileRaster{
+  width:100%!important;
+  height:100%!important;
+  border-radius:0!important;
+  object-fit:fill!important;
+}
+
+/* Rotate — x87 y78 w9 h5 */
+.rotateZone .rotateBtn{
+  position:absolute!important;
+  left:88.1%!important;
+  top:80.2%!important;
+  width:6.9%!important;
+  height:4.1%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  pointer-events:auto!important;
+  z-index:160!important;
+}
+.rotateZone .rotateBtn img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+
+/* Move and waiting positions from the supplied layout. */
+.rotateZone .stayBtn{
+  position:absolute!important;
+  left:79%!important;
+  top:69%!important;
+  width:19%!important;
+  height:7%!important;
+  z-index:170!important;
+  pointer-events:auto!important;
+}
+.rotateZone .waitDock{
+  position:absolute!important;
+  left:79%!important;
+  top:69%!important;
+  width:19%!important;
+  height:7%!important;
+  z-index:180!important;
+  pointer-events:auto!important;
+}
+.rotateZone .rotateBtn.hidden,
+.rotateZone .stayBtn.hidden,
+.rotateZone .waitDock.hidden{display:none!important}
+
+/* PORTRAIT-ONLY GAME LOCK
+   Touch devices cannot interact with Shift In Maze while held landscape. */
+.rotatePhoneLock{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(15,91,105,.22),transparent 34%),
+    linear-gradient(180deg,rgba(3,10,16,.97),rgba(2,7,12,.995));
+  pointer-events:auto;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none;
+}
+.rotatePhoneLockInner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  text-align:center;
+}
+.rotatePhoneLock img{
+  width:min(112px,22vmin);
+  height:min(112px,22vmin);
+  object-fit:contain;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));
+  animation:mazeRotatePhone 1.8s ease-in-out infinite;
+}
+.rotatePhoneLock strong{
+  display:block;
+  color:#fff;
+  font:700 clamp(24px,6vmin,38px)/1.05 Fredoka,sans-serif;
+  letter-spacing:.01em;
+  text-shadow:0 3px 10px rgba(0,0,0,.8);
+}
+body.mazeLandscapeLocked{
+  overflow:hidden!important;
+  touch-action:none!important;
+}
+body.mazeLandscapeLocked .rotatePhoneLock{display:flex}
+@keyframes mazeRotatePhone{
+  0%,100%{transform:rotate(-12deg)}
+  50%{transform:rotate(78deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .rotatePhoneLock img{animation:none}
+}
+
+/* Single-background ownership: gameplay components remain interactive overlays only. */
+.boardFrame,
+.thumbDock,
+.gameHud{
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+.thumbDock:before,
+.playScreen:before{display:none!important}
+
+/* ===== MAZE SHIFT PREMIUM MENU + TURN PRIVACY PASS ===== */
+body:not(.playing){
+  background:
+    radial-gradient(circle at 50% -8%,rgba(27,89,130,.30),transparent 32rem),
+    radial-gradient(circle at 85% 45%,rgba(207,151,34,.10),transparent 24rem),
+    linear-gradient(180deg,#07111c 0%,#081725 54%,#040a11 100%)!important;
+}
+body:not(.playing):before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.18;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px);
+  background-size:42px 42px;
+}
+body:not(.playing) .app{width:min(100%,760px);padding:0 14px 38px}
+.shellHeader{
+  min-height:72px!important;padding:10px 2px 12px!important;
+  border-bottom:1px solid rgba(196,151,55,.13);
+}
+.brandMark{
+  border-color:rgba(216,166,58,.46)!important;
+  background:linear-gradient(145deg,#18364d,#081828)!important;
+  color:#f2c761!important;box-shadow:0 6px 18px rgba(0,0,0,.30),inset 0 0 0 1px rgba(255,255,255,.04)!important;
+}
+.gameBoxBackBtn{
+  width:118px;height:46px;padding:0;border:0;background:transparent;display:block;
+  filter:drop-shadow(0 6px 9px rgba(0,0,0,.38));transition:transform .12s ease,filter .12s ease;
+}
+.gameBoxBackBtn img{width:100%;height:100%;object-fit:contain;display:block}
+.gameBoxBackBtn:active{transform:translateY(2px) scale(.98);filter:drop-shadow(0 3px 5px rgba(0,0,0,.36))}
+.gameHero{
+  min-height:238px!important;padding:28px 24px!important;border-radius:22px!important;
+  border:1px solid rgba(218,171,69,.40)!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035),transparent 22%),
+    radial-gradient(circle at 75% 20%,rgba(41,112,159,.35),transparent 30%),
+    linear-gradient(145deg,#10283a 0%,#0a1723 57%,#07101a 100%)!important;
+  box-shadow:0 24px 54px rgba(0,0,0,.42),inset 0 0 0 1px rgba(255,255,255,.035)!important;
+}
+.gameHero:before{
+  inset:auto -40px -60px auto!important;width:250px!important;height:250px!important;
+  border:1px solid rgba(216,166,58,.18)!important;border-radius:50%!important;transform:none!important;
+}
+.heroRelics{
+  position:absolute;right:18px;top:18px;display:flex;align-items:center;gap:5px;opacity:.95;pointer-events:none
+}
+.heroRelics img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 8px 8px rgba(0,0,0,.48))}
+.heroRelics img:nth-child(2){width:78px;height:78px;margin-top:20px}
+.heroEyebrow{color:#e4bb61!important}
+.gameHero h1{color:#fff;text-shadow:0 4px 12px rgba(0,0,0,.52),0 0 20px rgba(31,121,164,.16)}
+.gameHero .heroTag{max-width:390px;color:#b8c8d6!important}
+.mainModeSelect{gap:12px!important}
+.gameModeCard{
+  min-height:130px!important;padding:10px!important;
+  display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border:1px solid rgba(216,166,58,.22)!important;border-radius:18px!important;
+  background:linear-gradient(180deg,rgba(18,43,62,.92),rgba(7,18,29,.96))!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.05)!important;
+}
+.gameModeCard:hover{border-color:rgba(236,190,86,.58)!important;transform:translateY(-2px)!important}
+.gameModeArt{width:100%;height:88px;display:block;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.38))}
+.gameModeCard small{color:#91a8bb!important;margin:0!important;font-size:10px!important}
+.roleModeTile{
+  min-height:116px!important;display:grid!important;grid-template-columns:76px minmax(0,1fr) 24px;align-items:center;
+  padding:12px 14px!important;border-color:rgba(213,164,58,.28)!important;
+  background:linear-gradient(145deg,#10293d,#081725)!important;
+}
+.roleModeTile>img{width:68px;height:78px;object-fit:contain;filter:drop-shadow(0 7px 7px rgba(0,0,0,.48))}
+.roleModeTile strong{font-size:20px!important}
+.roleModeTile small{color:#8fa6ba!important}
+.setupTop{
+  margin:16px 0 14px!important;padding:10px 12px;border:1px solid rgba(213,164,58,.20);border-radius:15px;
+  background:linear-gradient(180deg,rgba(17,41,58,.78),rgba(7,18,29,.82));
+}
+.setupTitle span{color:#e2b75c!important}
+.setupTitle h2{font-size:28px!important}
+.backBtn{
+  min-width:76px!important;min-height:42px!important;border:1px solid rgba(218,171,69,.34)!important;
+  border-radius:11px!important;background:linear-gradient(180deg,#17334a,#0a1c2d)!important;color:#e9d19c!important;
+  box-shadow:0 4px 0 #040b12,0 8px 14px rgba(0,0,0,.24)!important;
+}
+.setupPanel{
+  border:1px solid rgba(196,151,55,.24)!important;border-radius:15px!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.025),transparent 24%),
+    linear-gradient(145deg,rgba(16,38,55,.96),rgba(7,18,29,.97))!important;
+  box-shadow:0 14px 28px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+.panelLabel{color:#e8edf2!important}.panelLabel span{color:#9aafc1!important}
+.choice{
+  min-height:62px!important;display:grid;grid-template-columns:42px minmax(0,1fr) 24px;align-items:center;gap:8px;
+  padding:5px 10px!important;text-align:left;border-color:rgba(255,255,255,.10)!important;
+  background:linear-gradient(180deg,#10283b,#0a1b2a)!important;
+}
+.choice .choicePawn{width:38px;height:46px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(0,0,0,.42))}
+.choice .choiceCheck{color:#6d8192;text-align:right;font-size:18px}
+.choice.selected{
+  border-color:rgba(228,181,75,.70)!important;
+  background:linear-gradient(180deg,#17374e,#102638)!important;color:#fff!important;
+  box-shadow:inset 0 0 0 1px rgba(228,181,75,.20),0 0 22px rgba(228,181,75,.08)!important;
+}
+.choice.selected .choiceCheck{color:#f1c865}
+.field label{color:#b3c1cc!important}
+.field select{
+  border-color:rgba(211,164,62,.25)!important;background-color:#091724!important;color:#f4f6f8!important;
+}
+.field select:focus{border-color:#d8aa4b!important;box-shadow:0 0 0 3px rgba(216,170,75,.12)!important}
+.primaryBtn{
+  border:1px solid #d2a340!important;
+  background:linear-gradient(180deg,#275a79,#143850)!important;color:#fff!important;
+  box-shadow:0 5px 0 #071827,0 10px 24px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.15)!important;
+}
+.primaryBtn:active{box-shadow:0 2px 0 #071827,0 6px 12px rgba(0,0,0,.22)!important}
+.secondaryBtn{
+  border-color:rgba(211,164,62,.24)!important;background:linear-gradient(180deg,#122b3f,#091a29)!important;color:#d9e4ed!important;
+}
+.statusLine,.lobbyRow,.hostCard,.emptyState{
+  border-color:rgba(196,151,55,.18)!important;background:rgba(7,20,31,.78)!important;
+}
+.readyTag,.joinTag{background:#1d5c78!important;color:#dff6ff!important;border:1px solid rgba(218,171,69,.24)}
+.difficultyOptions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.difficultyChoice{
+  min-height:66px;padding:8px 4px;border:1px solid rgba(255,255,255,.10);border-radius:11px;
+  display:grid;place-items:center;align-content:center;gap:4px;background:linear-gradient(180deg,#10283a,#081826);color:#dce6ed;
+}
+.difficultyChoice strong{font:700 13px Fredoka,sans-serif}
+.difficultyChoice span{font-size:10px;font-weight:900;color:#8399ab}
+.difficultyChoice.selected{
+  border-color:rgba(229,181,75,.78);background:linear-gradient(180deg,#21445e,#102c41);
+  box-shadow:inset 0 0 0 1px rgba(229,181,75,.18),0 7px 18px rgba(0,0,0,.24);
+}
+.difficultyChoice.selected strong{color:#fff}.difficultyChoice.selected span{color:#f0c96c}
+
+/* Timer occupies the right side of the existing top HUD recess. */
+.turnTimer{
+  position:absolute!important;left:68.7%!important;top:3.25%!important;width:16.2%!important;height:5.2%!important;z-index:65!important;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  border:1px solid rgba(214,169,68,.34);border-radius:10px;background:rgba(5,18,29,.78);
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 4px 12px rgba(0,0,0,.25);pointer-events:none;
+}
+.turnTimer span{font-size:1.45cqw;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:#8da2b3}
+.turnTimer strong{font:700 3.9cqw/1 Fredoka,sans-serif;color:#fff;font-variant-numeric:tabular-nums}
+.turnTimer.timerWarn{border-color:rgba(238,185,65,.72);background:rgba(55,38,8,.80)}
+.turnTimer.timerDanger{border-color:rgba(224,74,68,.78);background:rgba(68,16,18,.86)}
+.turnTimer.timerCue{animation:timerCue .52s ease both}
+@keyframes timerCue{0%,100%{transform:scale(1)}45%{transform:scale(1.13);filter:brightness(1.45)}}
+
+/* Relic privacy: only the controlling player may reveal their target. */
+.targetPrivacyShield{
+  position:absolute!important;left:5.3%!important;top:72.9%!important;width:41.5%!important;height:18.2%!important;z-index:155!important;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  border:1px solid rgba(218,171,69,.44);border-radius:14px;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(43,111,145,.28),transparent 55%),
+    linear-gradient(180deg,rgba(8,25,38,.98),rgba(4,14,23,.99));
+  color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.035);
+  pointer-events:auto!important;
+}
+.targetPrivacyShield span{font-size:1.85cqw;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#879dad}
+.targetPrivacyShield strong{font:700 3.25cqw Fredoka,sans-serif;color:#efc96f}
+.targetPrivacyShield:active{transform:scale(.985)}
+.targetPrivacyShield.hidden{display:none!important}
+
+/* Waiting players can watch the maze, but their whole private lower HUD is covered. */
+.multiWaitOverlay{
+  position:absolute!important;left:2.5%!important;right:2.5%!important;top:69.2%!important;bottom:1.7%!important;z-index:250!important;
+  display:flex;align-items:center;justify-content:center;padding:14px;
+  border:1px solid rgba(215,169,69,.38);border-radius:18px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(27,88,116,.27),transparent 56%),
+    linear-gradient(180deg,rgba(6,21,33,.985),rgba(3,12,20,.995));
+  box-shadow:0 16px 35px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.035);
+  backdrop-filter:blur(8px);pointer-events:auto!important;
+}
+.multiWaitOverlay.hidden{display:none!important}
+.multiWaitCard{display:flex;align-items:center;justify-content:center;gap:16px;text-align:left}
+.multiWaitCard img{width:74px;height:88px;object-fit:contain;filter:drop-shadow(0 7px 7px rgba(0,0,0,.48))}
+.multiWaitCard span{display:block;color:#9aafbe;font-size:2.2cqw;font-weight:900;text-transform:uppercase;letter-spacing:.12em}
+.multiWaitCard strong{display:block;margin-top:3px;font:700 5cqw/1 Fredoka,sans-serif;color:#fff}
+.multiWaitCard small{display:block;margin-top:6px;color:#e5bf68;font-size:2.2cqw;font-weight:800}
+
+@media(max-width:430px){
+  .heroRelics img{width:48px;height:48px}.heroRelics img:nth-child(2){width:62px;height:62px}
+  .gameModeArt{height:76px}
+  .gameBoxBackBtn{width:104px;height:42px}
+}
+
+/* ===== SHIFT IN MAZE · SOLO AI ===== */
+.mainModeSelect{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.soloModeCard{gap:1px!important}
+.soloModeArt{
+  height:82px;width:100%;display:flex;align-items:flex-end;justify-content:center;position:relative;
+}
+.soloModeArt img{
+  width:70px;height:82px;object-fit:contain;filter:drop-shadow(0 7px 8px rgba(0,0,0,.46));
+}
+.soloModeArt img+img{margin-left:-26px;transform:scale(.88);transform-origin:center bottom}
+.soloModeCard strong{font:700 18px/1 Fredoka,sans-serif;color:#fff;margin-top:-2px}
+.soloRuleHint{
+  min-height:47px;display:flex;align-items:center;padding:0 12px;border:1px solid rgba(211,164,62,.18);
+  border-radius:10px;background:#091724;color:#91a8b9;font-size:11px;font-weight:800;
+}
+.aiSkillOptions .difficultyChoice.selected{
+  border-color:rgba(96,189,218,.78);background:linear-gradient(180deg,#1c4b63,#102e43);
+  box-shadow:inset 0 0 0 1px rgba(96,189,218,.16),0 7px 18px rgba(0,0,0,.24);
+}
+.aiSkillOptions .difficultyChoice.selected span{color:#86d7ec}
+.multiWaitOverlay.aiThinking{
+  border-color:rgba(80,178,210,.52);
+  background:
+    radial-gradient(circle at 50% 0%,rgba(36,123,157,.34),transparent 56%),
+    linear-gradient(180deg,rgba(6,21,33,.988),rgba(3,12,20,.996));
+}
+.multiWaitOverlay.aiThinking .multiWaitCard small{color:#75d0e7}
+.aiBadge{
+  display:inline-flex;align-items:center;margin-left:6px;padding:2px 5px;border-radius:5px;
+  background:rgba(71,173,204,.13);border:1px solid rgba(71,173,204,.24);color:#78cce3;
+  font-size:7px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle;
+}
+@media(max-width:650px){
+  .mainModeSelect{grid-template-columns:1fr!important}
+  .gameModeCard{min-height:110px!important}
+  .soloModeArt{height:66px}.soloModeArt img{width:58px;height:68px}
+}
+</style>
+</head>
+<body>
+<div class="rotatePhoneLock" id="rotatePhoneLock" role="status" aria-live="polite" aria-label="Rotate Phone To Play">
+  <div class="rotatePhoneLockInner">
+    <img src="shift-in-maze/assets/relics/24_rotate.png" alt="">
+    <strong>Rotate Phone To Play</strong>
+  </div>
+</div>
+<main class="app">
+  <header class="shellHeader" id="shellHeader">
+    <div class="brand">
+      <div class="brandMark">SIM</div>
+      <div class="brandCopy"><strong>Shift In Maze</strong><span>GameBox</span></div>
+    </div>
+    <button class="gameBoxBackBtn" id="homeBtn" type="button" aria-label="Back to Game Box"><img src="shared/assets/GameBox%20back%20button.png" alt="Game Box"></button>
+  </header>
+
+  <section id="modeView" class="view">
+    <section class="hero gameHero">
+      <div class="heroRelics" aria-hidden="true">
+        <img src="shift-in-maze/assets/relics/01_compass.png" alt="">
+        <img src="shift-in-maze/assets/relics/18_star.png" alt="">
+        <img src="shift-in-maze/assets/relics/11_key.png" alt="">
+      </div>
+      <span class="heroEyebrow">Game Box · Shift In Maze</span>
+      <h1>Shift In Maze</h1>
+      <span class="heroTag">Shift the maze. Find your relics. Get home first.</span>
+    </section>
+    <div class="modeSelect mainModeSelect">
+      <button class="modeTile gameModeCard soloModeCard" id="soloMode" type="button" aria-label="Solo Play">
+        <span class="soloModeArt" aria-hidden="true">
+          <img src="shift-in-maze/assets/01_player_token_red.png" alt="">
+          <img src="shift-in-maze/assets/02_player_token_blue.png" alt="">
+        </span>
+        <strong>Solo Play</strong>
+        <small>Play against 1–3 built-in AI rivals</small>
+      </button>
+      <button class="modeTile gameModeCard" id="passMode" type="button" aria-label="Pass & Play">
+        <img class="gameModeArt" src="shared/assets/Pass%20%26%20Play%20button.png" alt="Pass & Play">
+        <small>One phone · 2–4 players</small>
+      </button>
+      <button class="modeTile gameModeCard" id="multiMode" type="button" aria-label="Local Multiplayer">
+        <img class="gameModeArt" src="shared/assets/Local%20Multiplayer%20button.png" alt="Local Multiplayer">
+        <small>One phone each · live board</small>
+      </button>
+    </div>
+  </section>
+
+  <section id="soloSetup" class="view hidden">
+    <div class="setupTop">
+      <div class="setupTitle"><span>Solo Play</span><h2>Game Setup</h2></div>
+      <button class="backBtn" data-view-target="modeView" type="button">Back</button>
+    </div>
+    <section class="setupPanel">
+      <div class="twoCols">
+        <div class="field"><label for="soloPlayer">You are</label><select id="soloPlayer"></select></div>
+        <div class="field"><label for="soloAiCount">AI opponents</label>
+          <select id="soloAiCount">
+            <option value="1" selected>1 AI player</option>
+            <option value="2">2 AI players</option>
+            <option value="3">3 AI players</option>
+          </select>
+        </div>
+      </div>
+    </section>
+    <section class="setupPanel">
+      <div class="twoCols">
+        <div class="field"><label for="soloTargetCount">Game length</label>
+          <select id="soloTargetCount">
+            <option value="3">Quick · 3 relics</option>
+            <option value="4" selected>Standard · 4 relics</option>
+            <option value="5">Long · 5 relics</option>
+          </select>
+        </div>
+        <div class="field"><label>AI opponents</label><div class="soloRuleHint">Offline · built into the game</div></div>
+      </div>
+    </section>
+    <section class="setupPanel difficultyPanel">
+      <div class="panelLabel">Your turn time <span>Same timer rules</span></div>
+      <div class="difficultyOptions" data-difficulty-group="solo">
+        <button class="difficultyChoice" type="button" data-value="easy"><strong>Easy</strong><span>3:00</span></button>
+        <button class="difficultyChoice selected" type="button" data-value="medium"><strong>Medium</strong><span>1:30</span></button>
+        <button class="difficultyChoice" type="button" data-value="hard"><strong>Hard</strong><span>0:30</span></button>
+      </div>
+    </section>
+    <section class="setupPanel difficultyPanel">
+      <div class="panelLabel">AI skill <span>Separate from your timer</span></div>
+      <div class="difficultyOptions aiSkillOptions" data-ai-skill-group="solo">
+        <button class="difficultyChoice" type="button" data-value="easy"><strong>Easy AI</strong><span>Casual</span></button>
+        <button class="difficultyChoice selected" type="button" data-value="medium"><strong>Medium AI</strong><span>Smart</span></button>
+        <button class="difficultyChoice" type="button" data-value="hard"><strong>Hard AI</strong><span>Strategic</span></button>
+      </div>
+    </section>
+    <button class="primaryBtn full" id="startSoloBtn" type="button" style="margin-top:12px">Start Solo Game</button>
+  </section>
+
+  <section id="passSetup" class="view hidden">
+    <div class="setupTop">
+      <div class="setupTitle"><span>Pass & Play</span><h2>Players</h2></div>
+      <button class="backBtn" data-view-target="modeView" type="button">Back</button>
+    </div>
+    <section class="setupPanel">
+      <div class="panelLabel">Choose players <span>2–4</span></div>
+      <div class="playerGrid" id="playerGrid"></div>
+    </section>
+    <section class="setupPanel">
+      <div class="field"><label for="targetCount">Game length</label>
+        <select id="targetCount">
+          <option value="3">Quick · 3 relics</option>
+          <option value="4" selected>Standard · 4 relics</option>
+          <option value="5">Long · 5 relics</option>
+        </select>
+      </div>
+    </section>
+    <section class="setupPanel difficultyPanel">
+      <div class="panelLabel">Turn difficulty <span>Time per player</span></div>
+      <div class="difficultyOptions" data-difficulty-group="pass">
+        <button class="difficultyChoice" type="button" data-value="easy"><strong>Easy</strong><span>3:00</span></button>
+        <button class="difficultyChoice selected" type="button" data-value="medium"><strong>Medium</strong><span>1:30</span></button>
+        <button class="difficultyChoice" type="button" data-value="hard"><strong>Hard</strong><span>0:30</span></button>
+      </div>
+    </section>
+    <button class="primaryBtn full" id="startBtn" type="button" style="margin-top:12px">Start Game</button>
+    <div class="statusLine warn hidden" id="setupStatus"></div>
+  </section>
+
+  <section id="multiRole" class="view hidden">
+    <div class="setupTop">
+      <div class="setupTitle"><span>Local Multiplayer</span><h2>Play together</h2></div>
+      <button class="backBtn" data-view-target="modeView" type="button">Back</button>
+    </div>
+    <div class="modeSelect">
+      <button class="modeTile roleModeTile" id="hostMode" type="button">
+        <img src="shift-in-maze/assets/01_player_token_red.png" alt=""><div><strong>Host</strong><small>Create the lobby and choose the rules</small></div><span class="modeChevron">›</span>
+      </button>
+      <button class="modeTile roleModeTile" id="joinMode" type="button">
+        <img src="shift-in-maze/assets/02_player_token_blue.png" alt=""><div><strong>Join</strong><small>Find a nearby Shift In Maze game</small></div><span class="modeChevron">›</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="hostSetup" class="view hidden">
+    <div class="setupTop">
+      <div class="setupTitle"><span>Host</span><h2>Lobby</h2></div>
+      <button class="backBtn" id="hostBack" type="button">Back</button>
+    </div>
+    <section class="setupPanel">
+      <div class="twoCols">
+        <div class="field"><label for="hostPlayer">You are</label><select id="hostPlayer"></select></div>
+        <div class="field"><label for="hostTargetCount">Game length</label>
+          <select id="hostTargetCount">
+            <option value="3">Quick · 3</option><option value="4" selected>Standard · 4</option><option value="5">Long · 5</option>
+          </select>
+        </div>
+      </div>
+    </section>
+    <section class="setupPanel difficultyPanel">
+      <div class="panelLabel">Turn difficulty <span>Host decides</span></div>
+      <div class="difficultyOptions" data-difficulty-group="host">
+        <button class="difficultyChoice" type="button" data-value="easy"><strong>Easy</strong><span>3:00</span></button>
+        <button class="difficultyChoice selected" type="button" data-value="medium"><strong>Medium</strong><span>1:30</span></button>
+        <button class="difficultyChoice" type="button" data-value="hard"><strong>Hard</strong><span>0:30</span></button>
+      </div>
+    </section>
+    <div class="statusLine" id="hostStatus">Starting lobby…</div>
+    <section class="setupPanel" style="margin-top:10px">
+      <div class="panelLabel">Players <span id="hostCount">1 / 4</span></div>
+      <div class="lobbyList" id="hostLobby"></div>
+    </section>
+    <div class="setupActions">
+      <button class="secondaryBtn" id="restartHost" type="button">Refresh</button>
+      <button class="primaryBtn" id="startHostGame" type="button" disabled style="flex:1">Start Game</button>
+    </div>
+  </section>
+
+  <section id="joinSetup" class="view hidden">
+    <div class="setupTop">
+      <div class="setupTitle"><span>Join</span><h2>Find game</h2></div>
+      <button class="backBtn" id="joinBack" type="button">Back</button>
+    </div>
+    <section class="setupPanel">
+      <div class="field"><label for="joinPlayer">You are</label><select id="joinPlayer"></select></div>
+    </section>
+    <div class="statusLine" id="joinStatus">Scanning…</div>
+    <section class="setupPanel" style="margin-top:10px">
+      <div class="panelLabel">Games <span id="hostFoundCount">Scanning</span></div>
+      <div class="hostList" id="availableHosts"></div>
+    </section>
+    <section class="setupPanel hidden" id="joinedLobbyPanel" style="margin-top:10px">
+      <div class="panelLabel">Connected <span id="joinGameRules">Waiting for host</span></div>
+      <div class="lobbyList" id="joinLobby"></div>
+    </section>
+    <button class="secondaryBtn full" id="restartScan" type="button" style="margin-top:12px">Refresh Scan</button>
+  </section>
+
+  <section id="gameView" class="view playScreen hidden">
+    <img class="mazeShiftUiArt" src="maze_shift_ui.png" onerror="this.hidden=true" alt="" aria-hidden="true">
+    <img class="mazeHudFrame mazeHudFrameTop" src="shift-in-maze/assets/ui/01_maze_shift_top_hud_frame.png" onerror="this.hidden=true" alt="" aria-hidden="true">
+    <img class="mazeHudFrame mazeHudFrameBottom" src="shift-in-maze/assets/ui/02_maze_shift_bottom_hud_frame.png" onerror="this.hidden=true" alt="" aria-hidden="true">
+    <header class="gameHud">
+      <div class="turnHud">
+        <span class="turnDot" id="turnDot"></span>
+        <div class="turnText"><span id="turnLabel">Turn</span><strong id="turnName">—</strong></div>
+      </div>
+      <div class="turnTimer" id="turnTimer" aria-live="polite">
+        <span id="timerDifficulty">Medium</span><strong id="timerValue">1:30</strong>
+      </div>
+      <button class="iconBtn menuBtn" id="menuBtn" type="button" aria-label="Game menu">•••</button>
+    </header>
+
+    <section class="boardStage">
+      <div class="boardFrame" id="boardFrame"><div class="boardGrid" id="boardGrid"></div></div>
+    </section>
+
+    <footer class="thumbDock">
+      <section class="targetZone" id="targetZone" aria-label="Current target">
+        <div class="objectiveText"><span id="objectiveLabel">Target</span><strong id="objectiveName">Hidden</strong></div>
+        <div class="objectiveScore" id="score">0 / 4</div>
+        <div class="targetToken" id="objectiveIcon"></div>
+        <button class="targetPrivacyShield" id="targetPrivacyShield" type="button" aria-label="Reveal your target relic">
+          <span>Target hidden</span><strong>Tap to reveal</strong>
+        </button>
+      </section>
+      <section class="tileZone" aria-label="Spare tile">
+        <div class="zoneLabel">YOUR TILE</div>
+        <div class="spareTile" id="spareTile" aria-label="Spare maze tile"></div>
+      </section>
+      <section class="rotateZone">
+        <button class="rotateBtn rotateRight" id="rotateRight" type="button" aria-label="Rotate spare tile"><img src="shift-in-maze/assets/relics/24_rotate.png" alt=""></button>
+        <button class="stayBtn hidden" id="stayBtn" type="button">Stay · End Turn</button>
+        <div class="waitDock hidden" id="waitDock">Waiting</div>
+      </section>
+    </footer>
+    <div class="multiWaitOverlay hidden" id="multiWaitOverlay" aria-live="polite">
+      <div class="multiWaitCard">
+        <img id="multiWaitPawn" src="shift-in-maze/assets/01_player_token_red.png" alt="">
+        <div><span>Waiting for</span><strong id="multiWaitName">Player</strong><small>They are taking their turn</small></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="overlay hidden" id="gameMenu">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="gameMenuTitle">
+    <div class="sheetGrip"></div>
+    <div class="sheetHead"><h3 id="gameMenuTitle">Game Menu</h3><button class="iconBtn" id="closeMenu" type="button" aria-label="Close menu">×</button></div>
+    <section class="sheetSection">
+      <div class="sheetLabel">Players</div>
+      <div class="menuPlayers" id="menuPlayers"></div>
+    </section>
+    <section class="sheetSection">
+      <div class="sheetLabel">Game</div>
+      <div class="menuMeta">
+        <div class="metaPill"><span>Mode</span><strong id="menuMode">Pass & Play</strong></div>
+        <div class="metaPill"><span>Connection</span><strong id="menuNetwork">Local device</strong></div>
+      </div>
+    </section>
+    <section class="sheetSection">
+      <div class="sheetLabel">How to play</div>
+      <div class="ruleSteps">
+        <div class="ruleStep"><b>1</b><span>Rotate the spare tile and push it into a gold insertion point.</span></div>
+        <div class="ruleStep"><b>2</b><span>Move to any glowing tile connected by an open path.</span></div>
+        <div class="ruleStep"><b>3</b><span>Collect your current relic. Find them all, then return home.</span></div>
+      </div>
+    </section>
+    <section class="sheetSection">
+      <button class="dangerBtn full" id="leaveGameBtn" type="button">Leave Game</button>
+    </section>
+  </div>
+</div>
+
+<div class="handoff hidden" id="handoff">
+  <div class="handoffCard">
+    <div class="handoffArt">
+      <div class="handoffOrb">SIM</div>
+      <span>Pass to</span>
+      <h2 id="handoffName">Player</h2>
+    </div>
+    <div class="handoffBody"><button class="primaryBtn full" id="readyBtn" type="button">Ready</button></div>
+  </div>
+</div>
+
+<div class="handoff hidden" id="winner">
+  <div class="handoffCard winCard">
+    <div class="handoffArt">
+      <div class="handoffOrb">★</div>
+      <span>Maze conquered</span>
+      <h2 id="winnerName">Winner!</h2>
+    </div>
+    <div class="handoffBody"><button class="primaryBtn full" id="playAgainBtn" type="button">Back to Modes</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><img id="toastArt" class="hidden" alt=""><span id="toastText">Relic found</span></div>
+
+<script src="shared/lan-core.js?v=8"></script>
+<script>
+(function(){
+  'use strict';
+
+  var ROSTER_KEY='gamebox.players.v1';
+  var COLORS=['#e64f55','#3f82e3','#12a373','#9965d7'];
+  var HOME_POS=[{r:0,c:0},{r:0,c:6},{r:6,c:6},{r:6,c:0}];
+  var ASSET_ROOT='shift-in-maze/assets/relics/';
+  var PLAYER_ASSETS=[
+    'shift-in-maze/assets/01_player_token_red.png',
+    'shift-in-maze/assets/02_player_token_blue.png',
+    'shift-in-maze/assets/03_player_token_green.png',
+    'shift-in-maze/assets/04_player_token_purple.png'
+  ];
+  var HOME_ASSET=ASSET_ROOT+'22_home.png';
+  var SHIFT_ASSET=ASSET_ROOT+'23_shift_arrow.png';
+  var TILE_ASSETS={
+    I:{movable:'shift-in-maze/assets/tiles/movable_straight.png',fixed:'shift-in-maze/assets/tiles/immovable_straight.png'},
+    L:{movable:'shift-in-maze/assets/tiles/movable_corner.png',fixed:'shift-in-maze/assets/tiles/immovable_corner.png'},
+    T:{movable:'shift-in-maze/assets/tiles/movable_t_junction.png',fixed:'shift-in-maze/assets/tiles/immovable_t_junction.png'}
+  };
+  var ROTATE_ASSET=ASSET_ROOT+'24_rotate.png';
+  var DIFFICULTY_SECONDS={easy:180,medium:90,hard:30};
+  var DIFFICULTY_LABELS={easy:'Easy',medium:'Medium',hard:'Hard'};
+  var AI_SKILLS={easy:1,medium:2,hard:3};
+  var AI_NAMES=['Rune','Ember','Vale'];
+  var RELICS=[
+    {id:'compass',name:'Compass',asset:ASSET_ROOT+'01_compass.png'},
+    {id:'lantern',name:'Lantern',asset:ASSET_ROOT+'02_lantern.png'},
+    {id:'anchor',name:'Anchor',asset:ASSET_ROOT+'03_anchor.png'},
+    {id:'feather',name:'Feather',asset:ASSET_ROOT+'04_feather.png'},
+    {id:'gem',name:'Gem',asset:ASSET_ROOT+'05_gem.png'},
+    {id:'book',name:'Book',asset:ASSET_ROOT+'06_book.png'},
+    {id:'hourglass',name:'Hourglass',asset:ASSET_ROOT+'07_hourglass.png'},
+    {id:'bell',name:'Bell',asset:ASSET_ROOT+'08_bell.png'},
+    {id:'shield',name:'Shield',asset:ASSET_ROOT+'09_shield.png'},
+    {id:'goblet',name:'Goblet',asset:ASSET_ROOT+'10_goblet.png'},
+    {id:'key',name:'Key',asset:ASSET_ROOT+'11_key.png'},
+    {id:'crown',name:'Crown',asset:ASSET_ROOT+'12_crown.png'},
+    {id:'mask',name:'Mask',asset:ASSET_ROOT+'13_mask.png'},
+    {id:'crystal',name:'Crystal',asset:ASSET_ROOT+'14_crystal.png'},
+    {id:'telescope',name:'Telescope',asset:ASSET_ROOT+'15_telescope.png'},
+    {id:'scroll',name:'Scroll',asset:ASSET_ROOT+'16_scroll.png'},
+    {id:'ring',name:'Ring',asset:ASSET_ROOT+'17_ring.png'},
+    {id:'star',name:'Star',asset:ASSET_ROOT+'18_star.png'},
+    {id:'moon',name:'Moon',asset:ASSET_ROOT+'19_moon.png'},
+    {id:'sun',name:'Sun',asset:ASSET_ROOT+'20_sun.png'}
+  ];
+
+  var state={
+    selected:[],players:[],board:[],spare:null,current:0,phase:'shift',
+    lastShift:null,targetCount:4,winnerId:null,turnReady:false,
+    difficulty:'medium',turnDurationSec:90,turnDeadline:0,aiSkill:'medium'
+  };
+  var mode='local';
+  var role=null;
+  var localPlayerId='';
+  var session=null;
+  var hostIdentity=null;
+  var joinIdentity=null;
+  var connectedLobby=[];
+  var lastHosts=[];
+  var toastTimer=null;
+  var moving=false;
+  var shiftRequestPending=false;
+  var pendingSnapshot=null;
+  var targetRevealed=false;
+  var turnTimerInterval=null;
+  var lastTimerCue=null;
+  var timerEnding=false;
+  var aiTurnTimer=null;
+  var aiRunning=false;
+
+  function $(id){return document.getElementById(id)}
+  function uid(){return globalThis.crypto&&globalThis.crypto.randomUUID?globalThis.crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(36).slice(2)}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function read(key,fallback){try{var v=JSON.parse(localStorage.getItem(key));return v||fallback}catch(e){return fallback}}
+  function shuffle(input){var out=input.slice();for(var i=out.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=out[i];out[i]=out[j];out[j]=t}return out}
+  function buzz(ms){try{navigator.vibrate&&navigator.vibrate(ms||10)}catch(e){}}
+  function showToast(text,asset){
+    var el=$('toast'),art=$('toastArt'),copy=$('toastText');
+    copy.textContent=text;
+    if(asset){art.src=asset;art.classList.remove('hidden')}else{art.removeAttribute('src');art.classList.add('hidden')}
+    el.classList.add('show');
+    clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show')},1500);
+  }
+  function pulseBoard(){
+    var el=$('boardFrame');if(!el)return;
+    el.classList.remove('boardPulse');void el.offsetWidth;el.classList.add('boardPulse');
+    setTimeout(function(){el.classList.remove('boardPulse')},240);
+  }
+  function roster(){
+    var raw=read(ROSTER_KEY,[]);
+    var people=Array.isArray(raw)?raw.filter(function(p){return p&&p.id&&String(p.name||'').trim()}):[];
+    if(!people.length)people=[{id:'default-chip',name:'Chip'},{id:'default-jess',name:'Jess'}];
+    return people.map(function(p){return{id:String(p.id),name:String(p.name).trim()}});
+  }
+  function showView(id){
+    if(id!=='gameView'&&mode==='solo')cancelAITurn();
+    document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('hidden',v.id!==id)});
+    document.body.classList.toggle('playing',id==='gameView');
+    $('shellHeader').classList.toggle('hidden',id==='gameView');
+    if(id!=='gameView')window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function populatePlayerSelect(id){
+    var select=$(id),current=select.value,people=roster();
+    select.innerHTML=people.map(function(p){return'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>'}).join('');
+    if(people.some(function(p){return p.id===current}))select.value=current;
+  }
+  function setStatus(id,text,tone){
+    var el=$(id);if(!el)return;
+    el.textContent=text;el.className='statusLine'+(tone?' '+tone:'');
+  }
+  function selectedRosterPlayer(selectId){
+    var id=$(selectId).value;
+    return roster().find(function(p){return p.id===id})||roster()[0];
+  }
+  function networkIdentity(player,prefix,existing){
+    if(existing)return{id:existing.id,name:player?player.name:existing.name};
+    return{id:prefix+'-'+uid(),name:player?player.name:'Player'};
+  }
+
+  function clampSelection(){
+    var ids=new Set(roster().map(function(p){return p.id}));
+    state.selected=state.selected.filter(function(id){return ids.has(id)}).slice(0,4);
+  }
+  function aiSkillValue(){
+    var el=document.querySelector('[data-ai-skill-group="solo"] .difficultyChoice.selected');
+    var value=el&&el.dataset.value||'medium';
+    return AI_SKILLS[value]?value:'medium';
+  }
+  function difficultyValue(group){
+    var el=document.querySelector('[data-difficulty-group="'+group+'"] .difficultyChoice.selected');
+    var value=el&&el.dataset.value||'medium';
+    return DIFFICULTY_SECONDS[value]?value:'medium';
+  }
+  function difficultyTimeText(value){
+    var sec=DIFFICULTY_SECONDS[value]||90;
+    return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+  }
+  function formatTurnClock(sec){
+    sec=Math.max(0,Math.ceil(Number(sec)||0));
+    return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+  }
+  function authoritativeTimer(){
+    return mode==='local'||(mode==='multi'&&role==='host')||(mode==='solo'&&!isAITurn());
+  }
+  function ensureTurnTimer(){
+    if(turnTimerInterval)return;
+    turnTimerInterval=setInterval(renderTurnTimer,250);
+  }
+  function stopTurnTimer(){
+    if(turnTimerInterval){clearInterval(turnTimerInterval);turnTimerInterval=null}
+  }
+  function startTurnClock(){
+    state.turnDeadline=Date.now()+state.turnDurationSec*1000;
+    lastTimerCue=state.turnDurationSec;
+    timerEnding=false;
+    ensureTurnTimer();
+    renderTurnTimer();
+  }
+  function timerCueNeeded(sec){
+    if(sec<=0)return false;
+    if(sec>30)return sec%30===0;
+    if(sec>10)return sec%10===0;
+    return true;
+  }
+  function renderTurnTimer(){
+    var timer=$('turnTimer'),value=$('timerValue'),label=$('timerDifficulty');
+    if(!timer||!value||!label)return;
+    if(mode==='solo'&&isAITurn()){
+      label.textContent='AI · '+(String(state.aiSkill||'medium').replace(/^./,function(x){return x.toUpperCase()}));
+      value.textContent='Thinking';
+      timer.classList.remove('timerWarn','timerDanger','timerCue');
+      return;
+    }
+    label.textContent=DIFFICULTY_LABELS[state.difficulty]||'Medium';
+    if(!state.turnDeadline||!state.players.length||state.winnerId){
+      value.textContent=formatTurnClock(state.turnDurationSec||90);
+      timer.classList.remove('timerWarn','timerDanger','timerCue');
+      return;
+    }
+    var sec=Math.max(0,Math.ceil((state.turnDeadline-Date.now())/1000));
+    value.textContent=formatTurnClock(sec);
+    timer.classList.toggle('timerWarn',sec<=30&&sec>10);
+    timer.classList.toggle('timerDanger',sec<=10);
+    if(sec!==lastTimerCue&&timerCueNeeded(sec)){
+      lastTimerCue=sec;
+      timer.classList.remove('timerCue');void timer.offsetWidth;timer.classList.add('timerCue');
+      if(sec===30||sec===20||sec===10)showToast(sec+' seconds left');
+      if(sec<=10&&canControlTurn())buzz(sec<=3?28:10);
+    }
+    if(sec<=0&&authoritativeTimer()&&!moving&&!timerEnding&&!state.winnerId){
+      timerEnding=true;state.turnDeadline=0;showToast('Time up · turn ended');buzz(55);
+      setTimeout(function(){endTurn()},120);
+    }
+  }
+
+  function renderPlayerPicker(){
+    clampSelection();
+    var wrap=$('playerGrid');wrap.innerHTML='';
+    roster().forEach(function(p){
+      var b=document.createElement('button');b.type='button';
+      var idx=roster().findIndex(function(x){return x.id===p.id});
+      b.className='choice'+(state.selected.indexOf(p.id)>=0?' selected':'');
+      b.innerHTML='<img class="choicePawn" src="'+PLAYER_ASSETS[(idx<0?0:idx)%PLAYER_ASSETS.length]+'" alt=""><span>'+esc(p.name)+'</span><b class="choiceCheck">'+(state.selected.indexOf(p.id)>=0?'✓':'○')+'</b>';
+      b.addEventListener('click',function(){
+        var at=state.selected.indexOf(p.id);
+        if(at>=0)state.selected.splice(at,1);
+        else if(state.selected.length<4)state.selected.push(p.id);
+        buzz(8);renderPlayerPicker();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function tile(type,rot,fixed){return{type:type,rot:rot%4,fixed:!!fixed,relic:null}}
+  function openings(t){
+    var o=[];
+    if(t.type==='I')o=t.rot%2===0?['N','S']:['E','W'];
+    if(t.type==='L')o=[['N','E'],['E','S'],['S','W'],['W','N']][t.rot%4];
+    if(t.type==='T')o=[['N','E','W'],['N','E','S'],['E','S','W'],['N','S','W']][t.rot%4];
+    return o;
+  }
+  function fixedTile(r,c){
+    // The four home squares are fixed corners; the other twelve
+    // fixed squares are T-junctions on a classic 7x7 shifting board.
+    if(r===0&&c===0)return tile('L',1,true);
+    if(r===0&&c===6)return tile('L',2,true);
+    if(r===6&&c===0)return tile('L',0,true);
+    if(r===6&&c===6)return tile('L',3,true);
+    // Edge openings face into the board.
+    if(r===0)return tile('T',2,true);
+    if(r===6)return tile('T',0,true);
+    if(c===0)return tile('T',1,true);
+    if(c===6)return tile('T',3,true);
+    // The four interior fixed T-junctions match the original Labyrinth board.
+    // T rotation openings: 0=N/E/W, 1=N/E/S, 2=E/S/W, 3=N/S/W.
+    if(r===2&&c===2)return tile('T',1,true);
+    if(r===2&&c===4)return tile('T',2,true);
+    if(r===4&&c===2)return tile('T',0,true);
+    if(r===4&&c===4)return tile('T',3,true);
+    throw new Error('Unexpected fixed tile position: '+r+','+c);
+  }
+  function buildBoard(){
+    var movable=[],counts={I:13,L:15,T:6};
+    Object.keys(counts).forEach(function(type){for(var i=0;i<counts[type];i++)movable.push(tile(type,Math.floor(Math.random()*4),false))});
+    movable=shuffle(movable);
+    var board=[];
+    for(var r=0;r<7;r++){
+      var row=[];for(var c=0;c<7;c++)row.push(r%2===0&&c%2===0?fixedTile(r,c):movable.pop());
+      board.push(row);
+    }
+    return{board:board,spare:movable.pop()};
+  }
+  function assignRelics(board,players,targetCount){
+    var available=[];
+    for(var r=0;r<7;r++)for(var c=0;c<7;c++){
+      var home=HOME_POS.some(function(h){return h.r===r&&h.c===c});
+      if(!home)available.push({r:r,c:c});
+    }
+    available=shuffle(available);
+    var needed=players.length*targetCount;
+    var relics=shuffle(RELICS).slice(0,needed);
+    relics.forEach(function(rel,i){var p=available[i];board[p.r][p.c].relic=rel});
+    var deck=shuffle(relics);
+    players.forEach(function(p){p.targets=deck.splice(0,targetCount);p.collected=[];p.targetIndex=0});
+  }
+  function createGame(players,targetCount,difficulty){
+    var built=buildBoard();
+    state.players=players.map(function(p,i){
+      return{id:String(p.id),name:String(p.name).slice(0,24),isAI:!!p.isAI,aiSkill:p.aiSkill||null,color:COLORS[i],asset:PLAYER_ASSETS[i]||PLAYER_ASSETS[0],home:{r:HOME_POS[i].r,c:HOME_POS[i].c},pos:{r:HOME_POS[i].r,c:HOME_POS[i].c},targets:[],collected:[],targetIndex:0};
+    });
+    state.board=built.board;state.spare=built.spare;state.current=0;state.phase='shift';state.lastShift=null;
+    state.targetCount=targetCount;state.winnerId=null;state.turnReady=mode!=='local';
+    state.difficulty=DIFFICULTY_SECONDS[difficulty]?difficulty:'medium';
+    state.turnDurationSec=DIFFICULTY_SECONDS[state.difficulty];
+    state.turnDeadline=0;targetRevealed=false;timerEnding=false;lastTimerCue=null;
+    state.aiSkill=AI_SKILLS[arguments[3]]?arguments[3]:'medium';
+    assignRelics(state.board,state.players,targetCount);
+  }
+  function startSoloGame(){
+    resetSession(false);stopTurnTimer();cancelAITurn();
+    mode='solo';role=null;
+    var human=selectedRosterPlayer('soloPlayer');
+    localPlayerId=human.id;
+    var aiCount=Math.max(1,Math.min(3,parseInt($('soloAiCount').value,10)||1));
+    var skill=aiSkillValue(),players=[{id:human.id,name:human.name,isAI:false}];
+    for(var i=0;i<aiCount;i++){
+      players.push({id:'ai-'+(i+1),name:AI_NAMES[i],isAI:true,aiSkill:skill});
+    }
+    createGame(players,parseInt($('soloTargetCount').value,10)||4,difficultyValue('solo'),skill);
+    state.turnReady=true;targetRevealed=false;
+    showView('gameView');startTurnClock();renderAll();
+  }
+
+  function startPassGame(){
+    if(state.selected.length<2){setStatus('setupStatus','Choose at least 2 players.','warn');$('setupStatus').classList.remove('hidden');return}
+    $('setupStatus').classList.add('hidden');resetSession(false);mode='local';role=null;localPlayerId='';
+    var map=new Map(roster().map(function(p){return[p.id,p]}));
+    var players=state.selected.map(function(id){return map.get(id)}).filter(Boolean);
+    createGame(players,parseInt($('targetCount').value,10)||4,difficultyValue('pass'));
+    showView('gameView');showHandoff();renderAll();
+  }
+
+  function currentPlayer(){return state.players[state.current]||null}
+  function isAIPlayer(p){return!!(p&&p.isAI)}
+  function isAITurn(){return mode==='solo'&&isAIPlayer(currentPlayer())}
+  function ownPlayer(){
+    if(mode==='multi'||mode==='solo')return state.players.find(function(p){return p.id===localPlayerId})||null;
+    return currentPlayer();
+  }
+  function currentTarget(p){return p&&p.targets[p.targetIndex]||null}
+  function isLocalTurnOwner(){
+    var p=currentPlayer();if(!p)return false;
+    if(mode==='local')return!!state.turnReady;
+    if(mode==='solo')return!p.isAI&&p.id===localPlayerId;
+    return p.id===localPlayerId;
+  }
+  function canControlTurn(){
+    if(moving||shiftRequestPending||!currentPlayer()||aiRunning)return false;
+    if(state.turnDeadline&&Date.now()>=state.turnDeadline)return false;
+    return isLocalTurnOwner();
+  }
+  function showHandoff(){if(mode!=='local')return;var p=currentPlayer();if(!p)return;state.turnReady=false;state.turnDeadline=0;targetRevealed=false;$('handoffName').textContent=p.name;$('handoff').classList.remove('hidden');renderTurnTimer()}
+  function beginTurn(){state.turnReady=true;targetRevealed=false;$('handoff').classList.add('hidden');startTurnClock();buzz(12);renderAll()}
+  function revealTarget(){
+    if(!canControlTurn())return;
+    var p=ownPlayer(),target=currentTarget(p);if(!target)return;
+    targetRevealed=true;buzz(8);renderObjective();renderBoard();
+  }
+  function opposite(side){return{left:'right',right:'left',top:'bottom',bottom:'top'}[side]}
+  function isBlockedInsertion(side,index){return!!state.lastShift&&state.lastShift.index===index&&opposite(state.lastShift.side)===side}
+
+  function publishState(){if(mode==='multi'&&role==='host'&&session)session.broadcast({type:'state',state:snapshot()})}
+  function rotateSpareInternal(delta){
+    if(state.phase!=='shift')return;
+    state.spare.rot=(state.spare.rot+delta+4)%4;buzz(7);
+    renderSpare();
+    if(mode==='multi'&&role==='host'&&session)session.broadcast({type:'rotateSync',rot:state.spare.rot});
+  }
+  function requestRotate(delta){
+    if(!canControlTurn()||state.phase!=='shift')return;
+    if(mode==='multi'&&role==='client'){session&&session.sendToHost({type:'action',action:'rotate',delta:delta,playerId:localPlayerId});return}
+    rotateSpareInternal(delta);
+  }
+  function copyTile(t){return t?JSON.parse(JSON.stringify(t)):null}
+  function wait(ms){return new Promise(function(resolve){setTimeout(resolve,ms)})}
+  function cellAt(r,c){return document.querySelector('.cell[data-r="'+r+'"][data-c="'+c+'"]')}
+  function insertAt(side,index){return document.querySelector('.insertBtn.side-'+side+'[data-index="'+index+'"]')}
+  function setGhostBox(el,rect,frameRect){
+    el.style.left=(rect.left-frameRect.left)+'px';
+    el.style.top=(rect.top-frameRect.top)+'px';
+    el.style.width=rect.width+'px';
+    el.style.height=rect.height+'px';
+  }
+  function mutateShiftState(side,index){
+    var r,c,i,ejected;
+    if(side==='left'){
+      r=index;ejected=state.board[r][6];for(i=6;i>0;i--)state.board[r][i]=state.board[r][i-1];state.board[r][0]=state.spare;state.spare=ejected;
+      state.players.forEach(function(p){if(p.pos.r===r)p.pos.c=(p.pos.c+1)%7});
+    }else if(side==='right'){
+      r=index;ejected=state.board[r][0];for(i=0;i<6;i++)state.board[r][i]=state.board[r][i+1];state.board[r][6]=state.spare;state.spare=ejected;
+      state.players.forEach(function(p){if(p.pos.r===r)p.pos.c=(p.pos.c+6)%7});
+    }else if(side==='top'){
+      c=index;ejected=state.board[6][c];for(i=6;i>0;i--)state.board[i][c]=state.board[i-1][c];state.board[0][c]=state.spare;state.spare=ejected;
+      state.players.forEach(function(p){if(p.pos.c===c)p.pos.r=(p.pos.r+1)%7});
+    }else if(side==='bottom'){
+      c=index;ejected=state.board[0][c];for(i=0;i<6;i++)state.board[i][c]=state.board[i+1][c];state.board[6][c]=state.spare;state.spare=ejected;
+      state.players.forEach(function(p){if(p.pos.c===c)p.pos.r=(p.pos.r+6)%7});
+    }else return false;
+    state.lastShift={side:side,index:index};state.phase='move';return true;
+  }
+  async function animateShiftVisual(side,index,visualSpare){
+    var frame=$('boardFrame'),grid=$('boardGrid');if(!frame||!grid||!visualSpare)return;
+    var frameRect=frame.getBoundingClientRect(),cells=[],i,r,c;
+    if(side==='left'||side==='right'){
+      r=index;for(i=0;i<7;i++){var hc=cellAt(r,i);if(hc)cells.push(hc)}
+    }else{
+      c=index;for(i=0;i<7;i++){var vc=cellAt(i,c);if(vc)cells.push(vc)}
+    }
+    if(cells.length!==7)return;
+    var insert=insertAt(side,index),exit=insertAt(opposite(side),index);if(!insert||!exit)return;
+    var originals=[],ghosts=[],rects=cells.map(function(el){return el.getBoundingClientRect()});
+    cells.forEach(function(el,idx){
+      var ghost=el.cloneNode(true);ghost.classList.add('shiftGhost');ghost.classList.remove('reachable','currentCell');
+      ghost.removeAttribute('data-r');ghost.removeAttribute('data-c');ghost.disabled=true;
+      setGhostBox(ghost,rects[idx],frameRect);frame.appendChild(ghost);
+      originals.push(el);ghosts.push(ghost);el.style.visibility='hidden';
+    });
+    var sample=rects[0],ir=insert.getBoundingClientRect(),er=exit.getBoundingClientRect();
+    var spare=document.createElement('div');spare.className='shiftGhost shiftSpareGhost';
+    spare.innerHTML=tileMarkup(visualSpare,false,-1,-1);
+    spare.style.left=(ir.left-frameRect.left+ir.width/2-sample.width/2)+'px';
+    spare.style.top=(ir.top-frameRect.top+ir.height/2-sample.height/2)+'px';
+    spare.style.width=sample.width+'px';spare.style.height=sample.height+'px';
+    frame.appendChild(spare);
+    var dockSpare=$('spareTile');if(dockSpare)dockSpare.style.opacity='0';
+    frame.classList.add('shifting');
+    await wait(190);
+    var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var duration=reduced?220:700,easing='cubic-bezier(.22,.72,.22,1)';
+    function center(rect){return{x:rect.left-frameRect.left+rect.width/2,y:rect.top-frameRect.top+rect.height/2}}
+    var insertCenter=center(ir),exitCenter,targets=[],ejectedIndex=0;
+    if(side==='left')exitCenter={x:rects[6].right-frameRect.left+sample.width/2+3,y:center(rects[6]).y};
+    else if(side==='right')exitCenter={x:rects[0].left-frameRect.left-sample.width/2-3,y:center(rects[0]).y};
+    else if(side==='top')exitCenter={x:center(rects[6]).x,y:rects[6].bottom-frameRect.top+sample.height/2+3};
+    else exitCenter={x:center(rects[0]).x,y:rects[0].top-frameRect.top-sample.height/2-3};
+    for(i=0;i<7;i++){
+      if(side==='left')targets[i]=i<6?center(rects[i+1]):exitCenter;
+      else if(side==='right')targets[i]=i>0?center(rects[i-1]):exitCenter;
+      else if(side==='top')targets[i]=i<6?center(rects[i+1]):exitCenter;
+      else targets[i]=i>0?center(rects[i-1]):exitCenter;
+    }
+    ejectedIndex=(side==='left'||side==='top')?6:0;
+    var animations=ghosts.map(function(g,idx){
+      var start=center(rects[idx]),target=targets[idx];
+      return g.animate([{transform:'translate(0,0)'},{transform:'translate('+(target.x-start.x)+'px,'+(target.y-start.y)+'px)'}],
+        {duration:duration,easing:easing,fill:'forwards'}).finished.catch(function(){});
+    });
+    var spareTarget=(side==='left'||side==='top')?center(rects[0]):center(rects[6]);
+    animations.push(spare.animate([{transform:'translate(0,0)'},{transform:'translate('+(spareTarget.x-insertCenter.x)+'px,'+(spareTarget.y-insertCenter.y)+'px)'}],
+      {duration:duration,easing:easing,fill:'forwards'}).finished.catch(function(){}));
+    await Promise.all(animations);
+    var ejected=ghosts[ejectedIndex];
+    if(ejected){
+      var blink=ejected.animate([
+        {opacity:1},{offset:.18,opacity:.08},{offset:.36,opacity:1},
+        {offset:.54,opacity:.08},{offset:.72,opacity:1},{opacity:0}
+      ],{duration:reduced?320:620,easing:'linear',fill:'forwards'});
+      try{await blink.finished}catch(e){}
+    }
+    ghosts.forEach(function(g){g.remove()});spare.remove();
+    originals.forEach(function(el){el.style.visibility=''});
+    if(dockSpare)dockSpare.style.opacity='';
+    frame.classList.remove('shifting');
+  }
+  async function shiftMazeInternal(side,index){
+    if(state.phase!=='shift'||isBlockedInsertion(side,index)||moving)return;
+    moving=true;shiftRequestPending=false;
+    var visualSpare=copyTile(state.spare);
+    var fx=animateShiftVisual(side,index,visualSpare);
+    if(!mutateShiftState(side,index)){moving=false;return}
+    var nextState=snapshot();
+    if(mode==='multi'&&role==='host'&&session)session.broadcast({type:'shiftFx',side:side,index:index,nextState:nextState});
+    await fx;
+    moving=false;buzz(18);pulseBoard();renderAll();publishState();
+  }
+  function requestShift(side,index){
+    if(!canControlTurn()||state.phase!=='shift'||isBlockedInsertion(side,index))return;
+    if(mode==='multi'&&role==='client'){
+      shiftRequestPending=true;renderAll();
+      session&&session.sendToHost({type:'action',action:'shift',side:side,index:index,playerId:localPlayerId});return;
+    }
+    shiftMazeInternal(side,index);
+  }
+  function canConnect(a,b,dir){var opp={N:'S',E:'W',S:'N',W:'E'}[dir];return openings(a).indexOf(dir)>=0&&openings(b).indexOf(opp)>=0}
+  function movementMap(){
+    var p=currentPlayer();if(!p)return{seen:new Set(),prev:new Map()};
+    var seen=new Set(),prev=new Map(),queue=[{r:p.pos.r,c:p.pos.c}],dirs=[{d:'N',dr:-1,dc:0},{d:'E',dr:0,dc:1},{d:'S',dr:1,dc:0},{d:'W',dr:0,dc:-1}];
+    seen.add(p.pos.r+','+p.pos.c);
+    while(queue.length){
+      var cur=queue.shift(),a=state.board[cur.r][cur.c];
+      dirs.forEach(function(x){
+        var nr=cur.r+x.dr,nc=cur.c+x.dc,key=nr+','+nc,from=cur.r+','+cur.c;
+        if(nr<0||nr>6||nc<0||nc>6||seen.has(key))return;
+        if(canConnect(a,state.board[nr][nc],x.d)){seen.add(key);prev.set(key,from);queue.push({r:nr,c:nc})}
+      });
+    }
+    return{seen:seen,prev:prev};
+  }
+  function reachable(){return Array.from(movementMap().seen)}
+  function routeTo(r,c){
+    var p=currentPlayer();if(!p)return[];
+    var map=movementMap(),target=r+','+c,start=p.pos.r+','+p.pos.c;
+    if(!map.seen.has(target))return[];
+    var keys=[target],cursor=target;
+    while(cursor!==start){
+      cursor=map.prev.get(cursor);if(!cursor)return[];
+      keys.push(cursor);
+    }
+    keys.reverse();
+    return keys.map(function(k){var parts=k.split(',');return{r:Number(parts[0]),c:Number(parts[1])}});
+  }
+  function cloneForAI(v){return JSON.parse(JSON.stringify(v))}
+  function simulateShiftForAI(rot,side,index){
+    var board=cloneForAI(state.board),spare=cloneForAI(state.spare),players=cloneForAI(state.players);
+    spare.rot=((rot%4)+4)%4;
+    var r,c,i,ejected;
+    if(side==='left'){
+      r=index;ejected=board[r][6];for(i=6;i>0;i--)board[r][i]=board[r][i-1];board[r][0]=spare;spare=ejected;
+      players.forEach(function(p){if(p.pos.r===r)p.pos.c=(p.pos.c+1)%7});
+    }else if(side==='right'){
+      r=index;ejected=board[r][0];for(i=0;i<6;i++)board[r][i]=board[r][i+1];board[r][6]=spare;spare=ejected;
+      players.forEach(function(p){if(p.pos.r===r)p.pos.c=(p.pos.c+6)%7});
+    }else if(side==='top'){
+      c=index;ejected=board[6][c];for(i=6;i>0;i--)board[i][c]=board[i-1][c];board[0][c]=spare;spare=ejected;
+      players.forEach(function(p){if(p.pos.c===c)p.pos.r=(p.pos.r+1)%7});
+    }else if(side==='bottom'){
+      c=index;ejected=board[0][c];for(i=0;i<6;i++)board[i][c]=board[i+1][c];board[6][c]=spare;spare=ejected;
+      players.forEach(function(p){if(p.pos.c===c)p.pos.r=(p.pos.r+6)%7});
+    }
+    return{board:board,spare:spare,players:players};
+  }
+  function simMovementMap(board,pos){
+    var seen=new Set(),dist=new Map(),queue=[{r:pos.r,c:pos.c}],dirs=[{d:'N',dr:-1,dc:0},{d:'E',dr:0,dc:1},{d:'S',dr:1,dc:0},{d:'W',dr:0,dc:-1}];
+    var start=pos.r+','+pos.c;seen.add(start);dist.set(start,0);
+    while(queue.length){
+      var cur=queue.shift(),a=board[cur.r][cur.c],base=dist.get(cur.r+','+cur.c)||0;
+      dirs.forEach(function(x){
+        var nr=cur.r+x.dr,nc=cur.c+x.dc,key=nr+','+nc;
+        if(nr<0||nr>6||nc<0||nc>6||seen.has(key))return;
+        if(canConnect(a,board[nr][nc],x.d)){seen.add(key);dist.set(key,base+1);queue.push({r:nr,c:nc})}
+      });
+    }
+    return{seen:seen,dist:dist};
+  }
+  function findRelicOnBoard(board,relicId){
+    if(!relicId)return null;
+    for(var r=0;r<7;r++)for(var c=0;c<7;c++){
+      var rel=board[r][c].relic;if(rel&&rel.id===relicId)return{r:r,c:c};
+    }
+    return null;
+  }
+  function manhattan(a,b){return a&&b?Math.abs(a.r-b.r)+Math.abs(a.c-b.c):20}
+  function bestDestinationForAI(sim,player,skill){
+    var map=simMovementMap(sim.board,player.pos),target=currentTarget(player);
+    var goal=target?findRelicOnBoard(sim.board,target.id):player.home;
+    var nextTarget=target&&player.targets[player.targetIndex+1]||null;
+    var nextGoal=nextTarget?findRelicOnBoard(sim.board,nextTarget.id):null;
+    var best=null;
+    map.seen.forEach(function(key){
+      var parts=key.split(','),dest={r:Number(parts[0]),c:Number(parts[1])};
+      var pathDist=map.dist.get(key)||0,goalDist=goal?manhattan(dest,goal):12;
+      var score=map.seen.size*.35-goalDist*13-pathDist*.30;
+      if(goal&&dest.r===goal.r&&dest.c===goal.c){
+        score+=10000-pathDist*2;
+        if(skill==='hard'&&nextGoal)score-=manhattan(dest,nextGoal)*2.5;
+      }
+      if(skill==='hard'){
+        score+=Math.max(0,8-goalDist)*1.8;
+        // Hard AI may consider visible board control, but never reads another player's private target.
+        var oppReach=0,oppCount=0;
+        sim.players.forEach(function(op){
+          if(op.id===player.id)return;
+          oppReach+=simMovementMap(sim.board,op.pos).seen.size;oppCount++;
+        });
+        if(oppCount)score-=oppReach/oppCount*.035;
+      }else if(skill==='medium'){
+        score+=Math.random()*2.5;
+      }else{
+        score+=Math.random()*32;
+      }
+      if(!best||score>best.score)best={r:dest.r,c:dest.c,score:score};
+    });
+    return best||{r:player.pos.r,c:player.pos.c,score:-99999};
+  }
+  function chooseAIMove(player){
+    var skill=state.aiSkill||player.aiSkill||'medium';
+    var rotations=[0,1,2,3],sides=['left','right','top','bottom'],indexes=[1,3,5],candidates=[];
+    rotations.forEach(function(rot){
+      sides.forEach(function(side){
+        indexes.forEach(function(index){
+          if(isBlockedInsertion(side,index))return;
+          var sim=simulateShiftForAI(rot,side,index);
+          var simPlayer=sim.players.find(function(p){return p.id===player.id});
+          if(!simPlayer)return;
+          var dest=bestDestinationForAI(sim,simPlayer,skill);
+          var score=dest.score;
+          // Prefer keeping its target on the board rather than ejecting it as the spare tile.
+          var target=currentTarget(simPlayer);
+          if(target&&!findRelicOnBoard(sim.board,target.id))score-=260;
+          candidates.push({rot:rot,side:side,index:index,dest:{r:dest.r,c:dest.c},score:score});
+        });
+      });
+    });
+    if(!candidates.length)return null;
+    candidates.sort(function(a,b){return b.score-a.score});
+    if(skill==='easy'){
+      var pool=candidates.slice(0,Math.min(10,candidates.length));
+      // Easy normally chooses something sensible, but not necessarily the best line.
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+    if(skill==='medium'){
+      return candidates[Math.min(Math.floor(Math.random()*3),candidates.length-1)];
+    }
+    return candidates[0];
+  }
+  function cancelAITurn(){
+    if(aiTurnTimer){clearTimeout(aiTurnTimer);aiTurnTimer=null}
+    aiRunning=false;
+  }
+  function scheduleAITurn(delay){
+    cancelAITurn();
+    if(mode!=='solo'||!isAITurn()||state.winnerId)return;
+    aiTurnTimer=setTimeout(function(){aiTurnTimer=null;runAITurn()},delay==null?850:delay);
+  }
+  async function runAITurn(){
+    if(mode!=='solo'||!isAITurn()||state.winnerId||moving)return;
+    var player=currentPlayer();if(!player)return;
+    aiRunning=true;state.turnDeadline=0;targetRevealed=false;renderAll();
+    try{
+      await wait(state.aiSkill==='hard'?1050:state.aiSkill==='medium'?850:650);
+      if(mode!=='solo'||currentPlayer()!==player||state.winnerId)return;
+      var choice=chooseAIMove(player);
+      if(!choice){aiRunning=false;endTurn();return}
+      var turns=(choice.rot-state.spare.rot+4)%4;
+      for(var i=0;i<turns;i++){
+        state.spare.rot=(state.spare.rot+1)%4;renderSpare();await wait(260);
+      }
+      aiRunning=false;
+      await shiftMazeInternal(choice.side,choice.index);
+      if(state.winnerId||mode!=='solo')return;
+      await wait(520);
+      aiRunning=false;
+      await moveToInternal(choice.dest.r,choice.dest.c);
+    }finally{
+      aiRunning=false;
+      if(mode==='solo'&&!state.winnerId&&isLocalTurnOwner())renderAll();
+    }
+  }
+
+  function cellForPoint(pt){return document.querySelector('.cell[data-r="'+pt.r+'"][data-c="'+pt.c+'"]')}
+  async function animatePawnPath(path,p){
+    if(!path||path.length<2||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var frame=$('boardFrame'),frameRect=frame&&frame.getBoundingClientRect();if(!frame||!frameRect)return;
+    var source=document.querySelector('.pawnWrap[data-player="'+CSS.escape(String(p.id))+'"]');
+    if(source)source.style.opacity='0';
+    var ghost=document.createElement('img');ghost.className='movingPawn';ghost.src=p.asset||PLAYER_ASSETS[state.current%PLAYER_ASSETS.length];ghost.alt='';frame.appendChild(ghost);
+    try{
+      var first=cellForPoint(path[0]);if(!first)return;
+      var firstRect=first.getBoundingClientRect(),w=Math.max(22,firstRect.width*.62),h=Math.max(26,firstRect.height*.70);
+      ghost.style.width=w+'px';ghost.style.height=h+'px';
+      ghost.style.left=(firstRect.left-frameRect.left+firstRect.width/2)+'px';
+      ghost.style.top=(firstRect.top-frameRect.top+firstRect.height/2)+'px';
+      for(var i=1;i<path.length;i++){
+        var cell=cellForPoint(path[i]);if(!cell)break;
+        var rect=cell.getBoundingClientRect(),left=(rect.left-frameRect.left+rect.width/2),top=(rect.top-frameRect.top+rect.height/2);
+        var anim=ghost.animate([
+          {left:ghost.style.left,top:ghost.style.top,transform:'translate(-50%,-70%) scale(1)'},
+          {offset:.52,left:left+'px',top:top+'px',transform:'translate(-50%,-70%) scale(1.08)'},
+          {left:left+'px',top:top+'px',transform:'translate(-50%,-70%) scale(1)'}
+        ],{duration:240,easing:'ease-in-out',fill:'forwards'});
+        try{await anim.finished}catch(e){}
+        ghost.style.left=left+'px';ghost.style.top=top+'px';
+      }
+    }finally{
+      ghost.remove();if(source)source.style.opacity='';
+    }
+  }
+  async function moveToInternal(r,c){
+    if(state.phase!=='move'||moving)return;
+    var path=routeTo(r,c);if(!path.length)return;
+    var p=currentPlayer();moving=true;
+    if(mode==='multi'&&role==='host'&&session)session.broadcast({type:'moveFx',playerId:p.id,path:path});
+    await animatePawnPath(path,p);
+    p.pos={r:r,c:c};moving=false;buzz(12);checkCollectionAndEnd();
+  }
+  function requestMove(r,c){
+    if(!canControlTurn()||state.phase!=='move')return;
+    if(mode==='multi'&&role==='client'){session&&session.sendToHost({type:'action',action:'move',r:r,c:c,playerId:localPlayerId});return}
+    moveToInternal(r,c);
+  }
+  function requestStay(){
+    if(!canControlTurn()||state.phase!=='move')return;
+    if(mode==='multi'&&role==='client'){session&&session.sendToHost({type:'action',action:'stay',playerId:localPlayerId});return}
+    checkCollectionAndEnd();
+  }
+  function checkCollectionAndEnd(){
+    var p=currentPlayer(),target=currentTarget(p),cell=state.board[p.pos.r][p.pos.c],collected=false;
+    if(target&&cell.relic&&cell.relic.id===target.id){
+      p.collected.push(target);p.targetIndex++;collected=true;
+      if(mode==='local'||p.id===localPlayerId)showToast('Relic found · '+target.name,target.asset);
+      else showToast(p.name+' found a relic');
+      buzz(35);
+    }
+    if(!currentTarget(p)&&p.pos.r===p.home.r&&p.pos.c===p.home.c){
+      state.winnerId=p.id;state.turnDeadline=0;targetRevealed=false;renderAll();publishState();return;
+    }
+    endTurn();
+  }
+  function endTurn(){
+    if(!state.players.length||state.winnerId)return;
+    state.turnDeadline=0;targetRevealed=false;timerEnding=false;lastTimerCue=null;
+    state.current=(state.current+1)%state.players.length;state.phase='shift';
+    if(mode==='local')showHandoff();
+    else if(mode==='solo'){
+      state.turnReady=true;
+      if(isAITurn()){state.turnDeadline=0;renderAll();scheduleAITurn(850);return}
+      startTurnClock();
+    }else{state.turnReady=true;startTurnClock()}
+    renderAll();publishState();
+  }
+
+  function tileAsset(t){
+    var set=TILE_ASSETS[t.type]||TILE_ASSETS.L;
+    return t.fixed?set.fixed:set.movable;
+  }
+  function tileMarkup(t,includePawns,r,c){
+    var html='<img class="tileRaster" src="'+esc(tileAsset(t))+'" alt="" style="--tile-rot:'+(t.rot%4)+'">';
+
+    if(t.relic){
+      var glowOwner=isLocalTurnOwner()&&targetRevealed?ownPlayer():null,glowTarget=currentTarget(glowOwner),isTarget=!!(glowTarget&&glowTarget.id===t.relic.id);
+      if(isTarget)html+='<span class="targetRelicGlow" aria-hidden="true"></span>';
+      html+='<img class="relicArt'+(isTarget?' targetRelic':'')+'" src="'+esc(t.relic.asset)+'" alt="" title="'+esc(t.relic.name)+'">';
+    }
+    if(includePawns){
+      var active=currentPlayer();
+      if(active&&!currentTarget(active)&&active.home.r===r&&active.home.c===c){
+        html+='<img class="homeGoal" src="'+HOME_ASSET+'" alt="" title="'+esc(active.name)+' home">';
+      }
+      var here=state.players.filter(function(p){return p.pos.r===r&&p.pos.c===c});
+      if(here.length){
+        html+='<span class="pawns">';
+        here.forEach(function(p,i){
+          html+='<span class="pawnWrap count'+here.length+' slot'+i+'" data-player="'+esc(p.id)+'" title="'+esc(p.name)+'"><img class="pawnArt" src="'+esc(p.asset||PLAYER_ASSETS[i%PLAYER_ASSETS.length])+'" alt=""></span>';
+        });
+        html+='</span>';
+      }
+    }
+    return html;
+  }
+  function renderSpare(){
+    if(!state.spare)return;
+    var control=canControlTurn(),owner=isLocalTurnOwner();
+    if((mode==='multi'||mode==='solo')&&!owner){
+      $('spareTile').innerHTML='';$('rotateRight').disabled=true;return;
+    }
+    $('spareTile').innerHTML=tileMarkup(state.spare,false,-1,-1);
+    $('rotateRight').disabled=state.phase!=='shift'||!control;
+  }
+  function addInsertButton(grid,side,index,row,col,symbol){
+    var b=document.createElement('button');b.type='button';b.className='insertBtn side-'+side;
+    if(isBlockedInsertion(side,index))b.classList.add('blocked');
+    b.disabled=state.phase!=='shift'||!canControlTurn()||isBlockedInsertion(side,index);
+    b.innerHTML='<img src="'+SHIFT_ASSET+'" alt="">';b.title='Push maze '+side;b.setAttribute('aria-label','Push maze '+side);
+    b.dataset.side=side;b.dataset.index=String(index);
+    b.style.gridRow=String(row+1);b.style.gridColumn=String(col+1);
+    b.addEventListener('click',function(){requestShift(side,index)});grid.appendChild(b);
+  }
+  function renderBoard(){
+    var grid=$('boardGrid');grid.innerHTML='';
+    [1,3,5].forEach(function(c){addInsertButton(grid,'top',c,0,c+1,'↓');addInsertButton(grid,'bottom',c,8,c+1,'↑')});
+    [1,3,5].forEach(function(r){addInsertButton(grid,'left',r,r+1,0,'→');addInsertButton(grid,'right',r,r+1,8,'←')});
+    var allowed=new Set(state.phase==='move'&&canControlTurn()?reachable():[]),cp=currentPlayer();
+    for(var r=0;r<7;r++)for(var c=0;c<7;c++){
+      (function(rr,cc){
+        var t=state.board[rr][cc],b=document.createElement('button');b.type='button';b.className='cell'+(t.fixed?' fixed':'');
+        if(allowed.has(rr+','+cc))b.classList.add('reachable');
+        if(cp&&cp.pos.r===rr&&cp.pos.c===cc)b.classList.add('currentCell');
+        b.disabled=state.phase!=='move'||!canControlTurn()||!allowed.has(rr+','+cc);
+        b.style.gridRow=String(rr+2);b.style.gridColumn=String(cc+2);
+        b.dataset.r=String(rr);b.dataset.c=String(cc);
+        b.setAttribute('aria-label','Maze tile row '+(rr+1)+' column '+(cc+1));
+        b.innerHTML=tileMarkup(t,true,rr,cc);b.addEventListener('click',function(){requestMove(rr,cc)});grid.appendChild(b);
+      })(r,c);
+    }
+  }
+  function renderObjective(){
+    var p=ownPlayer();if(!p)return;
+    var target=currentTarget(p),icon=$('objectiveIcon'),shield=$('targetPrivacyShield'),control=isLocalTurnOwner();
+    $('objectiveLabel').textContent='Target';
+    if(target&&!targetRevealed){
+      icon.innerHTML='';$('objectiveName').textContent='Hidden';
+      shield.classList.toggle('hidden',!control);
+    }else if(target){
+      icon.innerHTML='<img class="objectiveArt" src="'+target.asset+'" alt="">';
+      $('objectiveName').textContent=target.name;shield.classList.add('hidden');
+    }else{
+      icon.innerHTML='<img class="objectiveArt homeArt" src="'+HOME_ASSET+'" alt="">';
+      $('objectiveName').textContent='Return Home';shield.classList.add('hidden');
+    }
+    $('score').textContent=p.collected.length+' / '+state.targetCount;
+  }
+  function renderMenuPlayers(){
+    var wrap=$('menuPlayers');if(!wrap)return;
+    wrap.innerHTML=state.players.map(function(p,i){
+      var target=currentTarget(p),active=i===state.current,remaining=Math.max(0,state.targetCount-p.collected.length);
+      return'<div class="menuPlayer"><img class="menuPawn" src="'+esc(p.asset||PLAYER_ASSETS[i%PLAYER_ASSETS.length])+'" alt=""><div><strong>'+esc(p.name)+(p.isAI?' <span class="aiBadge">AI</span>':'')+(active?' · Turn':'')+'</strong><small>'+(target?remaining+' relic'+(remaining===1?'':'s')+' remaining':'Returning home')+'</small></div><b>'+p.collected.length+'/'+state.targetCount+'</b></div>';
+    }).join('');
+    $('menuMode').textContent=mode==='multi'?'Local Multiplayer':mode==='solo'?'Solo · '+(state.aiSkill||'medium').replace(/^./,function(x){return x.toUpperCase()})+' AI':'Pass & Play';
+    $('menuNetwork').textContent=mode==='multi'?(role==='host'?'Hosting':'Connected'):mode==='solo'?'Offline AI':'Local device';
+  }
+  function renderWinner(){
+    if(!state.winnerId){$('winner').classList.add('hidden');return}
+    var p=state.players.find(function(x){return x.id===state.winnerId});if(!p)return;
+    $('winnerName').textContent=p.name+' wins!';$('winner').classList.remove('hidden');
+  }
+  function renderAll(){
+    if(!state.players.length)return;
+    var p=currentPlayer(),control=canControlTurn();
+    $('turnName').textContent=p.name;$('turnDot').style.backgroundImage='url("'+(p.asset||PLAYER_ASSETS[state.current%PLAYER_ASSETS.length])+'")';
+    $('turnLabel').textContent=isAITurn()?'AI Turn':(mode==='multi'&&!isLocalTurnOwner()?'Waiting for':mode==='solo'?'Your Turn':'Turn');
+    $('stayBtn').classList.toggle('hidden',state.phase!=='move'||!control);
+    $('spareTile').classList.remove('hidden');
+    $('rotateRight').classList.toggle('hidden',state.phase!=='shift'||!control);
+    $('waitDock').classList.add('hidden');
+    var waiting=(mode==='multi'&&!isLocalTurnOwner())||(mode==='solo'&&isAITurn());
+    $('multiWaitOverlay').classList.toggle('hidden',!waiting);
+    $('multiWaitOverlay').classList.toggle('aiThinking',mode==='solo'&&isAITurn());
+    if(waiting){
+      $('multiWaitName').textContent=p.name;
+      $('multiWaitPawn').src=p.asset||PLAYER_ASSETS[state.current%PLAYER_ASSETS.length];
+      var waitSmall=$('multiWaitOverlay').querySelector('small');
+      if(waitSmall)waitSmall.textContent=mode==='solo'?'AI is taking its turn':'They are taking their turn';
+    }
+    renderObjective();renderSpare();renderBoard();renderMenuPlayers();renderWinner();renderTurnTimer();
+  }
+
+  function snapshot(){
+    return{players:state.players,board:state.board,spare:state.spare,current:state.current,phase:state.phase,lastShift:state.lastShift,targetCount:state.targetCount,winnerId:state.winnerId,difficulty:state.difficulty,turnDurationSec:state.turnDurationSec,turnDeadline:state.turnDeadline,aiSkill:state.aiSkill};
+  }
+  function adoptSnapshot(s,doRender){
+    if(!s||!Array.isArray(s.players)||!Array.isArray(s.board)||!s.spare)return false;
+    var previousCurrent=state.current;
+    state.players=s.players;state.board=s.board;state.spare=s.spare;state.current=Number(s.current)||0;
+    state.phase=s.phase==='move'?'move':'shift';state.lastShift=s.lastShift||null;state.targetCount=Math.max(1,Number(s.targetCount)||4);
+    state.winnerId=s.winnerId||null;state.difficulty=DIFFICULTY_SECONDS[s.difficulty]?s.difficulty:'medium';state.aiSkill=AI_SKILLS[s.aiSkill]?s.aiSkill:'medium';
+    state.turnDurationSec=Math.max(1,Number(s.turnDurationSec)||DIFFICULTY_SECONDS[state.difficulty]);
+    state.turnDeadline=Math.max(0,Number(s.turnDeadline)||0);
+    if(previousCurrent!==state.current)targetRevealed=false;
+    state.turnReady=true;shiftRequestPending=false;timerEnding=false;
+    lastTimerCue=state.turnDeadline?Math.max(0,Math.ceil((state.turnDeadline-Date.now())/1000)):null;
+    $('handoff').classList.add('hidden');showView('gameView');ensureTurnTimer();
+    if(doRender!==false)renderAll();return true;
+  }
+  function applySnapshot(s){
+    if(moving){pendingSnapshot=s;return}
+    adoptSnapshot(s,true);
+  }
+  async function playRemoteShiftFx(msg){
+    if(!msg||['left','right','top','bottom'].indexOf(msg.side)<0)return;
+    shiftRequestPending=false;if(moving)return;
+    moving=true;var visualSpare=copyTile(state.spare),fx=animateShiftVisual(msg.side,Number(msg.index),visualSpare);
+    if(msg.nextState)adoptSnapshot(msg.nextState,false);
+    await fx;moving=false;renderAll();
+    if(pendingSnapshot){var queued=pendingSnapshot;pendingSnapshot=null;adoptSnapshot(queued,true)}
+  }
+
+  function lobbyPlayers(){
+    if(role!=='host')return connectedLobby.slice();
+    var list=[];if(hostIdentity)list.push({id:hostIdentity.id,name:hostIdentity.name,host:true});
+    if(session&&session.peers)session.peers().forEach(function(peer){if(peer.meta&&peer.meta.player)list.push({id:String(peer.meta.player.id),name:String(peer.meta.player.name||'Player').slice(0,24),host:false})});
+    var seen=new Set();return list.filter(function(p){if(seen.has(p.id))return false;seen.add(p.id);return true}).slice(0,4);
+  }
+  function renderLobby(id,players){
+    var wrap=$(id);if(!wrap)return;
+    if(!players.length){wrap.innerHTML='<div class="emptyState">Waiting for players…</div>';return}
+    wrap.innerHTML=players.map(function(p,i){
+      return'<div class="lobbyRow"><span class="lobbyDot" style="background:'+COLORS[i%COLORS.length]+'"></span><div class="lobbyCopy"><strong>'+esc(p.name)+'</strong><span>'+(p.host?'Host':'Player '+(i+1))+'</span></div><span class="readyTag">Ready</span></div>';
+    }).join('');
+  }
+  function updateHostAdvert(){
+    if(role!=='host'||!session||!session.updateHost||!hostIdentity)return;
+    var n=parseInt($('hostTargetCount').value,10)||4;
+    var diff=difficultyValue('host');
+    session.updateHost({hostName:hostIdentity.name+"'s Shift In Maze",player:hostIdentity,started:false,raceMode:'maze-shift',trackName:n+' relics · '+DIFFICULTY_LABELS[diff]+' '+difficultyTimeText(diff),totalRaces:n,difficulty:diff});
+  }
+  function broadcastLobby(){if(role==='host'&&session){var diff=difficultyValue('host');session.broadcast({type:'lobby',players:lobbyPlayers(),targetCount:parseInt($('hostTargetCount').value,10)||4,difficulty:diff})}}
+  function installSession(kind){
+    if(!window.GameBoxLAN||!window.GameBoxLAN.DiscoverySession)throw new Error('Local multiplayer discovery is unavailable.');
+    if(!session){
+      session=new window.GameBoxLAN.DiscoverySession({
+        game:'maze-shift-v1',
+        onStatus:function(text){
+          if(role==='host')setStatus('hostStatus',text,text==='Connected'||text==='Host visible'?'good':'');
+          if(role==='client')setStatus('joinStatus',text,text==='Connected'?'good':'');
+        },
+        onHostsChanged:function(hosts){lastHosts=hosts;renderHosts(hosts)},
+        onPeersChanged:function(){
+          if(role==='host'){
+            var players=lobbyPlayers();renderLobby('hostLobby',players);$('hostCount').textContent=players.length+' / 4';
+            $('startHostGame').disabled=players.length<2;updateHostAdvert();broadcastLobby();
+          }
+        },
+        onMessage:networkMessage
+      });
+      session.maxPlayers=4;
+    }else{try{session.suspend&&session.suspend()}catch(e){}}
+    role=kind;
+  }
+  function resetSession(hard){
+    try{if(session){if(hard&&session.close)session.close();else if(session.suspend)session.suspend()}}catch(e){}
+    if(hard)session=null;connectedLobby=[];lastHosts=[];role=null;hostIdentity=null;joinIdentity=null;localPlayerId='';
+  }
+  async function startHostDiscovery(){
+    try{
+      installSession('host');var p=selectedRosterPlayer('hostPlayer');hostIdentity=networkIdentity(p,'host',hostIdentity);localPlayerId=hostIdentity.id;
+      setStatus('hostStatus','Starting lobby…','');var n=parseInt($('hostTargetCount').value,10)||4,diff=difficultyValue('host');
+      await session.startHost({hostName:hostIdentity.name+"'s Shift In Maze",player:hostIdentity,raceMode:'maze-shift',trackName:n+' relics · '+DIFFICULTY_LABELS[diff]+' '+difficultyTimeText(diff),totalRaces:n,difficulty:diff});
+      var players=lobbyPlayers();renderLobby('hostLobby',players);$('hostCount').textContent=players.length+' / 4';$('startHostGame').disabled=players.length<2;
+      setStatus('hostStatus','Lobby live · waiting for players','good');
+    }catch(err){console.error(err);setStatus('hostStatus','Discovery error · tap Refresh','warn')}
+  }
+  async function startScan(){
+    try{
+      installSession('client');var p=selectedRosterPlayer('joinPlayer');joinIdentity=networkIdentity(p,'join',null);localPlayerId=joinIdentity.id;
+      connectedLobby=[];renderLobby('joinLobby',[]);$('joinedLobbyPanel').classList.add('hidden');setStatus('joinStatus','Scanning…','');renderHosts([]);
+      await session.startScanner();
+    }catch(err){console.error(err);setStatus('joinStatus','Discovery error · refresh scan','warn')}
+  }
+  function renderHosts(hosts){
+    if(role!=='client')return;
+    var wrap=$('availableHosts');
+    if(session&&session.peers&&session.peers().length){wrap.innerHTML='';$('hostFoundCount').textContent='Connected';setStatus('joinStatus','Connected · waiting for host','good');return}
+    var open=(hosts||[]).filter(function(h){return!h.started&&(h.raceMode||'')==='maze-shift'&&Number(h.playerCount||1)<Number(h.maxPlayers||4)});
+    $('hostFoundCount').textContent=open.length?open.length+' found':'Scanning';
+    if(!open.length){wrap.innerHTML='<div class="emptyState">Searching for Shift In Maze lobbies…</div>';return}
+    wrap.innerHTML=open.map(function(h){
+      return'<button class="hostCard" type="button" data-host="'+esc(h.peerId)+'"><div><strong>'+esc(h.hostName||'Shift In Maze')+'</strong><small>'+esc(h.trackName||'Standard')+' · '+Number(h.playerCount||1)+'/4</small></div><span class="joinTag">Join</span></button>';
+    }).join('');
+  }
+  async function joinHost(peerId){
+    var p=selectedRosterPlayer('joinPlayer');joinIdentity=networkIdentity(p,'join',joinIdentity);localPlayerId=joinIdentity.id;setStatus('joinStatus','Joining…','');
+    try{
+      await session.joinHost(peerId,{player:joinIdentity});session.sendToHost({type:'hello',player:joinIdentity});
+      $('joinedLobbyPanel').classList.remove('hidden');setStatus('joinStatus','Connected · waiting for host','good');renderHosts([]);
+    }catch(err){console.error(err);setStatus('joinStatus',err&&err.message?err.message:'Could not join','warn')}
+  }
+  function networkMessage(msg,source){
+    if(role==='host'){
+      if(msg.type==='hello'&&source.peer){
+        source.peer.meta.player={id:String(msg.player&&msg.player.id||'guest-'+uid()),name:String(msg.player&&msg.player.name||'Player').slice(0,24)};
+        var players=lobbyPlayers();renderLobby('hostLobby',players);$('hostCount').textContent=players.length+' / 4';$('startHostGame').disabled=players.length<2;broadcastLobby();return;
+      }
+      if(msg.type==='action'){
+        var active=currentPlayer(),remoteId=source.peer&&source.peer.meta&&source.peer.meta.player&&source.peer.meta.player.id;
+        if(!active||remoteId!==active.id||msg.playerId!==active.id)return;
+        if(state.turnDeadline&&Date.now()>=state.turnDeadline)return;
+        if(msg.action==='rotate')rotateSpareInternal(Number(msg.delta)<0?-1:1);
+        else if(msg.action==='shift'&&['left','right','top','bottom'].indexOf(msg.side)>=0)shiftMazeInternal(msg.side,Number(msg.index));
+        else if(msg.action==='move')moveToInternal(Number(msg.r),Number(msg.c));
+        else if(msg.action==='stay')requestStayHost();
+        return;
+      }
+    }else{
+      if(msg.type==='lobby'){connectedLobby=Array.isArray(msg.players)?msg.players:[];renderLobby('joinLobby',connectedLobby);$('joinedLobbyPanel').classList.remove('hidden');var ld=DIFFICULTY_SECONDS[msg.difficulty]?msg.difficulty:'medium';$('joinGameRules').textContent=(DIFFICULTY_LABELS[ld]||'Medium')+' · '+difficultyTimeText(ld)+' turns';return}
+      if(msg.type==='rotateSync'){if(state.spare){state.spare.rot=((Number(msg.rot)||0)%4+4)%4;renderSpare()}return}
+      if(msg.type==='moveFx'&&Array.isArray(msg.path)){var fxPlayer=state.players.find(function(p){return p.id===msg.playerId});if(fxPlayer)animatePawnPath(msg.path,fxPlayer);return}
+      if(msg.type==='shiftFx'){playRemoteShiftFx(msg);return}
+      if(msg.type==='start'&&msg.state){mode='multi';state.turnReady=true;applySnapshot(msg.state);return}
+      if(msg.type==='state'&&msg.state){applySnapshot(msg.state);return}
+    }
+  }
+  function requestStayHost(){if(role!=='host'||state.phase!=='move')return;checkCollectionAndEnd()}
+  function startHostMaze(){
+    var players=lobbyPlayers();if(players.length<2)return;
+    mode='multi';role='host';localPlayerId=hostIdentity.id;var n=parseInt($('hostTargetCount').value,10)||4,diff=difficultyValue('host');
+    createGame(players,n,diff);state.turnReady=true;targetRevealed=false;startTurnClock();showView('gameView');renderAll();
+    if(session&&session.updateHost)session.updateHost({started:true});if(session)session.broadcast({type:'start',state:snapshot()});
+  }
+
+  function backToModes(){
+    resetSession(false);stopTurnTimer();cancelAITurn();state.players=[];state.board=[];state.spare=null;state.winnerId=null;state.turnReady=false;state.turnDeadline=0;targetRevealed=false;mode='local';
+    $('winner').classList.add('hidden');$('handoff').classList.add('hidden');$('gameMenu').classList.add('hidden');$('multiWaitOverlay').classList.add('hidden');showView('modeView');
+  }
+  function openMenu(){renderMenuPlayers();$('gameMenu').classList.remove('hidden');buzz(7)}
+  function closeMenu(){$('gameMenu').classList.add('hidden')}
+
+  $('homeBtn').addEventListener('click',function(){resetSession(true);location.href='index.html'});
+  $('soloMode').addEventListener('click',function(){populatePlayerSelect('soloPlayer');showView('soloSetup')});
+  $('passMode').addEventListener('click',function(){mode='local';renderPlayerPicker();showView('passSetup')});
+  $('multiMode').addEventListener('click',function(){showView('multiRole')});
+  document.querySelectorAll('[data-view-target]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.viewTarget)})});
+  $('startSoloBtn').addEventListener('click',startSoloGame);
+  $('startBtn').addEventListener('click',startPassGame);
+  $('hostMode').addEventListener('click',function(){populatePlayerSelect('hostPlayer');showView('hostSetup');startHostDiscovery()});
+  $('joinMode').addEventListener('click',function(){populatePlayerSelect('joinPlayer');showView('joinSetup');startScan()});
+  $('hostBack').addEventListener('click',function(){resetSession(false);showView('multiRole')});
+  $('joinBack').addEventListener('click',function(){resetSession(false);showView('multiRole')});
+  $('restartHost').addEventListener('click',startHostDiscovery);
+  $('restartScan').addEventListener('click',startScan);
+  $('hostPlayer').addEventListener('change',function(){
+    var p=selectedRosterPlayer('hostPlayer');hostIdentity=networkIdentity(p,'host',hostIdentity);localPlayerId=hostIdentity.id;
+    updateHostAdvert();renderLobby('hostLobby',lobbyPlayers());broadcastLobby();
+  });
+  $('hostTargetCount').addEventListener('change',function(){updateHostAdvert();broadcastLobby()});
+  document.querySelectorAll('.difficultyChoice').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var group=btn.closest('.difficultyOptions');if(!group)return;
+      group.querySelectorAll('.difficultyChoice').forEach(function(x){x.classList.toggle('selected',x===btn)});
+      buzz(6);
+      if(group.dataset.difficultyGroup==='host'){updateHostAdvert();broadcastLobby()}
+    });
+  });
+  $('joinPlayer').addEventListener('change',function(){
+    var p=selectedRosterPlayer('joinPlayer');joinIdentity=networkIdentity(p,'join',joinIdentity);localPlayerId=joinIdentity.id;
+    if(role==='client'&&session&&session.peers&&session.peers().length)session.sendToHost({type:'hello',player:joinIdentity});
+  });
+  $('availableHosts').addEventListener('click',function(e){var button=e.target.closest('[data-host]');if(button)joinHost(button.dataset.host)});
+  $('startHostGame').addEventListener('click',startHostMaze);
+  $('rotateRight').addEventListener('click',function(){requestRotate(1)});
+  $('targetPrivacyShield').addEventListener('click',revealTarget);
+  $('stayBtn').addEventListener('click',requestStay);
+  $('readyBtn').addEventListener('click',beginTurn);
+  $('menuBtn').addEventListener('click',openMenu);
+  $('closeMenu').addEventListener('click',closeMenu);
+  $('gameMenu').addEventListener('click',function(e){if(e.target===$('gameMenu'))closeMenu()});
+  $('leaveGameBtn').addEventListener('click',backToModes);
+  $('playAgainBtn').addEventListener('click',backToModes);
+  window.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu()});
+  window.addEventListener('pagehide',function(){try{session&&session.close&&session.close()}catch(e){}});
+
+  renderPlayerPicker();populatePlayerSelect('soloPlayer');populatePlayerSelect('hostPlayer');populatePlayerSelect('joinPlayer');
+})();
+</script>
+
+<script>
+(function(){
+  const coarsePointer=()=>window.matchMedia&&window.matchMedia("(pointer: coarse)").matches;
+  const touchDevice=()=>coarsePointer()||navigator.maxTouchPoints>0||("ontouchstart" in window);
+  const updateMazeOrientationLock=()=>{
+    const landscape=window.innerWidth>window.innerHeight;
+    document.body.classList.toggle("mazeLandscapeLocked",touchDevice()&&landscape);
+  };
+  updateMazeOrientationLock();
+  window.addEventListener("resize",updateMazeOrientationLock,{passive:true});
+  window.addEventListener("orientationchange",updateMazeOrientationLock,{passive:true});
+  if(window.screen&&screen.orientation&&screen.orientation.addEventListener){
+    screen.orientation.addEventListener("change",updateMazeOrientationLock);
+  }
+})();
+</script>
+</body>
+</html>

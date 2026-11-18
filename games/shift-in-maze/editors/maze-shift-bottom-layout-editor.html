@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- GameBox source base: preserve the original root URL context. -->
+<base href="../../">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071326">
+<title>Shift In Maze Bottom HUD Layout Editor</title>
+<style>
+:root{--bg:#06111d;--panel:#0b2236;--panel2:#0f2d45;--gold:#f7bd18;--teal:#08a97d;--muted:#8ea4b8;--cyan:#5bd4ea}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{padding:10px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.editor{width:min(1320px,100%);margin:auto;display:grid;grid-template-columns:minmax(380px,720px) minmax(340px,1fr);gap:14px;align-items:start}
+.panel{background:linear-gradient(180deg,#0d2941,#081c2e);border:1px solid rgba(91,212,234,.22);border-radius:16px;box-shadow:0 18px 48px rgba(0,0,0,.28)}
+.preview{padding:10px;position:sticky;top:10px}
+.previewHead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px}
+.previewHead h1{margin:0;font-size:17px}
+.previewHead small{font-size:10px;color:var(--muted)}
+.stageWrap{display:grid;place-items:center;background:#03101b;border-radius:12px;padding:14px 10px}
+.stage{position:relative;width:min(100%,760px);aspect-ratio:390/220;overflow:hidden;border-radius:15px;background:transparent;touch-action:none;user-select:none;-webkit-user-select:none}
+.gridBg{position:absolute;inset:0;background:
+ linear-gradient(rgba(91,212,234,.10) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(91,212,234,.10) 1px,transparent 1px);
+ background-size:calc(100% / 24) calc(100% / 16);pointer-events:none}
+.item{position:absolute;z-index:8;touch-action:none;cursor:move;outline:1px dashed rgba(123,187,207,.34);outline-offset:-1px}
+.item.panelItem{z-index:2;outline-color:rgba(247,189,24,.24)}
+.item.selected{z-index:50;outline:2px solid var(--gold);box-shadow:0 0 0 2px rgba(247,189,24,.14)}
+.item.hiddenItem{display:none}
+.handle{position:absolute;width:18px;height:18px;border-radius:5px;background:var(--gold);border:2px solid #06111d;box-shadow:0 2px 8px rgba(0,0,0,.45);display:none;z-index:90}
+.item.selected .handle{display:block}
+.handle.br{right:-7px;bottom:-7px;cursor:nwse-resize}
+.targetPanel,.tilePanel,.controlsPanel{width:100%;height:100%;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:linear-gradient(180deg,rgba(16,34,51,.95),rgba(7,20,32,.98));box-shadow:0 7px 18px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.05)}
+.textPreview{width:100%;height:100%;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.targetLabel,.tileLabel{color:#71879b;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.targetName{font-family:Fredoka,Inter,sans-serif;font-weight:700}
+.scorePreview{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.055);color:#a5b7c8;font-weight:900}
+.targetArt{width:100%;height:100%;object-fit:contain;object-position:left center;display:block;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))}
+.sparePreview{position:relative;width:100%;height:100%;border:2px solid #997538;border-radius:10px;overflow:hidden;background:#071923;box-shadow:0 4px 0 #3f3016,0 7px 12px rgba(0,0,0,.30)}
+.sparePreview img{width:100%;height:100%;object-fit:cover;display:block}
+.rotatePreview{width:100%;height:100%;display:grid;place-items:center;border:1px solid #1e5573;border-radius:50%;background:linear-gradient(180deg,#194766,#0a2b47);box-shadow:0 4px 0 #041725}
+.rotatePreview img{width:70%;height:70%;object-fit:contain}
+.stayPreview{width:100%;height:100%;display:grid;place-items:center;text-align:center;border:1px solid #16b789;border-radius:12px;background:linear-gradient(180deg,#12b98a,#078f6b);font-weight:900;text-transform:uppercase}
+.waitPreview{width:100%;height:100%;display:grid;place-items:center;text-align:center;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.045);color:#8196a9;font-weight:900;text-transform:uppercase}
+.controls{padding:12px}
+.controls h2{margin:0 0 4px;font-size:18px}
+.controls>p{margin:0 0 10px;font-size:11px;color:var(--muted);line-height:1.45}
+.toolbar,.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.toolbar{margin-bottom:9px}
+button{min-height:40px;border:0;border-radius:9px;background:#0d5685;color:#fff;font-weight:800}
+button.primary{background:var(--gold);color:#082747}
+button.good{background:var(--teal)}
+button.danger{background:#783140}
+.stateBar{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.field{display:grid;gap:3px}
+.field label{font-size:9px;text-transform:uppercase;letter-spacing:.06em;font-weight:850;color:#9dc7e5}
+.field input,.field select,.field textarea{width:100%;border:1px solid #185e91;border-radius:8px;background:#041a31;color:#fff;padding:8px 9px;font-weight:750}
+.field input,.field select{height:39px}
+.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;max-height:320px;overflow:auto;margin-bottom:10px}
+.list button{min-height:38px;border:1px solid #1a6da6;background:#0a345d;font-size:10.5px;padding:5px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.list button.active{background:#0e78b5;border-color:#5ee0ff}
+.list button.off{opacity:.48}
+.list button span:last-child{font-size:13px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.field.full{grid-column:1/-1}
+.textFields{grid-column:1/-1;display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.textFields.visible{display:grid}
+.visibilityField{display:flex;align-items:center;gap:8px;height:39px;padding:0 8px;border:1px solid #185e91;border-radius:8px;background:#041a31}
+.visibilityField input{width:auto;height:auto}
+.actions{margin-top:9px}
+.code{width:100%;min-height:360px;margin-top:10px;resize:vertical;border:1px solid #185e91;border-radius:9px;background:#03162a;color:#dff7ff;padding:9px;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.note{margin-top:8px;padding:8px;border-radius:8px;background:rgba(247,189,24,.08);color:#ffe778;font-size:10px;line-height:1.45}
+.status{min-height:18px;margin-top:7px;color:#75e5a6;font-size:11px;font-weight:800}
+@media(max-width:900px){body{padding:7px}.editor{grid-template-columns:1fr}.preview{position:relative;top:auto}.stage{width:min(100%,720px)}}
+</style>
+</head>
+<body>
+<div class="editor">
+  <section class="panel preview">
+    <div class="previewHead">
+      <h1>Shift In Maze · Bottom HUD</h1>
+      <small>390 × 220 mobile artboard · 24 × 16 snap grid</small>
+    </div>
+    <div class="stageWrap">
+      <div id="stage" class="stage"><div class="gridBg"></div></div>
+    </div>
+  </section>
+
+  <aside class="panel controls">
+    <h2>Bottom Layout Editor</h2>
+    <p>Drag and resize the individual HUD elements. Everything snaps to the grid. You can hide or restore components and resize text independently.</p>
+
+    <div class="toolbar">
+      <a href="maze-shift-screen-layout-editor.html" style="display:grid;place-items:center;min-height:40px;border-radius:9px;background:#08a97d;color:#fff;text-decoration:none;font-weight:800">Full Screen Editor</a>
+      <button id="copyJson" class="primary">Copy JSON</button>
+      <button id="saveDraft" class="good">Save Draft</button>
+      <button id="resetAll">Reset all</button>
+      <button id="clearDraft" class="danger">Clear saved draft</button>
+    </div>
+
+    <div class="stateBar">
+      <div class="field"><label>Preview state</label><select id="previewState"><option value="shift">Shift</option><option value="move">Move</option><option value="waiting">Waiting</option></select></div>
+      <div class="field"><label>Snap</label><select id="snapSize"><option value="1">1 grid cell</option><option value="0.5">½ grid cell</option></select></div>
+    </div>
+
+    <div id="itemList" class="list"></div>
+
+    <div class="fields">
+      <div class="field"><label>X · grid</label><input id="x" type="number" step="0.5"></div>
+      <div class="field"><label>Y · grid</label><input id="y" type="number" step="0.5"></div>
+      <div class="field"><label>Width · grid</label><input id="w" type="number" step="0.5" min="0.5"></div>
+      <div class="field"><label>Height · grid</label><input id="h" type="number" step="0.5" min="0.5"></div>
+      <div class="field full"><label>Component visible</label><div class="visibilityField"><input id="visible" type="checkbox"><span>Show this component</span></div></div>
+
+      <div id="textFields" class="textFields">
+        <div class="field full"><label>Preview text</label><input id="textContent" type="text"></div>
+        <div class="field"><label>Font size · px</label><input id="fontSize" type="number" step="1" min="6" max="40"></div>
+        <div class="field"><label>Font weight</label><select id="textWeight"><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option></select></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="up">↑ 1 snap</button><button id="down">↓ 1 snap</button>
+      <button id="left">← 1 snap</button><button id="right">→ 1 snap</button>
+      <button id="toggleOne">Add / Remove selected</button>
+      <button id="resetOne" class="danger">Reset selected</button>
+    </div>
+
+    <textarea id="json" class="code" spellcheck="false"></textarea>
+    <div class="note">This editor is separate from the live game, like the Disc Rally layout editors. When you are happy with it, copy the JSON and send it back to me and I can apply it directly to Shift In Maze.</div>
+    <div id="status" class="status"></div>
+  </aside>
+</div>
+
+<script>
+const COLS=24,ROWS=16,STORAGE_KEY="mazeshift.bottomHud.editor.v2";
+const ITEMS={
+  targetPanel:{label:"Target panel",kind:"panel",x:0,y:0,w:13,h:8,visible:true},
+  targetLabel:{label:"Target label",kind:"text",text:"TARGET",x:1,y:1,w:7,h:1,font:9,weight:"900",visible:true},
+  targetName:{label:"Target name",kind:"text",text:"Gem",x:1,y:2,w:8,h:2,font:20,weight:"700",visible:true},
+  targetArt:{label:"Target image",kind:"targetArt",x:1,y:4,w:10,h:4,visible:true},
+  score:{label:"Score",kind:"score",text:"0 / 4",x:10,y:1,w:2,h:2,font:10,weight:"900",visible:true},
+
+  tilePanel:{label:"Tile panel",kind:"panel",x:13,y:0,w:6,h:8,visible:true},
+  tileLabel:{label:"Tile label",kind:"text",text:"TILE",x:14,y:1,w:4,h:1,font:8,weight:"900",visible:true},
+  spareTile:{label:"Spare tile",kind:"spare",x:14,y:2,w:4,h:5,visible:true},
+
+  controlsPanel:{label:"Controls panel",kind:"panel",x:19,y:0,w:5,h:8,visible:true},
+  rotate:{label:"Rotate button",kind:"rotate",state:"shift",x:20,y:2,w:3,h:4,visible:true},
+  stay:{label:"End turn button",kind:"stay",state:"move",text:"STAY · END TURN",x:19,y:2,w:5,h:4,font:10,weight:"900",visible:true},
+  wait:{label:"Waiting status",kind:"wait",state:"waiting",text:"WAITING · JESS",x:19,y:2,w:5,h:4,font:9,weight:"900",visible:true}
+};
+const defaults=JSON.parse(JSON.stringify(ITEMS));
+const state={items:JSON.parse(JSON.stringify(ITEMS)),preview:"shift",snap:1};
+const stage=document.getElementById("stage"),list=document.getElementById("itemList"),json=document.getElementById("json"),statusEl=document.getElementById("status");
+const fields={x:document.getElementById("x"),y:document.getElementById("y"),w:document.getElementById("w"),h:document.getElementById("h")};
+const visible=document.getElementById("visible"),textFields=document.getElementById("textFields"),textContent=document.getElementById("textContent"),fontSize=document.getElementById("fontSize"),textWeight=document.getElementById("textWeight"),previewState=document.getElementById("previewState"),snapSize=document.getElementById("snapSize");
+let selected="targetPanel",action=null;
+
+function current(){return state.items[selected]}
+function roundSnap(v){const s=Number(state.snap)||1;return Math.round(v/s)*s}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+function pctX(v){return v/COLS*100}
+function pctY(v){return v/ROWS*100}
+function itemBox(el,it){Object.assign(el.style,{left:pctX(it.x)+"%",top:pctY(it.y)+"%",width:pctX(it.w)+"%",height:pctY(it.h)+"%"})}
+function handles(){return '<span class="handle br" data-resize="both"></span>'}
+function stateVisible(it){return !it.state||it.state===state.preview}
+function isText(it){return it.kind==="text"||it.kind==="score"||it.kind==="stay"||it.kind==="wait"}
+function fontPx(it){return (it.font||10)*(stage.clientWidth/390)}
+
+function renderItemContent(it){
+  if(it.kind==="panel")return '<div class="'+(it===state.items.targetPanel?"targetPanel":it===state.items.tilePanel?"tilePanel":"controlsPanel")+'"></div>'+handles();
+  if(it.kind==="text"){
+    const cls=it===state.items.targetLabel?"targetLabel":it===state.items.tileLabel?"tileLabel":"targetName";
+    return '<div class="textPreview '+cls+'" style="font-size:'+fontPx(it)+'px;font-weight:'+it.weight+'">'+it.text+'</div>'+handles();
+  }
+  if(it.kind==="score")return '<div class="scorePreview" style="font-size:'+fontPx(it)+'px;font-weight:'+it.weight+'">'+it.text+'</div>'+handles();
+  if(it.kind==="targetArt")return '<img class="targetArt" src="shift-in-maze/assets/relics/05_gem.png" alt="">'+handles();
+  if(it.kind==="spare")return '<div class="sparePreview"><img src="shift-in-maze/assets/tiles/movable_corner.png" alt=""></div>'+handles();
+  if(it.kind==="rotate")return '<div class="rotatePreview"><img src="shift-in-maze/assets/relics/24_rotate.png" alt=""></div>'+handles();
+  if(it.kind==="stay")return '<div class="stayPreview" style="font-size:'+fontPx(it)+'px;font-weight:'+it.weight+'">'+it.text+'</div>'+handles();
+  if(it.kind==="wait")return '<div class="waitPreview" style="font-size:'+fontPx(it)+'px;font-weight:'+it.weight+'">'+it.text+'</div>'+handles();
+  return handles();
+}
+function renderStage(){
+  stage.querySelectorAll(".item").forEach(n=>n.remove());
+  Object.entries(state.items).forEach(([key,it])=>{
+    if(!it.visible||!stateVisible(it))return;
+    const el=document.createElement("div");
+    el.className="item "+(it.kind==="panel"?"panelItem ":"")+(key===selected?"selected":"");
+    el.dataset.key=key;itemBox(el,it);el.innerHTML=renderItemContent(it);
+    el.addEventListener("pointerdown",startPointer);
+    stage.appendChild(el);
+  });
+}
+function renderList(){
+  list.innerHTML="";
+  Object.entries(state.items).forEach(([key,it])=>{
+    const b=document.createElement("button");b.className=(key===selected?"active ":"")+(it.visible?"":"off");
+    b.innerHTML="<span>"+it.label+"</span><span>"+(it.visible?"✓":"＋")+"</span>";
+    b.onclick=()=>{selected=key;if(it.state){state.preview=it.state;previewState.value=state.preview}renderAll()};
+    list.appendChild(b);
+  });
+}
+function renderFields(){
+  const it=current();["x","y","w","h"].forEach(k=>fields[k].value=it[k]);visible.checked=!!it.visible;
+  if(isText(it)){
+    textFields.classList.add("visible");textContent.value=it.text||"";fontSize.value=it.font||10;textWeight.value=it.weight||"900";
+  }else textFields.classList.remove("visible");
+}
+function exportJson(){
+  const out={editor:"maze-shift-bottom-hud-v2",grid:{cols:COLS,rows:ROWS},items:state.items};
+  json.value=JSON.stringify(out,null,2);
+}
+function renderAll(){renderStage();renderList();renderFields();exportJson()}
+
+function startPointer(e){
+  const el=e.currentTarget,key=el.dataset.key,it=state.items[key];selected=key;
+  const resize=!!e.target.closest("[data-resize]"),rect=stage.getBoundingClientRect();
+  const ux=rect.width/COLS,uy=rect.height/ROWS,startX=e.clientX,startY=e.clientY,start={x:it.x,y:it.y,w:it.w,h:it.h};
+  action={pointerId:e.pointerId,key,resize,el,startX,startY,ux,uy,start};
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+  e.preventDefault();renderList();renderFields();
+  el.addEventListener("pointermove",movePointer);el.addEventListener("pointerup",endPointer);el.addEventListener("pointercancel",endPointer);
+}
+function movePointer(e){
+  if(!action||e.pointerId!==action.pointerId)return;
+  const it=state.items[action.key],dx=roundSnap((e.clientX-action.startX)/action.ux),dy=roundSnap((e.clientY-action.startY)/action.uy);
+  if(action.resize){
+    it.w=clamp(roundSnap(action.start.w+dx),.5,COLS-action.start.x);
+    it.h=clamp(roundSnap(action.start.h+dy),.5,ROWS-action.start.y);
+  }else{
+    it.x=clamp(roundSnap(action.start.x+dx),0,COLS-action.start.w);
+    it.y=clamp(roundSnap(action.start.y+dy),0,ROWS-action.start.h);
+  }
+  itemBox(action.el,it);renderFields();exportJson();
+}
+function endPointer(e){
+  if(!action)return;const el=action.el;
+  el.removeEventListener("pointermove",movePointer);el.removeEventListener("pointerup",endPointer);el.removeEventListener("pointercancel",endPointer);
+  try{el.releasePointerCapture(e.pointerId)}catch(_){}
+  action=null;renderAll();
+}
+
+["x","y","w","h"].forEach(k=>fields[k].addEventListener("change",()=>{
+  const it=current(),v=roundSnap(Number(fields[k].value)||0);
+  if(k==="x")it.x=clamp(v,0,COLS-it.w);
+  if(k==="y")it.y=clamp(v,0,ROWS-it.h);
+  if(k==="w")it.w=clamp(v,.5,COLS-it.x);
+  if(k==="h")it.h=clamp(v,.5,ROWS-it.y);
+  renderAll();
+}));
+visible.addEventListener("change",()=>{current().visible=visible.checked;renderAll()});
+textContent.addEventListener("input",()=>{if(isText(current())){current().text=textContent.value;renderAll()}});
+fontSize.addEventListener("input",()=>{if(isText(current())){current().font=clamp(Number(fontSize.value)||10,6,40);renderAll()}});
+textWeight.addEventListener("change",()=>{if(isText(current())){current().weight=textWeight.value;renderAll()}});
+previewState.addEventListener("change",()=>{state.preview=previewState.value;renderAll()});
+snapSize.addEventListener("change",()=>{state.snap=Number(snapSize.value)||1});
+
+function nudge(dx,dy){const it=current(),s=Number(state.snap)||1;it.x=clamp(roundSnap(it.x+dx*s),0,COLS-it.w);it.y=clamp(roundSnap(it.y+dy*s),0,ROWS-it.h);renderAll()}
+document.getElementById("up").onclick=()=>nudge(0,-1);
+document.getElementById("down").onclick=()=>nudge(0,1);
+document.getElementById("left").onclick=()=>nudge(-1,0);
+document.getElementById("right").onclick=()=>nudge(1,0);
+document.getElementById("toggleOne").onclick=()=>{current().visible=!current().visible;renderAll()};
+document.getElementById("resetOne").onclick=()=>{state.items[selected]=JSON.parse(JSON.stringify(defaults[selected]));renderAll()};
+document.getElementById("resetAll").onclick=()=>{state.items=JSON.parse(JSON.stringify(defaults));selected="targetPanel";renderAll();status("Reset to defaults")};
+document.getElementById("copyJson").onclick=async()=>{exportJson();try{await navigator.clipboard.writeText(json.value);status("JSON copied")}catch(_){json.select();document.execCommand("copy");status("JSON copied")}};
+document.getElementById("saveDraft").onclick=()=>{localStorage.setItem(STORAGE_KEY,JSON.stringify(state.items));status("Draft saved in this browser")};
+document.getElementById("clearDraft").onclick=()=>{localStorage.removeItem(STORAGE_KEY);status("Saved draft cleared")};
+function status(t){statusEl.textContent=t;clearTimeout(status._t);status._t=setTimeout(()=>statusEl.textContent="",1800)}
+
+try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");if(saved&&typeof saved==="object")state.items=Object.assign(JSON.parse(JSON.stringify(defaults)),saved)}catch(_){}
+renderAll();
+window.addEventListener("resize",renderStage);
+</script>
+</body>
+</html>

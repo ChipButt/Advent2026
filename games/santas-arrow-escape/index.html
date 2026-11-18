@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12342f">
+<title>Santa's Arrow Escape · GameBox</title>
+<meta name="description" content="Unwind the North Pole's tangled Christmas delivery routes. Clear every arrow without losing your hearts.">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<div class="gameShell">
+  <div class="snowfield" aria-hidden="true"></div>
+  <header class="hud">
+    <a class="circleButton back" href="../" aria-label="Back to GameBox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg></a>
+    <div class="levelBadge"><span class="eyebrow">NORTH POLE PUZZLES</span><strong id="levelTitle">LEVEL 1</strong><span id="chapterName" class="chapterName">Snowfall</span></div>
+    <button id="menuBtn" class="circleButton" aria-label="Open game menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
+  </header>
+
+  <section class="gameMeta" aria-label="Level progress">
+    <div class="lives" id="lives" aria-label="3 hearts remaining">
+      <svg viewBox="0 0 26 25" aria-hidden="true"><path d="M13 23C3 16 1 11 2 6 3 0 10-1 13 5 16-1 23 0 24 6c1 5-1 10-11 17Z"/></svg>
+      <svg viewBox="0 0 26 25" aria-hidden="true"><path d="M13 23C3 16 1 11 2 6 3 0 10-1 13 5 16-1 23 0 24 6c1 5-1 10-11 17Z"/></svg>
+      <svg viewBox="0 0 26 25" aria-hidden="true"><path d="M13 23C3 16 1 11 2 6 3 0 10-1 13 5 16-1 23 0 24 6c1 5-1 10-11 17Z"/></svg>
+    </div>
+    <div class="clearCount"><span class="miniLabel">ARROWS LEFT</span><strong><span id="remaining">19</span><span class="slash"> / </span><span id="total">19</span></strong></div>
+  </section>
+
+  <main class="playZone">
+    <div class="forestSide forestLeft" aria-hidden="true"><img src="../assets/gamebox/kenney/2d/Background%20Elements%20Remastered/treePineSnow.png" alt=""></div>
+    <div class="forestSide forestRight" aria-hidden="true"><img src="../assets/gamebox/kenney/2d/Background%20Elements%20Remastered/treePineSnow.png" alt=""></div>
+    <div class="boardFrame">
+      <div class="stringLights" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="iceBoard" id="boardHolder">
+        <canvas id="board" tabindex="0" role="button" aria-label="Arrow puzzle. Tap a clear arrow to send it out. Use arrow keys and Enter to choose arrows."></canvas>
+        <div id="boardToast" class="boardToast" role="status" aria-live="polite"></div>
+      </div>
+      <div class="boardLip"></div>
+    </div>
+  </main>
+
+  <footer class="bottomBar">
+    <div class="footerPresents" aria-hidden="true"><img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt=""><img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_green.png" alt=""><img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_blue.png" alt=""></div>
+    <div class="actionRow">
+      <button id="hintBtn" class="gameButton hintBtn"><span class="buttonIcon">✦</span><span>HINT<small id="hintCount">1 LEFT</small></span></button>
+      <button id="restartBtn" class="gameButton restartBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 6M4 4v6h6"/></svg><span>RESTART</span></button>
+    </div>
+    <p class="footerTip" id="footerTip">Find the arrow with a clear way out.</p>
+  </footer>
+</div>
+
+<div id="intro" class="overlay show" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+  <div class="modal introModal">
+    <div class="modalArt"><img src="../assets/gamebox/kenney/2d/Holiday%20Pack%202016/RTS%20pack/Retina/RTSobject_15.png" alt=""></div>
+    <div class="eyebrow">A LITTLE NORTH POLE MAGIC</div>
+    <h1 id="introTitle">Santa's <em>Arrow Escape</em></h1>
+    <p>Santa's delivery routes have become tangled! Tap the arrows in the right order to set them free.</p>
+    <div class="howTo"><div><b>1</b><span>Tap a path with an open exit.</span></div><div><b>2</b><span>Blocked arrows cost a heart.</span></div><div><b>3</b><span>Clear them all to win!</span></div></div>
+    <button class="goldButton" id="playBtn">LET'S PLAY</button>
+  </div>
+</div>
+<div id="menu" class="overlay" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+  <div class="modal">
+    <div class="eyebrow">SANTA'S ARROW ESCAPE</div><h2 id="menuTitle">Paused</h2>
+    <button class="goldButton" id="resumeBtn">RESUME GAME</button>
+    <button class="menuButton" id="levelsBtn">CHOOSE LEVEL</button>
+    <button class="menuButton" id="menuRestartBtn">RESTART LEVEL</button>
+    <button class="menuButton" id="soundBtn">SOUND: ON</button>
+    <button class="menuButton" id="helpBtn">HOW TO PLAY</button>
+    <a class="menuButton menuLink" href="../">BACK TO GAMEBOX</a>
+  </div>
+</div>
+<div id="levelPicker" class="overlay" role="dialog" aria-modal="true" aria-labelledby="levelPickerTitle">
+  <div class="modal levelsModal">
+    <div class="eyebrow">40 CHRISTMAS CHALLENGES</div><h2 id="levelPickerTitle">Choose a Level</h2>
+    <div id="levelGrid" class="levelGrid"></div>
+    <button id="levelsClose" class="menuButton">BACK TO GAME</button>
+  </div>
+</div>
+<div id="result" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+  <div class="modal winModal">
+    <img class="winTree" src="../assets/gamebox/kenney/2d/Holiday%20Pack%202016/RTS%20pack/Retina/RTSobject_15.png" alt="">
+    <div class="eyebrow" id="resultTag">CHRISTMAS DELIVERED!</div>
+    <h2 id="resultTitle">Brilliant work!</h2>
+    <div id="stars" class="stars">★★★</div>
+    <p id="resultDetails">All routes are clear!</p>
+    <button class="goldButton" id="nextBtn">NEXT LEVEL</button>
+    <button class="menuButton" id="retryBtn">TRY AGAIN</button>
+    <button class="menuButton" id="resultLevelsBtn">CHOOSE LEVEL</button>
+  </div>
+</div>
+<script type="module" src="game.mjs?v=2"></script>
+</body>
+</html>

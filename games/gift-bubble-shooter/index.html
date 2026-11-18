@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#102a35">
+<title>Gift Bubble Shooter · GameBox</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="iconBtn" href="../" aria-label="Back to GameBox"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/arrowLeft.png" alt=""></a>
+    <div class="brand"><small>CHIP IN GAMES · CHRISTMAS</small><h1>GIFT <span>BUBBLE</span> SHOOTER</h1></div>
+    <button id="menuBtn" class="iconBtn" aria-label="Open game menu"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/gear.png" alt=""></button>
+  </header>
+  <main class="game">
+    <div class="scoreboard" aria-label="Game progress">
+      <div><small>LEVEL</small><strong id="level">01</strong></div>
+      <div><small>SCORE</small><strong id="score">0</strong></div>
+      <div><small>GIFTS LEFT</small><strong id="gifts">0</strong></div>
+      <div><small>BEST</small><strong id="best">0</strong></div>
+    </div>
+    <div class="playFrame">
+      <canvas id="board" width="480" height="760" aria-label="Gift Bubble Shooter. Aim to match three or more ornaments and rescue the presents." tabindex="0"></canvas>
+      <div class="gameHint" id="hint" aria-live="polite"></div>
+    </div>
+  </main>
+</div>
+
+<div id="startSheet" class="sheet open" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+  <div class="panel">
+    <img class="panelTree" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="">
+    <span class="eyebrow">A NORTH POLE ARCADE GAME</span>
+    <h2 id="startTitle">Gift Bubble Shooter</h2>
+    <div class="giftParade" aria-hidden="true">
+      <img src="../assets/gamebox/kenney/2d/Platformer Assets Holiday/present_small_red.png" alt="">
+      <img src="../assets/gamebox/kenney/2d/Platformer Assets Holiday/present_small_green.png" alt="">
+      <img src="../assets/gamebox/kenney/2d/Platformer Assets Holiday/present_small_blue.png" alt="">
+      <img src="../assets/gamebox/kenney/2d/Platformer Assets Holiday/present_small_yellow.png" alt="">
+    </div>
+    <p>Match three or more ornaments. Drop the trapped presents. Rescue them all before the bubbles reach the snow line!</p>
+    <button class="primary" id="startBtn">PLAY LEVEL 1</button>
+    <span class="smallPrint">DRAG &amp; RELEASE OR TAP TO SHOOT</span>
+  </div>
+</div>
+
+<div id="menuSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+  <div class="panel">
+    <button class="close iconBtn" data-close="menuSheet" aria-label="Close menu"><img src="../assets/gamebox/kenney/icons/Game Icons/White/2x/cross.png" alt=""></button>
+    <span class="eyebrow">GIFT BUBBLE SHOOTER</span><h2 id="menuTitle">Game Menu</h2>
+    <button class="secondary" id="resumeBtn">RESUME</button>
+    <button class="secondary" id="soundBtn">SOUND: ON</button>
+    <button class="secondary" id="helpBtn">HOW TO PLAY</button>
+    <button class="secondary" id="levelBtn">CHOOSE LEVEL</button>
+    <button class="danger" id="restartBtn">RESTART LEVEL</button>
+    <a class="secondary" href="../">BACK TO GAMEBOX</a>
+  </div>
+</div>
+
+<div id="helpSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="panel">
+    <span class="eyebrow">HOW TO PLAY</span><h2 id="helpTitle">Ready, Aim, Match!</h2>
+    <div class="steps">
+      <p><b>1</b><span>Drag to aim and release, or tap a target, to launch an ornament. Bank shots off the walls.</span></p>
+      <p><b>2</b><span>Connect <strong>three or more</strong> ornaments of the same colour to pop them.</span></p>
+      <p><b>3</b><span>Loose ornaments fall away. Drop every <strong>gift</strong> to finish the level.</span></p>
+      <p><b>4</b><span>Miss too often and a new row arrives. Don't let the stack reach the <strong>snow line</strong>.</span></p>
+    </div>
+    <p class="keyHelp">Keyboard: ← → aim · Space shoot · P pause</p>
+    <button class="primary" id="helpDone">LET'S PLAY</button>
+  </div>
+</div>
+
+<div id="levelsSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="levelsTitle">
+  <div class="panel">
+    <span class="eyebrow">NORTH POLE CHALLENGES</span><h2 id="levelsTitle">Choose a Level</h2>
+    <div id="levelGrid" class="levelGrid"></div>
+    <button class="secondary" id="levelsBack">BACK TO GAME</button>
+  </div>
+</div>
+
+<div id="resultSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+  <div class="panel">
+    <img class="panelTree" src="../assets/gamebox/kenney/2d/Holiday Pack 2016/RTS pack/Retina/RTSobject_15.png" alt="">
+    <span class="eyebrow" id="resultEyebrow">DELIVERY COMPLETE</span>
+    <h2 id="resultTitle">All Gifts Rescued!</h2>
+    <div class="stars" id="resultStars" aria-label="Level stars">★★★</div>
+    <div class="resultScore">SCORE <strong id="resultScore">0</strong></div>
+    <p id="resultMessage">The presents are on their way!</p>
+    <button class="primary" id="nextBtn">NEXT LEVEL</button>
+    <button class="secondary" id="retryBtn">PLAY AGAIN</button>
+    <button class="secondary" id="resultLevelsBtn">CHOOSE LEVEL</button>
+  </div>
+</div>
+<script src="game.js?v=1"></script>
+</body>
+</html>

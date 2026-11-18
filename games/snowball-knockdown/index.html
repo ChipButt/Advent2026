@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102b32">
+<meta name="description" content="Snowball Knockdown, a Christmas fairground arcade game. Aim your snowballs, knock the Christmas presents off their shelves and beat the North Pole challenges.">
+<title>Snowball Knockdown · GameBox</title>
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<main class="arcade">
+<header class="top">
+ <a class="back" href="../" aria-label="Back to GameBox">‹</a>
+ <div class="heading"><span>CHIP IN GAMES · CHRISTMAS ARCADE</span><h1>SNOWBALL <b>KNOCKDOWN</b></h1></div>
+ <button class="menuButton" id="menuBtn" type="button" aria-label="Pause and open menu">Ⅱ</button>
+</header>
+<div class="hud" aria-label="Game statistics">
+ <div><span>LEVEL</span><strong id="level">01</strong></div>
+ <div><span>SNOWBALLS</span><strong id="balls">05 / 05</strong></div>
+ <div><span>SCORE</span><strong id="score">0000</strong></div>
+ <div><span>GIFTS LEFT</span><strong id="gifts">03</strong></div>
+</div>
+<section class="stage" id="stage" aria-label="Snowball knockdown gameplay">
+ <canvas id="game" width="420" height="640" tabindex="0" aria-label="Christmas presents in the snowy carnival stall, with different weights. Tap a present or drag to aim a snowball. Press Space to throw."></canvas>
+ <div id="message" class="message" role="status" aria-live="polite"></div>
+ <div id="overlay" class="overlay show" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+  <div class="sheet">
+   <div class="crest" aria-hidden="true"><span class="crestSnow">✳</span><span class="crestBall"></span><span class="crestPresents"><i></i><i></i><i></i></span></div>
+   <div class="kicker" id="overlayKicker">THE NORTH POLE WINTER FAIR</div>
+   <h2 id="overlayTitle">SNOWBALL<br><em>KNOCKDOWN</em></h2>
+   <p id="overlayText">Knock all the presents off the shelves! Red need 1 hit, green 2, blue 3.</p>
+   <div class="resultMeta" id="resultMeta" hidden><span id="resultStars">★★★</span><strong id="resultScore">+000</strong></div>
+   <button id="playBtn" class="primary" type="button">LET'S PLAY <span>➜</span></button>
+   <button id="secondBtn" class="secondary" type="button">HOW TO PLAY</button>
+   <button id="levelBtn" class="secondary" type="button">CHOOSE LEVEL</button>
+   <button id="soundBtn" class="textButton" type="button" aria-pressed="true">♪ SOUND ON</button>
+   <a class="exit" href="../">← BACK TO GAMEBOX</a>
+  </div>
+ </div>
+</section>
+<footer class="foot">
+ <span id="tip">DRAG TO AIM · RELEASE TO THROW</span>
+ <button id="restartBtn" type="button" aria-label="Restart level">↻ <span>RESTART</span></button>
+</footer>
+<div class="levelOverlay" id="levelOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="levelsTitle">
+ <div class="levelsPanel"><h2 id="levelsTitle">CHOOSE YOUR LEVEL</h2><p>Win challenges to unlock more stalls.</p><div class="levelGrid" id="levelGrid"></div><button type="button" class="secondary" id="closeLevels">BACK</button></div>
+</div>
+<div class="srOnly" id="announcer" aria-live="polite"></div>
+</main>
+<script src="engine.js?v=3"></script>
+<script src="game.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#25483e">
+<title>North Pole Pizzeria · GameBox</title>
+<meta name="description" content="Run a cosy Christmas pizza shop. Take unusual orders, make pizzas, bake them, slice them and upgrade your kitchen.">
+<link rel="stylesheet" href="./style.css?v=7"></head><body>
+<div class="snow" aria-hidden="true"></div>
+<main class="shell">
+  <header class="topbar">
+    <a class="back" href="../" aria-label="Back to GameBox">‹ <span>GAMEBOX</span></a>
+    <div class="brand"><span class="brandStar">✦</span> NORTH POLE <span class="brandStar">✦</span><b>PIZZERIA</b></div>
+    <button class="menuControl" id="menuBtn" type="button" aria-label="Pause and settings">☰</button>
+  </header>
+  <div class="scorestrip" aria-label="Shop progress">
+    <div><small>DAY</small><b id="dayLabel">01</b></div>
+    <div><small>ORDER</small><b id="orderLabel">1 / 4</b></div>
+    <div class="scorecash"><small>TILL</small><b id="cashLabel">£25.00</b></div>
+    <div><small>BEST DAY</small><b id="bestLabel">£0</b></div>
+  </div>
+  <section class="counter" aria-label="Customer order">
+    <div class="customerWindow"><div class="windowBackdrop"><span class="mountain leftM"></span><span class="mountain rightM"></span><span class="treeWin">♠</span><span class="snowdots">✦ · ✧</span></div><div class="customerPortrait" id="customerPortrait" aria-hidden="true"></div><span class="windowSill"></span></div>
+    <div class="orderTicket">
+      <div class="ticketTop"><span><b id="customerName">HOLLY</b> SAYS...</span><span id="patienceLabel">HAPPY 100%</span></div>
+      <p id="orderText">Welcome to your festive pizzeria.</p>
+      <div class="patienceTrack"><span id="patienceFill"></span></div>
+      <div class="ticketBottom"><span id="recipeGuide">CUSTOMER ORDER</span><span id="orderPrice">£8.00</span></div>
+    </div>
+  </section>
+  <section class="workspace">
+    <div class="prepArea">
+      <div class="stationHead"><span id="stationLabel">YOUR PREP STATION</span><span class="stationStamp">HANDMADE WITH JOY ✦</span></div>
+      <div class="boardWrap" id="boardWrap">
+        <div class="boardGarnish" aria-hidden="true">✶</div>
+        <canvas id="pizzaCanvas" width="560" height="560" aria-label="Pizza preparation board" tabindex="0"></canvas>
+        <div class="canvasHint" id="canvasHint">Select an ingredient, then tap the pizza</div>
+      </div>
+      <div class="costBar"><span>INGREDIENT COST <b id="ingredientCost">£1.20</b></span><span id="stageLabel">PREPARING</span></div>
+    </div>
+    <div class="stationSide">
+      <div class="stageHeading"><div><small>THE KITCHEN</small><h2 id="stepTitle">Make it delicious!</h2></div><span id="phaseCount">01 / 04</span></div>
+      <div class="orderReminder"><b>✦ CURRENT ORDER</b><span id="orderReminder">Waiting for a customer...</span></div>
+      <p class="stageInstructions" id="stepHelp">Select sauce or cheese, drag on the pizza to spread it, then tap to place other toppings.</p>
+      <div class="ingredients" id="ingredients"></div>
+      <div class="ovenPanel" id="ovenPanel" hidden>
+        <div class="ovenMouth"><span class="ovenGlow"></span><div class="ovenPizza"></div><i>WOOD FIRED</i></div>
+        <div class="ovenText"><strong id="heatLabel">WARMING UP</strong><span id="bakePercent">0%</span></div>
+        <div class="ovenTrack"><span id="ovenFill"></span><i class="ovenSweetspot"></i></div>
+        <p>Pull it out in the <b>golden zone</b>. Extra-crispy orders need a little longer.</p>
+      </div>
+      <div class="slicePanel" id="slicePanel" hidden>
+        <div class="sliceBadge">✂ <b id="slicesDone">0</b> / <span id="slicesNeeded">3</span> CUTS</div>
+        <p>Tap <b>CUT PIZZA</b> to slice. Check the customer's requested number of slices.</p>
+      </div>
+      <div class="actionPanel">
+        <div class="littleActions" id="prepActions"><button id="undoBtn" type="button">↶ UNDO STEP</button><button id="resetBtn" type="button">↺ START AGAIN</button></div>
+        <button class="primaryBtn" id="mainBtn" type="button">BAKE PIZZA <span>➜</span></button>
+        <button class="secondaryBtn" id="cutBtn" type="button" hidden>CUT PIZZA <span>✂</span></button>
+      </div>
+      <div class="tipCard"><span class="tipSpark">✦</span><div><small>CHEF'S TIP</small><p id="tipText">Drag sauce and cheese across the dough, then place roughly six pieces of each other topping.</p></div></div>
+    </div>
+  </section>
+  <footer class="bottom"><span>EST. THE NORTH POLE · HAND-CRAFTED CHRISTMAS COOKING</span><span>NO ADS · FREE TO PLAY</span></footer>
+</main>
+<div class="overlay show" id="welcome" role="dialog" aria-modal="true" aria-label="Welcome to North Pole Pizzeria">
+  <div class="modal welcomeModal">
+    <div class="modalEyebrow">✦ GAMEBOX CHRISTMAS ORIGINAL ✦</div>
+    <div class="welcomeArt"><span class="miniHat"></span><span class="welcomePie"><span></span></span><span class="welcomeSpark">✦</span></div>
+    <h1>NORTH POLE <em>PIZZERIA</em></h1>
+    <p>Everybody's hungry at the North Pole! Hear their orders, build each pizza by hand, bake it to perfection and keep the festive tills ringing.</p>
+    <div class="welcomeSteps"><span>🍅 <b>PREP</b></span><span>🔥 <b>BAKE</b></span><span>✂ <b>SLICE</b></span><span>🎁 <b>SERVE</b></span></div>
+    <button class="modalMain" id="playBtn" type="button">OPEN FOR BUSINESS</button>
+    <small>Your shop, upgrades and best day are saved on this device.</small>
+  </div>
+</div>
+<div class="overlay" id="orderResult" role="dialog" aria-modal="true" aria-label="Customer review">
+  <div class="modal resultModal"><div class="modalEyebrow" id="resultEyebrow">ORDER SERVED</div><div class="reviewStars" id="reviewStars">★★★</div><h2 id="reviewTitle">A festive masterpiece!</h2><p id="reviewMessage"></p>
+    <div class="receipt"><div><span>Pizza price</span><b id="receiptPrice">£0.00</b></div><div><span>Customer tip</span><b id="receiptTip">£0.00</b></div><div><span>Refund / ingredients</span><b id="receiptCosts">£0.00</b></div><div class="receiptTotal"><span>Net earnings</span><b id="receiptTotal">£0.00</b></div></div>
+    <button class="modalMain" id="nextOrderBtn" type="button">NEXT CUSTOMER →</button>
+  </div>
+</div>
+<div class="overlay" id="endDay" role="dialog" aria-modal="true" aria-label="End of day and upgrades">
+  <div class="modal dayModal"><div class="modalEyebrow">THE NORTH POLE DAILY NEWS</div><h2>SHIFT COMPLETE!</h2>
+    <p>You've closed the oven for another evening. Time to count the tips and spruce up your kitchen.</p>
+    <div class="shiftStats"><div><small>ORDERS SERVED</small><b id="ordersServed">4</b></div><div><small>DAY'S PROFIT</small><b id="dayProfit">£0.00</b></div><div><small>SHOP BALANCE</small><b id="dayCash">£0.00</b></div></div>
+    <h3>UPGRADE YOUR SHOP</h3><div id="upgradesList" class="upgradeList"></div><div class="unlockNote" id="unlockNote"></div>
+    <button class="modalMain" id="nextDayBtn" type="button">OPEN NEXT DAY →</button>
+  </div>
+</div>
+<div class="overlay" id="pauseMenu" role="dialog" aria-modal="true" aria-label="Pause menu">
+  <div class="modal pauseModal"><div class="modalEyebrow">NORTH POLE PIZZERIA</div><h2>ON A BREAK</h2><p>Even Santa's chef needs a breather.</p>
+    <button class="modalMain" id="resumeBtn" type="button">BACK TO COOKING</button>
+    <button class="modalAlt" id="soundBtn" type="button">SOUND: ON</button>
+    <button class="modalAlt" id="helpBtn" type="button">HOW TO PLAY</button>
+    <a class="modalAlt" href="../">BACK TO GAMEBOX</a>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="./game.mjs?v=6"></script>
+</body></html>
