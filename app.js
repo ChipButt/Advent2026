@@ -62,7 +62,7 @@ async function loadPlayer(){
   state.profile=profile?.[0]||null;
   state.attempts=attempts||[];
   state.standings=standings||[];
-  renderProfile();renderStandings();
+  renderProfile();renderStandings();renderDashboard();
  }catch(e){toast(e.message);}
 }
 async function loadEvents(){
@@ -94,33 +94,69 @@ function renderCalendar(){
  const revision=today()+"|"+state.events.map(e=>[e.day,e.is_published,e.game_key].join(":")).join("|");
  if(calendarRevision===revision)return;
  calendarRevision=revision;
- const dateStrip=$("dateStrip");dateStrip.replaceChildren();
- let released=0;
- for(let day=1;day<=24;day++){
-  const open=isOpen(day)||isFinal();if(open)released++;
-  const b=document.createElement("button");b.className="date "+(open?"live":"locked")+(p.month===12&&p.day===day?" current":"");
-  b.type="button";b.innerHTML="<strong>"+day+"</strong>"+icon(open?"unlocked":"locked")+"<small>"+(open?"RELEASED":"LOCKED")+"</small>";
-  b.addEventListener("click",()=>{show("events");document.getElementById("day-"+day)?.scrollIntoView({block:"center",behavior:"smooth"});});dateStrip.append(b);
+ const strip=$("dateStrip");strip.replaceChildren();
+ const before=today()<"2026-12-01",ended=isFinal();
+ const start=before?1:ended?20:Math.min(20,Math.max(1,p.day-1));
+ for(let day=start;day<start+5;day++){
+  const event=eventFor(day);
+  const available=isOpen(day)&&!!event?.is_published&&!!getGame(event.game_key);
+  const passed=isOpen(day);
+  const tile=document.createElement("button");
+  tile.type="button";
+  tile.className="date "+(available?"live":passed?"pending":"locked")+(p.month===12&&p.day===day?" current":"");
+  const label=available?"OPEN":passed?"PENDING":"LOCKED";
+  tile.innerHTML='<span class="day-prefix">DEC</span><strong>'+String(day).padStart(2,"0")+'</strong>'+icon(available?"unlocked":"locked")+'<small>'+label+"</small>";
+  tile.setAttribute("aria-label","December "+day+", "+(available?"event available":passed?"event not yet available":"event locked")+". View full event calendar.");
+  tile.addEventListener("click",()=>{show("events");$("day-"+day)?.scrollIntoView({block:"center",behavior:"smooth"});});
+  strip.append(tile);
  }
- $("unlockCount").textContent=released+" of 24 released";
- if(p.year===2026&&p.month===12){document.querySelector(".hero h1").innerHTML="The games <em>are on.</em>";document.querySelector(".hero-content p").textContent="Compete, climb the rankings, and race for the Christmas Eve crown.";}
+ const playable=state.events.filter(e=>e.is_published&&getGame(e.game_key)&&isOpen(e.day));
  const home=$("homeEvents");home.replaceChildren();
- const active=state.events.filter(e=>e.is_published&&getGame(e.game_key)&&isOpen(e.day)).reverse().slice(0,3);
- if(active.length){active.forEach(e=>home.append(makeGameCard(getGame(e.game_key),e.day)));}
- else{home.innerHTML='<div class="empty unlock-message">No events are available yet. Games can only be practised after their December event has unlocked.</div>';}
+ home.hidden=!playable.length;
+ if(playable.length){
+  const heading=document.createElement("h3");heading.textContent="Available events";home.append(heading);
+  playable.slice().sort((a,b)=>b.day-a.day).slice(0,2).forEach(e=>home.append(makeGameCard(getGame(e.game_key),e.day)));
+ }
+ $("calendarSummary").textContent=before?"First event opens 1 December. One new event each day.":ended?"All 24 dates have passed. View the final event programme.":playable.length?playable.length+" event"+(playable.length===1?" is":"s are")+" available. Choose an event to compete or practise.":"No events have been released for play yet.";
  const all=$("allEvents");all.replaceChildren();
  for(let day=1;day<=24;day++){
   const open=isOpen(day),g=gameForEvent(day),published=!!g;
   const b=document.createElement("button");b.id="day-"+day;b.type="button";b.disabled=!(published&&open);if(open&&published)b.className="active-day";
-  b.innerHTML='<div class="tile-header"><span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+'</span>'+icon(open&&published?"unlocked":"locked")+'</div><strong>'+(published?clean(g.name):"Event "+day)+'</strong><small>'+(open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
+  b.innerHTML='<div class="tile-header"><span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+"</span>"+icon(open&&published?"unlocked":"locked")+'</div><strong>'+(published?clean(g.name):"Event "+day)+'</strong><small>'+(open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
   if(open&&published)b.onclick=()=>openEvent(g,day);all.append(b);
  }
  const training=$("trainingGames");training.replaceChildren();
- const unlocked=state.events.filter(e=>e.is_published&&isOpen(e.day)&&getGame(e.game_key));
- if(unlocked.length)unlocked.forEach(e=>training.append(makeGameCard(getGame(e.game_key),e.day,true)));
- else training.innerHTML='<div class="empty unlock-message">Training is locked. Each game becomes available for practice only when its event unlocks in December.</div>';
- const linked=$("leaderboardEvents");linked.replaceChildren();state.events.filter(e=>e.is_published&&isOpen(e.day)&&getGame(e.game_key)).forEach(e=>linked.append(makeGameCard(getGame(e.game_key),e.day)));
+ $("trainingSection").hidden=!playable.length;
+ if(playable.length)playable.forEach(e=>training.append(makeGameCard(getGame(e.game_key),e.day,true)));
+ else training.innerHTML='<div class="empty unlock-message">Practice becomes available when an event is released.</div>';
+ const linked=$("leaderboardEvents");linked.replaceChildren();
+ playable.forEach(e=>linked.append(makeGameCard(getGame(e.game_key),e.day)));
  if(!linked.children.length)linked.innerHTML='<div class="empty">Event leaderboards appear as official events are released.</div>';
+ renderDashboard();
+}
+function renderDashboard(){
+ const p=ukParts(),date=today(),ended=isFinal();
+ const openCount=state.events.filter(e=>e.is_published&&getGame(e.game_key)&&isOpen(e.day)).length;
+ const signedIn=!!state.session;
+ const userId=state.session?.user?.id;
+ const row=userId?state.standings.find(r=>r.player_id===userId):null;
+ const name=state.profile?.display_name||state.session?.user?.user_metadata?.display_name||"Competitor";
+ const before=date<"2026-12-01";
+ $("dashboardHeadline").textContent=before?"Opening 1 December":ended?"Championship complete":openCount?"The games are on":"December championship";
+ $("dashboardSubhead").textContent=before?"24 daily events. Your first race unlocks on 1 December.":ended?"The 2026 competition closed on Christmas Eve.":"Compete in unlocked events. Your latest official result always counts.";
+ $("dashboardPlayerLabel").textContent=signedIn?"Signed in as "+name:"Sign in to follow your position and points.";
+ $("dashboardRank").textContent=signedIn&&Number(row?.events_finished)>0?"#"+row.position:"—";
+ $("dashboardPoints").textContent=signedIn?String(Number(row?.total_points)||0):"—";
+ $("dashboardEventsOpen").textContent=openCount+" / 24";
+ $("dashboardProfileAction").textContent=signedIn?"Your profile →":"Sign in →";
+ const preview=$("dashboardStandingsPreview");
+ const ranked=state.standings.filter(r=>Number(r.events_finished)>0).sort((a,b)=>Number(a.position)-Number(b.position)).slice(0,3);
+ if(!ranked.length){
+  preview.innerHTML='<div class="dashboard-empty">'+icon("trophy")+'<span>'+(before?"Standings begin after the first official race.":"No official results have been recorded yet.")+"</span></div>";
+ }else{
+  const ties=new Map();state.standings.forEach(r=>{if(Number(r.events_finished)>0)ties.set(r.position,(ties.get(r.position)||0)+1);});
+  preview.innerHTML='<div class="dashboard-preview-list">'+ranked.map(r=>'<div class="dashboard-preview-row"><span class="dashboard-preview-place">'+rankCell(r.position,(ties.get(r.position)||0)>1)+'</span><span class="dashboard-preview-name">'+clean(r.display_name)+'</span><strong class="dashboard-preview-points">'+clean(r.total_points)+' <small>pts</small></strong></div>').join("")+'</div>';
+ }
 }
 function table(headers,rows){return "<table><thead><tr>"+headers.map(h=>"<th>"+clean(h)+"</th>").join("")+"</tr></thead><tbody>"+rows.join("")+"</tbody></table>";}
 function renderStandings(){
@@ -137,8 +173,8 @@ function renderProfile(){
  el.innerHTML='<div class="profile-card"><span class="kicker dark">REGISTERED COMPETITOR</span><h2 class="profile-heading">'+icon("profile")+clean(state.profile?.display_name||state.session.user?.user_metadata?.display_name||"Elflympian")+'</h2><p>Signed in as '+clean(state.session.user?.email||"")+'</p><p>Official attempts recorded: <strong>'+current+'</strong></p><button class="secondary" id="signOut">Sign out</button></div>';
  $("signOut").onclick=async()=>{try{await fetch(base+"/auth/v1/logout",{method:"POST",headers:{"apikey":conf.publishableKey,"Authorization":"Bearer "+state.session.access_token}});}catch(_){}state.session=null;state.profile=null;state.attempts=[];state.standings=[];storageSet(null);updateAuthUI();show("profile");};
 }
-function render(){renderCalendar();renderStandings();renderProfile();}
-function updateAuthUI(){$("accountButton").innerHTML=icon(state.session?"profile":"sign-in")+"<span>"+clean(state.profile?.display_name||state.session?.user?.user_metadata?.display_name||(ready?"Sign in":"Accounts pending"))+"</span>";renderProfile();}
+function render(){renderCalendar();renderStandings();renderProfile();renderDashboard();}
+function updateAuthUI(){$("accountButton").innerHTML=icon(state.session?"profile":"sign-in")+"<span>"+clean(state.profile?.display_name||state.session?.user?.user_metadata?.display_name||(ready?"Sign in":"Accounts pending"))+"</span>";renderProfile();renderDashboard();}
 function openAuth(mode="login"){
  if(!ready){toast("Player accounts need the dedicated Supabase project connected first.");return;}
  state.authMode=mode;$("authStatus").textContent="";$("authForm").reset();
@@ -215,6 +251,7 @@ document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{const d=$(b.dataset.close);if(d?.open)d.close();}));
 $("accountButton").onclick=()=>state.session?show("profile"):openAuth();
 $("heroEvents").onclick=()=>show("events");$("heroHow").onclick=()=>$("howDialog").showModal();
+$("dashboardAllEvents").onclick=()=>show("events");$("dashboardFullStandings").onclick=()=>show("standings");$("dashboardProfileAction").onclick=()=>state.session?show("profile"):openAuth();
 $("authSwitch").onclick=()=>openAuth(state.authMode==="register"?"login":"register");
 $("authForm").addEventListener("submit",async e=>{
  e.preventDefault();const button=$("authSubmit"),form=e.currentTarget,vals=new FormData(form);button.disabled=true;$("authStatus").textContent="Connecting…";

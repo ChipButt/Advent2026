@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#0b2b2d"><meta name="description" content="Elflympics 2026 — the North Pole winter games. Twenty-four events, one champion.">
 <title>Elflympics 2026 · North Pole Winter Championship</title>
 <link rel="icon" type="image/png" href="./assets/elflympics-crest-approved.png">
-<link rel="stylesheet" href="./styles.css?v=elf-v6-bgtrial">
+<link rel="stylesheet" href="./styles.css?v=elf-v7-layout">
 </head><body>
 <div class="app-shell">
  <header class="masthead">
@@ -13,34 +13,61 @@
  </header>
  <main>
   <section class="view" id="homeView">
-    <div class="hero">
-      <div class="hero-content"><img class="hero-logo" src="./assets/elflympics-logo-approved.png" alt="Elflympics 2026 — North Pole Winter Championship" width="1630" height="543"><div class="kicker">NORTH POLE · DECEMBER 2026</div>
-       <h1>The games are <em>coming.</em></h1>
-       <p>24 events. Daily races. One overall championship.</p>
-       <div class="hero-ctas"><button class="primary" id="heroEvents" type="button"><span class="elf-icon elf-icon--events" aria-hidden="true"></span>Explore events <span aria-hidden="true">→</span></button><button id="heroHow" class="ghost" type="button">How it works</button></div>
+   <div class="dashboard-shell wrap">
+    <section class="dashboard-hero" aria-labelledby="dashboardHeadline">
+     <div class="dashboard-hero-main">
+      <span class="dashboard-kicker">NORTH POLE WINTER CHAMPIONSHIP</span>
+      <h1 id="dashboardHeadline">Opening 1 December</h1>
+      <p id="dashboardSubhead">The Elflympics begin with the first event on 1 December.</p>
+      <div class="dashboard-actions">
+       <button class="primary" id="heroEvents" type="button">View events <span aria-hidden="true">→</span></button>
+       <button id="heroHow" class="dashboard-secondary-action" type="button">Competition rules</button>
       </div>
-      
-      <div class="hero-foot"><span>DEC 01 — DEC 24</span><span>UNITED KINGDOM TIME</span></div>
-    </div>
-    <div class="content wrap">
-      <div class="section-title"><div><span class="kicker dark">THE ROAD TO CHRISTMAS EVE</span><h2><span class="elf-icon elf-icon--events" aria-hidden="true"></span>December events</h2></div><span id="unlockCount" class="section-subtle">0 of 24 released</span></div>
-      <div id="dateStrip" class="date-strip" aria-label="December event dates"></div>
-      <div class="section-title section-gap"><div><span class="kicker dark">YOUR STARTING LINE</span><h2>Events & training</h2></div></div>
-      <div id="homeEvents" class="event-grid"></div>
-      <div class="section-title section-gap"><div><span class="kicker dark">THE COMPETITION</span><h2><span class="elf-icon elf-icon--trophy" aria-hidden="true"></span>Championship overview</h2></div></div>
-      <div class="feature-row">
-       <article class="feature"><span class="feature-number">01</span><h3>Train without limits</h3><p>Practice every available game as often as you like.</p></article>
-       <article class="feature"><span class="feature-number">02</span><h3>Race once per day</h3><p>One official run in each unlocked event every UK calendar day.</p></article>
-       <article class="feature"><span class="feature-number">03</span><h3>Risk your result</h3><p>Your newest official attempt replaces the previous one, even if it scores lower.</p></article>
+     </div>
+     <div class="dashboard-hero-date" aria-label="Competition dates">
+      <span>THE 2026 GAMES</span>
+      <strong>01—24</strong>
+      <span>DECEMBER · UK TIME</span>
+     </div>
+    </section>
+    <section class="dashboard-summary" aria-labelledby="dashboardSummaryTitle">
+     <div class="dashboard-section-top">
+      <div><h2 id="dashboardSummaryTitle">Your championship</h2><p id="dashboardPlayerLabel">Sign in to follow your progress.</p></div>
+      <button type="button" id="dashboardProfileAction" class="dashboard-inline-link">Player profile <span aria-hidden="true">→</span></button>
+     </div>
+     <div class="dashboard-stat-grid">
+      <div class="dashboard-stat"><span>Overall position</span><strong id="dashboardRank" aria-live="polite">—</strong></div>
+      <div class="dashboard-stat"><span>Championship points</span><strong id="dashboardPoints" aria-live="polite">—</strong></div>
+      <div class="dashboard-stat"><span>Events available</span><strong id="dashboardEventsOpen" aria-live="polite">0 / 24</strong></div>
+     </div>
+    </section>
+    <div class="dashboard-columns">
+     <section class="dashboard-panel dashboard-calendar" aria-labelledby="dashboardCalendarTitle">
+      <div class="dashboard-panel-head">
+       <div><h2 id="dashboardCalendarTitle">December events</h2><p id="calendarSummary">The first event unlocks on 1 December.</p></div>
+       <button type="button" id="dashboardAllEvents" class="dashboard-inline-link">All 24 <span aria-hidden="true">→</span></button>
       </div>
+      <div id="dateStrip" class="date-strip date-strip--dashboard" aria-label="December event preview"></div>
+      <div id="homeEvents" class="dashboard-live-events" hidden></div>
+     </section>
+     <section class="dashboard-panel dashboard-leaderboard" aria-labelledby="dashboardBoardTitle">
+      <div class="dashboard-panel-head">
+       <div><h2 id="dashboardBoardTitle">Championship standings</h2><p>Overall points across all events</p></div>
+       <button type="button" id="dashboardFullStandings" class="dashboard-inline-link">Full table <span aria-hidden="true">→</span></button>
+      </div>
+      <div id="dashboardStandingsPreview" class="dashboard-preview" aria-live="polite">
+       <p class="dashboard-empty">Standings will appear after the first official results.</p>
+      </div>
+     </section>
     </div>
+   </div>
   </section>
-  <section class="view" id="eventsView" hidden><div class="page-banner"><span class="kicker">THE COMPETITION CALENDAR</span><h1>All 24 events</h1><p>A new event unlocks every day from 1 December. Past events stay open until Christmas Eve.</p></div><div class="wrap content"><div id="allEvents" class="all-events"></div><div class="section-title section-gap"><h2><span class="elf-icon elf-icon--practice" aria-hidden="true"></span>Training centre</h2><span class="section-subtle">Only games from already-unlocked December events</span></div><div id="trainingGames" class="event-grid"></div></div></section>
-  <section class="view" id="standingsView" hidden><div class="page-banner"><span class="kicker">LIVE CHAMPIONSHIP</span><h1><span class="elf-icon elf-icon--trophy" aria-hidden="true"></span>Overall standings</h1><p>Event positions convert into championship points. Tied results share the same place and points.</p></div><div class="wrap content"><div id="standingsInfo" class="callout"></div><div id="overallTable" class="table-wrap"></div><div class="section-title section-gap"><h2><span class="elf-icon elf-icon--standings" aria-hidden="true"></span>Event leaderboards</h2></div><div id="leaderboardEvents" class="event-grid"></div></div></section>
-  <section class="view" id="profileView" hidden><div class="page-banner"><span class="kicker">YOUR ELFLYMPICS</span><h1><span class="elf-icon elf-icon--profile" aria-hidden="true"></span>Competitor profile</h1><p>Your account, race entries and results stay with you across devices.</p></div><div class="wrap content"><div id="profileContent"></div></div></section>
+  <section class="view" id="eventsView" hidden><div class="page-banner"><span class="kicker">DECEMBER 2026</span><h1>Events</h1><p>One new event each day. Every released event remains playable through Christmas Eve.</p></div><div class="wrap content"><div id="allEvents" class="all-events"></div><div id="trainingSection" hidden><div class="section-title section-gap"><h2><span class="elf-icon elf-icon--practice" aria-hidden="true"></span>Training centre</h2><span class="section-subtle">Practise unlocked events without limits</span></div><div id="trainingGames" class="event-grid"></div></div></div></section>
+  <section class="view" id="standingsView" hidden><div class="page-banner"><span class="kicker">2026 CHAMPIONSHIP</span><h1><span class="elf-icon elf-icon--trophy" aria-hidden="true"></span>Standings</h1><p>Overall points from official event results.</p></div><div class="wrap content"><div id="standingsInfo" class="callout"></div><div id="overallTable" class="table-wrap"></div><div class="section-title section-gap"><h2><span class="elf-icon elf-icon--standings" aria-hidden="true"></span>Event leaderboards</h2></div><div id="leaderboardEvents" class="event-grid"></div></div></section>
+  <section class="view" id="profileView" hidden><div class="page-banner"><span class="kicker">PLAYER ACCOUNT</span><h1><span class="elf-icon elf-icon--profile" aria-hidden="true"></span>Profile</h1><p>Your details and official race history.</p></div><div class="wrap content"><div id="profileContent"></div></div></section>
  </main>
  <nav class="bottom-nav" aria-label="Main navigation"><button class="active" data-nav="home" type="button"><span class="nav-mark"><span class="elf-icon elf-icon--home" aria-hidden="true"></span></span><span class="nav-label">Home</span></button><button data-nav="events" type="button"><span class="nav-mark"><span class="elf-icon elf-icon--events" aria-hidden="true"></span></span><span class="nav-label">Events</span></button><button data-nav="standings" type="button"><span class="nav-mark"><span class="elf-icon elf-icon--standings" aria-hidden="true"></span></span><span class="nav-label">Standings</span></button><button data-nav="profile" type="button"><span class="nav-mark"><span class="elf-icon elf-icon--profile" aria-hidden="true"></span></span><span class="nav-label">Profile</span></button></nav>
- <footer>ELFLYMPICS 2026 · NORTH POLE WINTER CHAMPIONSHIP · V6 BACKGROUND TRIAL</footer>
+ <footer>ELFLYMPICS 2026 · V7</footer>
 </div>
 <dialog id="authDialog" class="dialog"><div class="modal"><button class="close" data-close="authDialog" type="button" aria-label="Close">×</button><img class="modal-crest" src="./assets/elflympics-logo-approved.png" alt="Elflympics 2026"><span class="kicker dark">BECOME A COMPETITOR</span><h2 id="authTitle">Sign in</h2><p id="authIntro">Sign in to record official race results.</p><form id="authForm"><label id="nameField" hidden>Competitor name<input name="display_name" autocomplete="nickname" minlength="3" maxlength="28"></label><label>Email address<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" minlength="8" autocomplete="current-password" required></label><p id="authStatus" role="status"></p><button id="authSubmit" class="primary full" type="submit"><span class="elf-icon elf-icon--sign-in" aria-hidden="true"></span>Sign in</button></form><button id="authSwitch" class="text-button" type="button">Create an account</button><button id="resetPassword" class="text-button" type="button">Forgot password?</button></div></dialog>
 <dialog id="eventDialog" class="dialog"><div class="modal event-modal"><button class="close" data-close="eventDialog" type="button" aria-label="Close">×</button><span class="kicker dark" id="eventEyebrow">EVENT</span><h2 id="eventName"></h2><p id="eventDescription"></p><div class="result-panel" id="personalResult">No official result yet</div><div class="race-rules"><div><span class="elf-icon elf-icon--practice" aria-hidden="true"></span><span>Unlimited practice races</span></div><div><span class="elf-icon elf-icon--official-race" aria-hidden="true"></span><span>One official attempt per event, per UK day</span></div><div><span class="elf-icon elf-icon--result-recorded" aria-hidden="true"></span><span>Latest official attempt determines your position</span></div></div><p id="eventStatus" class="notice"></p><div class="action-row"><button id="practiceButton" class="secondary" type="button"><span class="elf-icon elf-icon--practice" aria-hidden="true"></span>Practice race</button><button id="officialButton" class="primary" type="button"><span class="elf-icon elf-icon--official-race" aria-hidden="true"></span>Official race</button></div><button id="eventBoard" class="text-button" type="button"><span class="elf-icon elf-icon--standings" aria-hidden="true"></span>View event leaderboard</button></div></dialog>
@@ -48,5 +75,5 @@
 <dialog id="boardDialog" class="dialog"><div class="modal"><button class="close" data-close="boardDialog" type="button" aria-label="Close">×</button><span class="kicker dark">EVENT STANDINGS</span><h2 id="boardTitle"></h2><div id="eventTable" class="table-wrap"></div><p class="notice">Equal results share the same place and the same event points. Rankings stay provisional until Christmas Eve.</p></div></dialog>
 <dialog id="howDialog" class="dialog"><div class="modal"><button class="close" data-close="howDialog" type="button" aria-label="Close">×</button><span class="kicker dark">HOW THE ELFLYMPICS WORK</span><h2>24 days. One champion.</h2><p>Each day from 1–24 December a new event opens. You can practise unlocked games without limit.</p><p>You get one official race per event each UK calendar day. Starting a race uses that day's attempt. Your latest official attempt counts — even if the result is worse than before.</p><p>All unlocked events remain playable until the competition finishes on Christmas Eve. Players tie when their results or total championship points are equal.</p><button class="primary full" data-close="howDialog" type="button"><span class="elf-icon elf-icon--unlocked" aria-hidden="true"></span>Got it</button></div></dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="./config.js"></script><script src="./app.js?v=elf-v5-logo" defer></script>
+<script src="./config.js"></script><script src="./app.js?v=elf-v7-layout" defer></script>
 </body></html>
