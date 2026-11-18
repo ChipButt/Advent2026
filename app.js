@@ -195,6 +195,7 @@ const games=[
   "key": "christmas-village-hunt",
   "name": "Christmas Village Hunt",
   "path": "christmas-village-hunt",
+  "entry": "v3.html",
   "desc": "Explore the village and collect gifts.",
   "measure": "points",
   "higher": true,
@@ -381,7 +382,7 @@ function openFrame(game,mode,day=null,attemptId=null){
  state.race={game,mode,day:eventDay,attemptId,done:false};
  $("raceTitle").textContent=game.name;$("raceType").textContent=workshop?"WORKSHOP TEST · NO LIVE SCORE":mode==="official"?"OFFICIAL RACE · ATTEMPT RESERVED":"UNLIMITED PRACTICE";
  $("raceMessage").hidden=true;$("raceMessage").textContent="";
- $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.path||game.key)+"/?elfMode="+encodeURIComponent(mode)+(attemptId?"&elfAttempt="+encodeURIComponent(attemptId):"");
+ $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.path||game.key)+"/"+(game.entry?encodeURIComponent(game.entry):"")+"?elfMode="+encodeURIComponent(mode)+(attemptId?"&elfAttempt="+encodeURIComponent(attemptId):"");
  $("eventDialog").close();$("raceDialog").showModal();
 }
 async function startOfficial(){
@@ -440,6 +441,15 @@ $("resetPassword").onclick=async()=>{
 $("practiceButton").onclick=()=>{const s=state.selected;if(s)openFrame(s.game,"practice");};
 $("officialButton").onclick=startOfficial;$("quitRace").onclick=exitRace;
 $("raceDialog").addEventListener("cancel",e=>{e.preventDefault();exitRace();});
+// Remove GameBox-only exit links inside the locally hosted games. Elflympics owns navigation.
+$("raceFrame").addEventListener("load",()=>{
+ const doc=$("raceFrame").contentDocument;
+ if(!doc)return;
+ doc.querySelectorAll("a[href]").forEach(a=>{
+  const label=(a.getAttribute("aria-label")||"")+" "+(a.textContent||"");
+  if(/back to gamebox|return to gamebox|gamebox home/i.test(label))a.remove();
+ });
+});
 window.addEventListener("message",finishedGame);
 window.addEventListener("pageshow",e=>{if(e.persisted&&ready&&state.session)void loadPlayer();});
 // Update the day and unlocks if the page remains open across UK midnight.
