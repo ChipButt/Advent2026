@@ -1,0 +1,44 @@
+name: Import original GameBox Advent games into Elflympics Workshop
+on:
+  push:
+    branches: [workshop]
+    paths:
+      - '.github/workflows/import-gamebox-advent.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-games:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: workshop
+          persist-credentials: true
+      - name: Copy pinned original GameBox sources into this repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_SHA=fcc46ad55fdd5eca9a8f5d35caf1a19963011ea4
+          git clone --depth=1 --filter=blob:none --sparse https://github.com/ChipButt/GameBox.git /tmp/gamebox-advent
+          cd /tmp/gamebox-advent
+          git fetch --depth=1 origin "$SOURCE_SHA"
+          git checkout --detach "$SOURCE_SHA"
+          git sparse-checkout set tiny-ski-run jigsaw workshop-watch block-breaker santa-invaders festive-blocks santa-letter-sort christmas-dash north-pole-pizzeria snowy-crossing present-stack chimney-drop-in santas-sorting-shift snow-shoveller snowball-knockdown santas-arrow-escape christmas-potion-sort gift-bubble-shooter snowy-sweets shift-in-maze bridgebound christmas-village-hunt shared assets
+          cd "$GITHUB_WORKSPACE"
+          for game in tiny-ski-run jigsaw workshop-watch block-breaker santa-invaders festive-blocks santa-letter-sort christmas-dash north-pole-pizzeria snowy-crossing present-stack chimney-drop-in santas-sorting-shift snow-shoveller snowball-knockdown santas-arrow-escape christmas-potion-sort gift-bubble-shooter snowy-sweets shift-in-maze bridgebound christmas-village-hunt; do
+            test -s "/tmp/gamebox-advent/$game/index.html"
+          done
+          rm -rf games
+          mkdir -p games
+          for game in tiny-ski-run jigsaw workshop-watch block-breaker santa-invaders festive-blocks santa-letter-sort christmas-dash north-pole-pizzeria snowy-crossing present-stack chimney-drop-in santas-sorting-shift snow-shoveller snowball-knockdown santas-arrow-escape christmas-potion-sort gift-bubble-shooter snowy-sweets shift-in-maze bridgebound christmas-village-hunt; do
+            cp -a "/tmp/gamebox-advent/$game" "games/$game"
+          done
+          cp -a /tmp/gamebox-advent/shared games/shared
+          cp -a /tmp/gamebox-advent/assets games/assets
+          printf '%s\n' "GameBox source SHA: $SOURCE_SHA" "22 candidate game folders copied; 21 original Advent collection games plus Christmas Village Hunt." > games/IMPORT-SOURCE.txt
+          git add -A games/
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Import original GameBox Advent candidates into Workshop (pinned source)"
+            git push origin HEAD:workshop
+          fi

@@ -1,9 +1,209 @@
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
-const games=[]; // Live has no bundled games until Workshop versions are approved.
+const games=[
+ {
+  "key": "jigsaw",
+  "name": "Jigsaw",
+  "path": "jigsaw",
+  "desc": "Complete a Christmas puzzle, with the image, piece count and timing rules to be finalised.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "tiny-ski-run",
+  "name": "Tiny Ski Run",
+  "path": "tiny-ski-run",
+  "desc": "Race down the festive ski course.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "workshop-watch",
+  "name": "Workshop Watch",
+  "path": "workshop-watch",
+  "desc": "Defend Santa's workshop.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "block-breaker",
+  "name": "Block Breaker",
+  "path": "block-breaker",
+  "desc": "Break the winter blocks.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "santa-invaders",
+  "name": "Santa Invaders",
+  "path": "santa-invaders",
+  "desc": "Defend against an invasion.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "festive-blocks",
+  "name": "Festive Blocks",
+  "path": "festive-blocks",
+  "desc": "Arrange falling blocks.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "santa-letter-sort",
+  "name": "Santa’s Letter Sort",
+  "path": "santa-letter-sort",
+  "desc": "Sort Santa's post.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "christmas-dash",
+  "name": "North Pole Dash",
+  "path": "christmas-dash",
+  "desc": "Run through the North Pole.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "north-pole-pizzeria",
+  "name": "North Pole Pizzeria",
+  "path": "north-pole-pizzeria",
+  "desc": "Serve festive pizzas.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "snowy-crossing",
+  "name": "Snowy Crossing",
+  "path": "snowy-crossing",
+  "desc": "Cross the icy route.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "present-stack",
+  "name": "Santa’s Present Stack",
+  "path": "present-stack",
+  "desc": "Stack Christmas presents.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "chimney-drop-in",
+  "name": "Chimney Drop-In",
+  "path": "chimney-drop-in",
+  "desc": "Deliver presents down the chimney.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "santas-sorting-shift",
+  "name": "Santa’s Sorting Shift",
+  "path": "santas-sorting-shift",
+  "desc": "Sort the workshop deliveries.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "snow-shoveller",
+  "name": "Snow Shoveller",
+  "path": "snow-shoveller",
+  "desc": "Clear snow and rescue frozen friends.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "snowball-knockdown",
+  "name": "Snowball Knockdown",
+  "path": "snowball-knockdown",
+  "desc": "Knock presents down with snowballs.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "santas-arrow-escape",
+  "name": "Santa’s Arrow Escape",
+  "path": "santas-arrow-escape",
+  "desc": "Solve arrow escape puzzles.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "christmas-potion-sort",
+  "name": "Santa’s Potion Sort",
+  "path": "christmas-potion-sort",
+  "desc": "Sort Christmas potions.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "gift-bubble-shooter",
+  "name": "Gift Bubble Shooter",
+  "path": "gift-bubble-shooter",
+  "desc": "Match Christmas ornaments.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "snowy-sweets",
+  "name": "Snowy Sweets",
+  "path": "snowy-sweets",
+  "desc": "Play the festive sweets challenge.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "shift-in-maze",
+  "name": "Shift In Maze",
+  "path": "shift-in-maze",
+  "desc": "Shift the maze and seek the relics.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "ice-links",
+  "name": "Ice Links",
+  "path": "bridgebound",
+  "desc": "Solve five ice-bridge puzzles.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ },
+ {
+  "key": "christmas-village-hunt",
+  "name": "Christmas Village Hunt",
+  "path": "christmas-village-hunt",
+  "desc": "Explore the village and collect gifts.",
+  "measure": "points",
+  "higher": true,
+  "status": "Needs review"
+ }
+];
 
 const conf=window.ELFLYMPICS_CONFIG||{};
+const workshop=conf.environment==="workshop";
 const ready=!!(conf.supabaseUrl&&conf.publishableKey);
 const base=String(conf.supabaseUrl||"").replace(/\/$/,"");
 const state={session:null,profile:null,events:[],attempts:[],standings:[],selected:null,boardDay:null,race:null,view:"home",authMode:"login"};
@@ -13,8 +213,8 @@ let toastTimer=null;
 function toast(s){const t=$("toast");t.textContent=s;t.classList.add("on");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("on"),3600);}
 const today=()=>{const p=ukParts();return String(p.year)+"-"+String(p.month).padStart(2,"0")+"-"+String(p.day).padStart(2,"0");};
 function ukParts(){const now=Date.now();if(cachedUkDate&&now-cachedUkAt<10000)return cachedUkDate;const p=UK_FORMATTER.formatToParts(new Date(now));cachedUkDate=Object.fromEntries(p.filter(x=>x.type!=="literal").map(x=>[x.type,Number(x.value)]));cachedUkAt=now;return cachedUkDate;}
-function isOpen(day){const p=ukParts();return p.year>2026||(p.year===2026&&(p.month>12||(p.month===12&&p.day>=day)));}
-function isFinal(){return today()>"2026-12-24";}
+function isOpen(day){if(workshop)return true;const p=ukParts();return p.year>2026||(p.year===2026&&(p.month>12||(p.month===12&&p.day>=day)));}
+function isFinal(){if(workshop)return false;return today()>"2026-12-24";}
 function getGame(key){return games.find(g=>g.key===key);}
 function clean(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
@@ -66,6 +266,7 @@ async function loadPlayer(){
  }catch(e){toast(e.message);}
 }
 async function loadEvents(){
+ if(workshop){state.events=Array.from({length:24},(_,i)=>({day:i+1,game_key:games[i]?.key||null,is_published:!!games[i],opens_on:"2026-12-"+String(i+1).padStart(2,"0"),higher_is_better:true}));return;}
  if(!ready)return;
  try{state.events=await api("events?select=day,game_key,is_published,opens_on,higher_is_better&order=day.asc",{auth:false});}catch(e){toast("Event schedule temporarily unavailable.");}
 }
@@ -81,8 +282,8 @@ function show(view){
 }
 function makeGameCard(game,day,training=false){
  const active=Number.isInteger(day)&&isOpen(day)&&eventFor(day)?.is_published&&eventFor(day)?.game_key===game.key;
- const label=(training?"TRAINING · ":"EVENT ")+String(day).padStart(2,"0");
- const status=training?"Practice available":isFinal()?"Event completed":"Event open";
+ const label=(workshop?"WORKSHOP · ":training?"TRAINING · ":"EVENT ")+String(day).padStart(2,"0");
+ const status=workshop?"Needs review":training?"Practice available":isFinal()?"Event completed":"Event open";
  const badge="";
  const button=document.createElement("button");button.type="button";button.className="event-card";
  button.innerHTML='<div class="event-art"><span class="event-num">'+clean(label)+'</span>'+icon(training?"practice":"official-race")+'</div><div class="event-body"><h3>'+clean(game.name)+'</h3><p>'+clean(game.desc)+'</p><span class="status'+badge+'">'+icon(training?"practice":"unlocked")+clean(status)+'</span></div>';
@@ -91,18 +292,19 @@ function makeGameCard(game,day,training=false){
 }
 function renderCalendar(){
  const p=ukParts();
- const revision=today()+"|"+state.events.map(e=>[e.day,e.is_published,e.game_key].join(":")).join("|");
+ if(workshop){document.querySelector(".hero h1").innerHTML="Review <em>all 24 events.</em>";document.querySelector(".hero-content p").textContent="Workshop preview · no date locks · no live scores.";}
+ const revision=(workshop?"workshop":today())+"|"+state.events.map(e=>[e.day,e.is_published,e.game_key].join(":")).join("|");
  if(calendarRevision===revision)return;
  calendarRevision=revision;
  const dateStrip=$("dateStrip");dateStrip.replaceChildren();
  let released=0;
  for(let day=1;day<=24;day++){
-  const open=isOpen(day)||isFinal();if(open)released++;
+  const open=isOpen(day)||isFinal();if(open&&gameForEvent(day))released++;
   const b=document.createElement("button");b.className="date "+(open?"live":"locked")+(p.month===12&&p.day===day?" current":"");
   b.type="button";b.innerHTML="<strong>"+day+"</strong>"+icon(open?"unlocked":"locked")+"<small>"+(open?"RELEASED":"LOCKED")+"</small>";
   b.addEventListener("click",()=>{show("events");document.getElementById("day-"+day)?.scrollIntoView({block:"center",behavior:"smooth"});});dateStrip.append(b);
  }
- $("unlockCount").textContent=released+" of 24 released";
+ $("unlockCount").textContent=workshop?released+" of 24 candidates loaded":released+" of 24 released";
  if(p.year===2026&&p.month===12){document.querySelector(".hero h1").innerHTML="The games <em>are on.</em>";document.querySelector(".hero-content p").textContent="Compete, climb the rankings, and race for the Christmas Eve crown.";}
  const home=$("homeEvents");home.replaceChildren();
  const active=state.events.filter(e=>e.is_published&&getGame(e.game_key)&&isOpen(e.day)).reverse().slice(0,3);
@@ -112,7 +314,7 @@ function renderCalendar(){
  for(let day=1;day<=24;day++){
   const open=isOpen(day),g=gameForEvent(day),published=!!g;
   const b=document.createElement("button");b.id="day-"+day;b.type="button";b.disabled=!(published&&open);if(open&&published)b.className="active-day";
-  b.innerHTML='<div class="tile-header"><span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+'</span>'+icon(open&&published?"unlocked":"locked")+'</div><strong>'+(published?clean(g.name):"Event "+day)+'</strong><small>'+(open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
+  b.innerHTML='<div class="tile-header"><span class="kicker dark">DECEMBER '+String(day).padStart(2,"0")+'</span>'+icon(open&&published?"unlocked":"locked")+'</div><strong>'+(published?clean(g.name):workshop?"Unassigned":"Event "+day)+'</strong><small>'+(workshop?(published?"Needs review":"Awaiting game"):open?(published?"Enter event":"Programme pending"):"Unlocks "+day+" Dec")+"</small>";
   if(open&&published)b.onclick=()=>openEvent(g,day);all.append(b);
  }
  const training=$("trainingGames");training.replaceChildren();
@@ -125,6 +327,7 @@ function renderCalendar(){
 function table(headers,rows){return "<table><thead><tr>"+headers.map(h=>"<th>"+clean(h)+"</th>").join("")+"</tr></thead><tbody>"+rows.join("")+"</tbody></table>";}
 function renderStandings(){
  const info=$("standingsInfo"),board=$("overallTable");
+ if(workshop){info.textContent="Workshop only · official leaderboards and scores are disabled.";board.innerHTML="<div class=\"empty\">Test games without changing real competitor data.</div>";return;}
  if(!ready){info.textContent="Online accounts and competition standings will become available once the dedicated Supabase project is connected.";board.innerHTML='<div class="empty">No results are displayed until the real competition is connected.</div>';return;}
  info.textContent=isFinal()?"Final championship standings.":"Standings are provisional and may change whenever a competitor completes another official race.";
  if(!state.standings?.length){board.innerHTML='<div class="empty">No official results yet. The championship begins on 1 December.</div>';return;}
@@ -132,13 +335,14 @@ function renderStandings(){
  board.innerHTML=table(["Position","Competitor","Championship points","Completed events"],state.standings.map(r=>'<tr class="'+(r.player_id===state.session?.user?.id?"me":"")+'"><td class="num">'+rankCell(r.position,(posCounts.get(r.position)||0)>1)+'</td><td>'+clean(r.display_name)+'</td><td><strong>'+clean(r.total_points)+'</strong></td><td>'+clean(r.events_finished)+'</td></tr>'));
 }
 function renderProfile(){
- const el=$("profileContent");if(!state.session){el.innerHTML='<div class="profile-card"><h2 class="profile-heading">'+icon("profile")+'Your competitor account</h2><p>Create an account to enter official races, retain your results across devices and appear in the championship standings.</p><button class="primary" id="profileSignIn">'+icon("sign-in")+'Create account / sign in</button></div>';el.querySelector("button").onclick=()=>openAuth("register");return;}
+ const el=$("profileContent");
+ if(workshop){el.innerHTML='<div class="profile-card"><h2>Workshop test environment</h2><p>No real accounts, official attempts, or leaderboards are accessible here. Review each game and its visual presentation before approving it.</p></div>';return;}if(!state.session){el.innerHTML='<div class="profile-card"><h2 class="profile-heading">'+icon("profile")+'Your competitor account</h2><p>Create an account to enter official races, retain your results across devices and appear in the championship standings.</p><button class="primary" id="profileSignIn">'+icon("sign-in")+'Create account / sign in</button></div>';el.querySelector("button").onclick=()=>openAuth("register");return;}
  const current=state.attempts?.length||0;
  el.innerHTML='<div class="profile-card"><span class="kicker dark">REGISTERED COMPETITOR</span><h2 class="profile-heading">'+icon("profile")+clean(state.profile?.display_name||state.session.user?.user_metadata?.display_name||"Elflympian")+'</h2><p>Signed in as '+clean(state.session.user?.email||"")+'</p><p>Official attempts recorded: <strong>'+current+'</strong></p><button class="secondary" id="signOut">Sign out</button></div>';
  $("signOut").onclick=async()=>{try{await fetch(base+"/auth/v1/logout",{method:"POST",headers:{"apikey":conf.publishableKey,"Authorization":"Bearer "+state.session.access_token}});}catch(_){}state.session=null;state.profile=null;state.attempts=[];state.standings=[];storageSet(null);updateAuthUI();show("profile");};
 }
 function render(){renderCalendar();renderStandings();renderProfile();}
-function updateAuthUI(){$("accountButton").innerHTML=icon(state.session?"profile":"sign-in")+"<span>"+clean(state.profile?.display_name||state.session?.user?.user_metadata?.display_name||(ready?"Sign in":"Accounts pending"))+"</span>";renderProfile();}
+function updateAuthUI(){if(workshop){$("accountButton").hidden=true;renderProfile();return;}$("accountButton").innerHTML=icon(state.session?"profile":"sign-in")+"<span>"+clean(state.profile?.display_name||state.session?.user?.user_metadata?.display_name||(ready?"Sign in":"Accounts pending"))+"</span>";renderProfile();}
 function openAuth(mode="login"){
  if(!ready){toast("Player accounts need the dedicated Supabase project connected first.");return;}
  state.authMode=mode;$("authStatus").textContent="";$("authForm").reset();
@@ -149,8 +353,8 @@ function openAuth(mode="login"){
 }
 function openEvent(game,day){
  if(!Number.isInteger(day)||!isOpen(day)||!eventFor(day)?.is_published||eventFor(day)?.game_key!==game.key){toast("This event has not unlocked yet.");return;}
- state.selected={game,day};$("eventEyebrow").textContent=day?"OFFICIAL EVENT "+String(day).padStart(2,"0"):"TRAINING CENTRE";$("eventName").textContent=game.name;$("eventDescription").textContent=game.desc;
- const result=day?latest(day):null;
+ state.selected={game,day};$("eventEyebrow").textContent=workshop?"WORKSHOP EVENT "+String(day).padStart(2,"0"):day?"OFFICIAL EVENT "+String(day).padStart(2,"0"):"TRAINING CENTRE";$("eventName").textContent=game.name;$("eventDescription").textContent=game.desc;
+ const result=workshop?null:day?latest(day):null;
  $("personalResult").innerHTML=icon(result?(result.status==="finished"?"result-recorded":"attempt-used"):"official-race")+"<span>"+clean(result?(result.status==="finished"?"Latest official result: "+Number(result.result).toLocaleString()+" "+game.measure:"Latest official attempt: DNF / unfinished"):"No official result yet")+"</span>";
  const avail=day&&isOpen(day)&&!!eventFor(day)?.is_published;
  const used=day&&usedToday(day);
@@ -160,20 +364,24 @@ function openEvent(game,day){
  else if(!state.session)message="Create an account or sign in before entering an official race.";
  else if(used)message="Your official attempt for this event has already been used today. Try again tomorrow.";
  else message="Starting an official race uses today's attempt. A later attempt replaces your earlier result, even if worse.";
+ if(workshop)message="Candidate version · gameplay, styling and scoring still need review. No live score can be submitted.";
  $("eventStatus").textContent=message;
  $("practiceButton").disabled=false;
+ $("practiceButton").textContent=workshop?"Launch game":"Practice race";
+ $("officialButton").hidden=workshop;
+ $("eventBoard").hidden=workshop;
  $("officialButton").disabled=!(avail&&!used&&state.session&&!isFinal());
  $("officialButton").innerHTML=icon(used?"attempt-used":"official-race")+(used?"Attempt used today":"Official race");
- $("eventBoard").hidden=!day;$("eventBoard").onclick=()=>{const d=day;$("eventDialog").close();showBoard(d,game.name);};
+ $("eventBoard").hidden=workshop||!day;$("eventBoard").onclick=()=>{const d=day;$("eventDialog").close();showBoard(d,game.name);};
  $("eventDialog").showModal();
 }
 function openFrame(game,mode,day=null,attemptId=null){
  const eventDay=day??state.selected?.day;
  if(!Number.isInteger(eventDay)||!isOpen(eventDay)||!eventFor(eventDay)?.is_published||eventFor(eventDay)?.game_key!==game.key){toast("This event is locked.");return;}
  state.race={game,mode,day:eventDay,attemptId,done:false};
- $("raceTitle").textContent=game.name;$("raceType").textContent=mode==="official"?"OFFICIAL RACE · ATTEMPT RESERVED":"UNLIMITED PRACTICE";
+ $("raceTitle").textContent=game.name;$("raceType").textContent=workshop?"WORKSHOP TEST · NO LIVE SCORE":mode==="official"?"OFFICIAL RACE · ATTEMPT RESERVED":"UNLIMITED PRACTICE";
  $("raceMessage").hidden=true;$("raceMessage").textContent="";
- $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.key)+"/?elfMode="+encodeURIComponent(mode)+(attemptId?"&elfAttempt="+encodeURIComponent(attemptId):"");
+ $("raceFrame").style.pointerEvents="auto";$("raceFrame").src="./games/"+encodeURIComponent(game.path||game.key)+"/?elfMode="+encodeURIComponent(mode)+(attemptId?"&elfAttempt="+encodeURIComponent(attemptId):"");
  $("eventDialog").close();$("raceDialog").showModal();
 }
 async function startOfficial(){
@@ -237,8 +445,9 @@ window.addEventListener("pageshow",e=>{if(e.persisted&&ready&&state.session)void
 // Update the day and unlocks if the page remains open across UK midnight.
 setInterval(()=>{const previous=calendarRevision.split("|",1)[0];if(previous!==today()){calendarRevision="";void loadEvents().then(renderCalendar);}},30000);
 async function boot(){
- state.session=storageGet();
- const hash=new URLSearchParams(location.hash.replace(/^#/,""));
+ if(workshop){$("workshopRibbon").hidden=false;document.querySelector("footer").textContent="ELFLYMPICS 2026 · WORKSHOP W1 · 18 NOV 2026";}
+ state.session=workshop?null:storageGet();
+ const hash=workshop?new URLSearchParams():new URLSearchParams(location.hash.replace(/^#/,""));
  if(hash.has("access_token")&&hash.has("refresh_token")){
   acceptSession({access_token:hash.get("access_token"),refresh_token:hash.get("refresh_token"),expires_in:Number(hash.get("expires_in"))||3600});history.replaceState(null,"",location.pathname+location.search);toast("Email confirmed. Welcome to Elflympics.");
  }

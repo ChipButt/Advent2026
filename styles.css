@@ -178,3 +178,7 @@ body::before{
   .view>.content.wrap{box-shadow:none}
 }
 /* === END ELF V6 BACKGROUND TRIAL === */
+
+/* Workshop is an isolated deployment of the same Elflympics shell. */
+.workshop-ribbon{background:#f2dbab;color:#102d30;text-align:center;font-weight:850;letter-spacing:.09em;font-size:11px;padding:10px 12px;position:relative;z-index:500}
+.workshop-ribbon[hidden]{display:none}
