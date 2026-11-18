@@ -174,7 +174,7 @@ html,body{background:#07142e}body{background:radial-gradient(ellipse at 50% -25%
 <body>
 <div class="app">
   <header class="topbar">
-    <a class="iconBtn" href="../advent-2026/" aria-label="Back to Advent Playroom">‹</a>
+    <a class="iconBtn" href="../" aria-label="Back to Advent Playroom">‹</a>
     <div class="brand"><span class="eyebrow">ELFLYMPICS 2026 · WINTER GAMES</span><h1>ICE LINKS</h1></div>
     <div class="topright"><span class="version">V6 · ADVENT</span><button id="menuBtn" class="iconBtn" type="button" aria-label="Game menu">☰</button></div>
   </header>
@@ -260,7 +260,7 @@ html,body{background:#07142e}body{background:radial-gradient(ellipse at 50% -25%
   <div class="finalScorePanel"><small>FINAL SCORE</small><strong id="finalScore">0</strong><span id="finalBreakdown">Easy · 5 puzzles</span></div>
   <p id="adventStatus">Event positions are calculated by Elflympics after official results are recorded.</p>
   <div class="menuActions">
-   <a class="menuBtn" href="../advent-2026/" id="returnAdvent" style="text-align:center;text-decoration:none;display:grid;place-items:center">Advent Playroom</a>
+   <a class="menuBtn" href="../" id="returnAdvent" style="text-align:center;text-decoration:none;display:grid;place-items:center">Advent Playroom</a>
    <button id="playAgainBtn" class="menuBtn primary" type="button">New practice run</button>
   </div>
  </section>
@@ -579,7 +579,7 @@ function showFinal(){
  $('adventStatus').textContent=mode==='official'?'Score sent. Wait for the Elflympics event window to confirm saving, then use its Exit race control.':mode==='practice'?'Practice score only — rankings are unaffected. Use the event window to exit or play again.':'Official scores are ranked by Elflympics against other competitors.';
  $('playAgainBtn').hidden=mode==='official';
  $('returnAdvent').textContent=mode==='standalone'?'Advent Playroom':'Back to Elflympics';
- $('returnAdvent').setAttribute('href',mode==='standalone'?'../advent-2026/':'../../');
+ $('returnAdvent').setAttribute('href',mode==='standalone'?'../':'../../');
  open('finalOverlay');
  if(mode!=='standalone'&&window.parent!==window){
   window.parent.postMessage({type:'elflympics-finish',game:'ice-links',score:state.score,details:{difficulty:state.startLevel,puzzles:RUN_LENGTH,completed:state.completed}},location.origin);
