@@ -12,4 +12,6 @@ This directory is a **QA sandbox only**, imported at the pinned GameBox source c
 
 Note: there is no source game literally titled *Ice Blocks* in the pinned 21-game Advent catalogue; source includes **Festive Blocks**, **Ice Links**, and **Snowy Sweets** (which has ice-block artwork). Do not silently rename or fabricate it.
 
-[Workshop test launcher](./index.html)
+[Workshop test launcher](https://elflympics-workshop.pages.dev/workshop-games/)
+
+This is a dedicated Cloudflare Pages Workshop project connected to the `workshop` branch. It is deliberately separate from the live Advent deployment.
