@@ -1,0 +1,64 @@
+/* Card + Coin simplification */
+.sgSetupMain{padding:16px!important}
+.sgSetupMain>.sub{display:none!important}
+.sgSetupMain>h3{font-size:23px;margin:0 0 12px!important}
+#cardSetup .coinTotal,#coinSetup .coinTotal{display:none!important}
+#cardSetup .sgSettings,#coinSetup .sgSettings{margin-top:12px}
+.sgSettings{border:1px solid var(--line);background:#0f131b;border-radius:16px;overflow:hidden}
+.sgSettings>summary,.sgPlayMore>summary{list-style:none;min-height:50px;display:flex;align-items:center;justify-content:center;padding:0 14px;font-weight:900;color:var(--muted);cursor:pointer;user-select:none}
+.sgSettings>summary::-webkit-details-marker,.sgPlayMore>summary::-webkit-details-marker{display:none}
+.sgSettings[open]>summary,.sgPlayMore[open]>summary{color:var(--text);border-bottom:1px solid var(--line)}
+.sgSettingsBody{padding:14px;display:grid;gap:16px}
+.sgSettingsSection{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.sgSettingsSection:first-child{padding-top:0;border-top:0}
+.sgSettingsSection h3{font-size:14px;margin:0}
+.sgGoalGrid{display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:10px;align-items:end}
+.sgGoalGrid label{display:grid;gap:6px}.sgGoalGrid label>span{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.07em}
+.sgGoalGrid .numberInput{width:100%;min-height:46px}
+#coinPlayersSetup{display:grid;gap:8px}
+#coinPlayersSetup .coinPlayerRow{grid-template-columns:1fr!important;background:#0c1017;border:1px solid var(--line);border-radius:13px;padding:10px}
+#coinPlayersSetup .coinPlayerRow>div:last-child{display:grid;grid-template-columns:1fr 88px;align-items:center;gap:8px}
+#coinPlayersSetup .coinRosterName{margin:0}
+#coinPlayersSetup .label{display:none}
+#coinPlayersSetup .numberInput{width:88px}
+
+#cardPlay>.playHeader,#cardPlay>.playPanel,#cardPlay>.mobileAction,
+#coinPlay>.playHeader,#coinPlay>.playPanel,#coinPlay>.mobileAction{display:none!important}
+
+.sgPlayShell{width:min(100%,760px);margin:0 auto;display:grid;gap:12px;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+.sgEyebrow{display:block;font-size:10px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.sgLastEvent,.sgNextTurn,.sgGoalBanner{border:1px solid var(--line);border-radius:17px;padding:12px 15px;text-align:center;background:#10151e}
+.sgLastEvent strong,.sgNextTurn strong,.sgGoalBanner strong{display:block;font-size:22px;line-height:1.05}
+.sgLastEvent{background:linear-gradient(145deg,rgba(140,124,255,.23),rgba(140,124,255,.08));border-color:rgba(140,124,255,.34)}
+.sgNextTurn{background:linear-gradient(145deg,rgba(31,156,105,.24),rgba(31,156,105,.08));border-color:rgba(31,156,105,.35)}
+.sgGoalBanner strong{font-size:15px}
+.sgCardStage,.sgCoinStage{min-height:250px;display:grid;place-items:center;border-radius:22px;background:#090c12;border:1px solid var(--line);padding:18px}
+.sgCardStage #drawnSlot{margin:0!important;transform:none!important}
+.sgCardStage .drawnCard,.sgCardStage .emptyCard{width:min(46vw,220px);height:min(64vw,310px);max-height:310px}
+.sgPenalty{border-radius:19px;padding:16px;text-align:center;background:linear-gradient(145deg,#3d2d12,#21190d);border:1px solid #6a4c1c}
+.sgPenalty strong{display:block;font-size:clamp(20px,5vw,30px);line-height:1.12;color:#ffd987;overflow-wrap:anywhere}
+.sgPrimaryAction .btn{width:100%;min-height:60px;border-radius:17px;font-size:17px;font-weight:1000}
+.sgPlayMore{border:1px solid var(--line);border-radius:15px;background:#0d1118;overflow:hidden}
+.sgPlayMoreBody{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sgPlayMoreBody .btn{min-height:46px}
+.sgSourceRule{display:none!important}
+
+.sgCoinStage{min-height:215px}.sgCoinStage #coinGrid{width:100%;justify-content:center;margin:0}
+.sgCoinStage .coin{width:92px;height:92px;font-size:31px}
+.sgCoinProgress{display:grid;gap:8px}
+.sgProgressRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:#10151e}
+.sgProgressRow strong{font-size:14px}.sgProgressRow span{font-size:12px;color:var(--muted);text-align:right}
+.sgProgressRow.winner{background:linear-gradient(145deg,rgba(31,156,105,.25),rgba(31,156,105,.08));border-color:rgba(31,156,105,.5)}
+.sgCoinWinner{border-radius:20px;padding:18px;text-align:center;background:linear-gradient(145deg,#2b8f64,#146645);color:#fff;box-shadow:0 14px 36px rgba(0,0,0,.25)}
+.sgCoinWinner span,.sgCoinWinner small{display:block}.sgCoinWinner span{font-size:11px;font-weight:1000;letter-spacing:.12em}.sgCoinWinner strong{display:block;font-size:34px;line-height:1.05;margin:4px 0}.sgCoinWinner small{font-size:12px;opacity:.82}
+
+@media(max-width:560px){
+  .sgGoalGrid{grid-template-columns:1fr 86px}
+  .sgPlayShell{gap:9px}
+  .sgCardStage{min-height:225px;padding:12px}
+  .sgCoinStage{min-height:190px;padding:12px}
+  .sgLastEvent strong,.sgNextTurn strong{font-size:20px}
+  .sgPenalty{padding:14px 12px}
+  .sgPlayMoreBody{grid-template-columns:1fr}
+  .sgCoinStage .coin{width:76px;height:76px;font-size:26px}
+}

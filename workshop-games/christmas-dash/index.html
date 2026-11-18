@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#153b4b">
+<title>North Pole Dash · GameBox</title>
+<link rel="stylesheet" href="./style.css?v=6">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"}}
+</script>
+</head>
+<body>
+<main class="game" id="game">
+ <canvas id="world" aria-label="Three lane Christmas endless runner"></canvas>
+ <div class="vignette" aria-hidden="true"></div>
+ <header class="hud">
+  <a class="home" href="../" aria-label="Return to GameBox"><img src="../assets/gamebox/kenney/icons/Game%20Icons/White/2x/home.png" alt=""></a>
+  <div class="hudscore"><small>SCORE</small><strong id="score">000000</strong></div>
+  <div class="hudgifts"><img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt=""><strong id="gifts">0</strong></div>
+  <div class="huddistance"><small>DISTANCE</small><strong class="distanceNumber"><span id="distance">00000</span><i>m</i></strong><div class="distanceTrack" aria-hidden="true"><span id="distanceFill"></span></div></div>
+  <button class="home" id="pauseBtn" type="button" aria-label="Pause"><span class="pauseGlyph"></span></button>
+ </header>
+ <div class="speedtag" id="speedtag">NORTH POLE · LEVEL 1</div>
+ <div id="toast" class="toast" aria-live="polite"></div>
+ <div class="mobileActions" aria-label="Jump and duck controls">
+  <button type="button" class="jumpControl" data-action="jump" aria-label="Jump"><span class="controlLabel">JUMP</span><span class="controlPrompt">TAP</span></button>
+  <span class="swipeHint" aria-hidden="true">SWIPE<br>TO MOVE</span>
+  <button type="button" class="duckControl" data-action="slide" aria-label="Duck"><span class="controlLabel">DUCK</span><span class="controlPrompt">HOLD</span></button>
+ </div>
+ <section class="overlay shown" id="startOverlay" aria-label="Start North Pole Dash">
+  <div class="menu">
+   <div class="kicker"><span class="star">✦</span> GAMEBOX CHRISTMAS <span class="star">✦</span></div>
+   <div class="titleArt" aria-hidden="true"><div class="miniTree treeL"></div><img class="titleGift giftL" src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_green.png" alt=""><img class="titleGift giftR" src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt=""><div class="miniTree treeR"></div></div>
+   <h1>NORTH POLE<br><em>DASH</em></h1>
+   <p class="lead">Sprint through Santa's village. Dodge the festive chaos. Grab every present.</p>
+   <div class="howto"><span><b>← →</b> SWIPE</span><span><b>JUMP</b> TAP</span><span><b>DUCK</b> HOLD</span></div>
+   <button class="primary" id="startBtn" type="button" disabled>PREPARING THE NORTH POLE…</button>
+   <div class="smallprint">SWIPE LEFT/RIGHT TO STEER · TAP JUMP · HOLD DUCK</div>
+   <p class="bestline">PERSONAL BEST <strong id="startBest">0</strong></p>
+  </div>
+ </section>
+ <section class="overlay" id="overOverlay" aria-label="Game over">
+  <div class="menu compact">
+   <div class="kicker">RUN COMPLETE</div>
+   <h2>SNOWED<br><em>UNDER!</em></h2>
+   <div class="finalScore" id="finalScore">0</div>
+   <div class="resultStats"><span><small>METRES</small><b id="finalDistance">0</b></span><span><small>PRESENTS</small><b id="finalGifts">0</b></span><span><small>BEST</small><b id="finalBest">0</b></span></div>
+   <p id="newRecord" class="record"></p>
+   <button class="primary" id="retryBtn" type="button">RUN AGAIN</button>
+   <a class="secondary" href="../">BACK TO GAMEBOX</a>
+  </div>
+ </section>
+ <section class="overlay" id="pauseOverlay" aria-label="Pause menu">
+  <div class="menu compact">
+   <div class="kicker">NORTH POLE DASH</div><h2>PAUSED</h2>
+   <button class="primary" id="resumeBtn" type="button">RESUME RUN</button>
+   <button class="secondary" id="soundBtn" type="button">SOUND: ON</button>
+   <button class="secondary" id="restartBtn" type="button">START OVER</button>
+   <a class="secondary" href="../">BACK TO GAMEBOX</a>
+  </div>
+ </section>
+ <div id="fatal" class="fatal" role="alert" hidden>Unable to start 3D graphics on this browser. Please reload the page or try an updated browser.</div>
+</main>
+<script type="module" src="./game.js?v=8"></script>
+</body>
+</html>

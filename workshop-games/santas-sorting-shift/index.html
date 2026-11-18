@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102e37">
+<meta name="description" content="Santa's Sorting Shift: a hand-crafted Christmas arcade game. Drag presents and coal from a moving conveyor into the correct bins, beat 12 workshop shifts and set a new high score.">
+<title>Santa's Sorting Shift · GameBox</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<main class="arcade" aria-label="Santa's Sorting Shift arcade game">
+  <header class="topbar">
+    <a href="../" class="nav-home" aria-label="Back to GameBox"><span aria-hidden="true">‹</span></a>
+    <div class="masthead"><span class="mast-small">NORTH POLE WORKSHOP · ARCADE 07</span><h1>SANTA'S <b>SORTING SHIFT</b></h1></div>
+    <button class="icon-button" id="pauseButton" aria-label="Pause game" type="button">Ⅱ</button>
+  </header>
+  <section class="scorebar" aria-label="Game statistics">
+    <div class="stat score-stat"><span>SCORE</span><strong id="score">000000</strong></div>
+    <div class="stat"><span>SHIFT</span><strong id="shift">01 / 12</strong></div>
+    <div class="stat"><span>STREAK</span><strong id="streak">×0</strong></div>
+    <div class="stat life-stat"><span>CHANCES</span><strong id="lives">♥ ♥ ♥</strong></div>
+  </section>
+  <section class="playboard">
+    <canvas id="world" width="360" height="540" aria-label="Animated Santa's workshop conveyor game. Drag gifts to the GIFT crate, coal to COAL, and glowing Express presents to EXPRESS when unlocked."></canvas>
+    <div class="game-toast" id="toast" aria-live="polite"></div>
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+      <section class="menu-card">
+        <div class="menu-ribbon" id="menuKicker">A NORTH POLE ORIGINAL</div>
+        <div class="menu-gifts" aria-hidden="true">
+          <img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_green.png" alt="">
+          <img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt="">
+          <img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_blue.png" alt="">
+        </div>
+        <h2 id="overlayTitle">THE <em>CHRISTMAS</em><br>RUSH IS ON!</h2>
+        <p id="menuText">Presents and coal are pouring down Santa's conveyor. Grab each parcel and drag it into the right bin before it gets away.</p>
+        <div class="menu-stats" id="menuStats"><div><small>12</small><span>SHIFTS</span></div><div><small>3</small><span>CHANCES</span></div><div><small id="bestMenu">0</small><span>BEST SCORE</span></div></div>
+        <button class="action-button primary" id="primaryButton" type="button">START SHIFT 01 <span>➜</span></button>
+        <button class="action-button secondary" id="secondaryButton" type="button">HOW TO PLAY</button>
+        <button class="menu-sound" id="soundButton" type="button" aria-pressed="true">♪ SOUND ON</button>
+        <a class="menu-exit" href="../">← BACK TO GAMEBOX</a>
+      </section>
+    </div>
+  </section>
+  <footer class="statusfoot" aria-label="Sorting progress">
+    <div class="progress-heading"><span id="mission">SHIFT 01 · PRESENTS &amp; COAL</span><strong id="progressLabel">0 / 11</strong></div>
+    <div class="progress-track" role="progressbar" aria-label="Sorted parcels" aria-valuemin="0" aria-valuemax="11" aria-valuenow="0" id="progressTrack"><span id="progressFill"></span></div>
+    <div class="timer-row"><span>TIME LEFT</span><strong id="timer">0:47</strong><span class="instruction">TOUCH · DRAG · DROP</span></div>
+  </footer>
+  <div class="sr-only" id="announce" aria-live="polite"></div>
+</main>
+<script src="engine.js?v=3"></script>
+<script src="game.js?v=6"></script>
+</body>
+</html>

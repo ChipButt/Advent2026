@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1b19" />
+    <meta name="description" content="Sort North Pole letters to the right mail sacks in this festive endless arcade game." />
+    <title>Santa’s Letter Sort · GameBox</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="back-link" href="../" aria-label="Back to GameBox">
+          <span aria-hidden="true">‹</span>
+          <span>GAMEBOX</span>
+        </a>
+        <div class="brand">
+          <span class="brand-kicker">NORTH POLE POST</span>
+          <h1>SANTA’S LETTER SORT</h1>
+        </div>
+        <div class="best-badge" aria-label="Best score">
+          <span>BEST</span>
+          <strong id="bestScore">00000</strong>
+        </div>
+      </header>
+
+      <div class="world-wrap" id="stageWrap">
+        <canvas id="world" aria-label="Pixel-art North Pole mailroom"></canvas>
+        <div class="world-glint glint-one" aria-hidden="true"></div>
+        <div class="world-glint glint-two" aria-hidden="true"></div>
+      </div>
+
+      <section id="homeScreen" class="home-screen">
+        <div class="hero-copy">
+          <p class="eyebrow">THE SLEIGH LEAVES AT MIDNIGHT</p>
+          <h2>Sort the<br /><span>magic.</span></h2>
+          <p class="hero-body">Read each letter. Send it to the right sack before the next one arrives.</p>
+        </div>
+        <button class="primary-button" id="startButton" type="button">
+          <span>START SORTING</span>
+          <span class="button-arrow" aria-hidden="true">→</span>
+        </button>
+        <div class="home-footer">
+          <span>ENDLESS SHIFTS</span>
+          <span>LOCAL HIGH SCORE</span>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="game-screen" hidden>
+        <div class="game-heading">
+          <div>
+            <p class="eyebrow">NORTH POLE POST</p>
+            <h2 id="shiftLabel">SHIFT 01</h2>
+          </div>
+          <button class="pause-button" id="pauseButton" type="button" aria-label="Pause game">
+            <span aria-hidden="true">Ⅱ</span>
+          </button>
+        </div>
+
+        <div class="stats-row">
+          <div class="score-block">
+            <span class="micro-label">SORT SCORE</span>
+            <strong id="scoreLabel">00000</strong>
+          </div>
+          <div class="stamps-block">
+            <span class="micro-label">STAMPS LEFT</span>
+            <div id="stampRow" class="stamp-row" aria-label="Three stamps remaining"></div>
+          </div>
+          <div class="combo-block">
+            <span class="micro-label">COMBO</span>
+            <strong id="comboLabel">× 00</strong>
+          </div>
+        </div>
+
+        <div class="progress-area">
+          <div class="progress-caption">
+            <span class="micro-label">ROUTES CLEARED</span>
+            <span class="micro-label progress-count" id="progressLabel">00 / 06</span>
+          </div>
+          <div id="progressBar" class="progress-bar" role="progressbar" aria-label="Shift progress" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"></div>
+        </div>
+
+        <div class="timer-area">
+          <div class="timer-track">
+            <div id="timerFill" class="timer-fill"></div>
+          </div>
+          <span id="timerLabel" class="micro-label">NEXT LETTER</span>
+        </div>
+
+        <article class="letter-card" aria-live="polite">
+          <div class="letter-head">
+            <div>
+              <span class="letter-kicker">DELIVERY REQUEST</span>
+              <span class="letter-serial" id="letterSerial">NORTH POLE · 001</span>
+            </div>
+            <div id="postmark" class="postmark" aria-hidden="true">TT</div>
+          </div>
+          <div class="letter-address">
+            <span class="address-prompt">PLEASE SEND TO</span>
+            <strong id="destinationLabel">TOY TOWN</strong>
+            <span class="address-rule"></span>
+            <span class="recipient-label" id="recipientLabel">ATTN: MILO</span>
+            <span class="address-line" id="addressLabel">12 MISTLETOE LANE · NORTH POLE</span>
+          </div>
+          <span class="letter-corner corner-top" aria-hidden="true"></span>
+          <span class="letter-corner corner-bottom" aria-hidden="true"></span>
+        </article>
+
+        <div class="sack-heading">
+          <h3>PICK A MAIL SACK</h3>
+          <span class="micro-label" id="routeCount">2 ACTIVE ROUTES</span>
+        </div>
+        <div id="sackGrid" class="sack-grid" aria-label="Choose a delivery route"></div>
+
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+      </section>
+
+      <section id="overScreen" class="over-screen" hidden>
+        <p class="eyebrow">SHIFT ENDED</p>
+        <h2>Good<br /><span>work.</span></h2>
+        <p class="result-copy" id="resultCopy">The mailroom is ready for another run.</p>
+        <div class="result-stats">
+          <div><span class="micro-label">FINAL SCORE</span><strong id="finalScore">00000</strong></div>
+          <div><span class="micro-label">DEEPEST SHIFT</span><strong id="deepestShift">01</strong></div>
+        </div>
+        <button class="primary-button" id="againButton" type="button">
+          <span>SORT AGAIN</span>
+          <span class="button-arrow" aria-hidden="true">→</span>
+        </button>
+        <a class="home-return" href="../">BACK TO GAMEBOX</a>
+      </section>
+
+      <div id="pauseOverlay" class="pause-overlay" hidden>
+        <section class="pause-card" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+          <p class="eyebrow">TAKE A BREATHER</p>
+          <h2 id="pauseTitle">MAILROOM<br /><span>PAUSED</span></h2>
+          <p>The letters will wait right here.</p>
+          <button id="resumeButton" class="primary-button" type="button">
+            <span>BACK TO SORTING</span>
+            <span class="button-arrow" aria-hidden="true">→</span>
+          </button>
+        </section>
+      </div>
+    </main>
+
+    <script src="../shared/gamebox-pixel-art.js?v=3"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

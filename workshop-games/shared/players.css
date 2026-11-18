@@ -1,0 +1,11 @@
+/* Shared GameBox player roster */
+.rosterHome{margin:12px 0 22px;padding:14px;border:1px solid var(--line);background:linear-gradient(145deg,#141925,#0e1219);border-radius:18px}
+.rosterHomeTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.rosterHomeTop h2{font-size:18px;margin:0}.rosterHomeTop span{font-size:11px;color:var(--muted)}
+.rosterAdd{display:grid;grid-template-columns:1fr auto;gap:8px}.rosterAdd .textInput{min-width:0}.rosterAdd .btn{min-height:46px;padding-inline:17px}
+.rosterList{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}.rosterEmpty{font-size:12px;color:var(--muted);padding:5px 1px}
+.rosterPerson{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:5px 7px 5px 12px;border:1px solid var(--line);background:#0d1118;border-radius:999px;font-weight:850;font-size:13px}.rosterPerson button{width:28px;height:28px;border:0;border-radius:50%;background:#202634;color:var(--muted);font-weight:900;font-size:16px;line-height:1}.rosterPerson button:active{transform:scale(.94)}
+.gameRosterPicker{margin:14px 0}.gameRosterLabel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.gameRosterLabel strong{font-size:13px}.gameRosterLabel span{font-size:11px;color:var(--muted)}
+.gameRosterChoices{display:flex;flex-wrap:wrap;gap:8px}.gameRosterChoice{min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:#0f131b;color:var(--text);font-weight:900}.gameRosterChoice.selected{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 5px 18px rgba(140,124,255,.22)}.gameRosterChoice:disabled{opacity:.42}.gameRosterNotice{font-size:11px;color:var(--muted);margin-top:7px}.gameRosterNotice.error{color:#ff9aa8}.gameRosterNotice a{color:inherit;font-weight:900}
+.rosterLegacyField{display:none!important}.coinLegacyName{display:none!important}.coinRosterName{display:block;font-size:13px;font-weight:950;margin-bottom:5px;color:var(--text)}
+#headsPlayerName.rosterControlled{pointer-events:none}
+@media(max-width:560px){.rosterHome{padding:12px}.rosterAdd{grid-template-columns:1fr auto}.rosterHomeTop span{display:none}.gameRosterChoice{flex:1 1 calc(50% - 4px);text-align:center}.rosterPerson{max-width:100%}}

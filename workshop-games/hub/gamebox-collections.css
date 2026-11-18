@@ -1,0 +1,148 @@
+/* Advent 2026 / Standalone GameBox — shared collection identity */
+.collectionWelcome{border-radius:26px;padding:24px;margin-bottom:20px;color:#fff6de;background:radial-gradient(circle at 90% 5%,#347566 0,transparent 38%),linear-gradient(145deg,#123846,#1a5141);border:3px solid #ca9b62;box-shadow:0 12px 28px #123e4725}
+.collectionEyebrow{margin:0 0 8px;font:900 10px Inter,system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#b36c4f}
+.collectionWelcome .collectionEyebrow,.portalHero .collectionEyebrow{color:#f1c28c}
+.collectionWelcome h2{margin:0 0 10px;font-size:clamp(28px,6vw,44px);line-height:1.05;color:#fff7d8}
+.collectionWelcome>p:not(.collectionEyebrow){max-width:450px;margin:0 0 18px;font-size:13px;line-height:1.55;color:#dcefe4}
+.collectionChooser{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.collectionChoice{display:flex;align-items:center;gap:11px;padding:14px 12px;min-height:72px;border:2px solid #f4d2a499;border-radius:16px;color:#fff9ee;text-decoration:none;box-shadow:0 5px 0 #0c262c9c}
+.collectionChoice:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.choiceAdvent{background:linear-gradient(125deg,#bf494e,#903a45)}.choiceStandalone{background:linear-gradient(125deg,#2d568e,#183962)}
+.choiceArtwork{font-size:28px;min-width:35px;text-align:center;color:#f6d892}
+.collectionChoice>span:nth-child(2){min-width:0;flex:1}
+.collectionChoice b{display:block;font-size:17px;line-height:1.1}.collectionChoice small{display:block;font-size:10px;line-height:1.3;margin-top:4px;color:#fff0d2}
+.collectionChoice>span:last-child{font-size:21px;font-weight:900;color:#ffdb93}
+.collectionSections{gap:24px}
+.collectionPane{border:2px solid #b7d4c0;border-radius:26px;padding:19px 14px 16px;background:linear-gradient(#eef9ef,#fdf7e8 21%);box-shadow:0 13px 31px #1c4d4421;scroll-margin-top:13px}
+.collectionStandalone{border-color:#b6cde0;background:linear-gradient(#ecf4fc,#fff 23%)}
+.collectionHeader{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:2px 5px 17px}
+.collectionHeader h2{margin:0 0 7px;color:#215849;font-size:clamp(26px,5vw,35px);line-height:1}
+.collectionStandalone .collectionHeader h2{color:#244d80}
+.collectionHeader p:not(.collectionEyebrow){max-width:520px;margin:0;color:#536c67;font-size:12px;line-height:1.5;font-weight:650}
+.collectionVisit{flex:none;display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:11px 13px;border:2px solid #deb07c;border-radius:12px;background:#a34044;color:#fff8e7;text-align:center;text-decoration:none;font-size:12px;line-height:1.3;font-weight:900;box-shadow:0 3px 0 #755045}
+.collectionStandalone .collectionVisit{background:#23517d;border-color:#b1c8dc;box-shadow:0 3px 0 #6d879a}
+.collectionSections .homeRoster{margin:0 3px 18px;background:#fff;box-shadow:none}
+.collectionPane .collectionGrid{margin:0;border-width:6px;border-radius:22px;gap:17px;padding:25px 15px 21px}
+.collectionAdvent .collectionGrid{background:repeating-linear-gradient(135deg,#2d6658 0 15px,#295e50 15px 30px);border-color:#b88a58}
+.collectionStandalone .collectionGrid{background:linear-gradient(150deg,#264a73,#142e53);border-color:#7795af}
+.collectionAdvent .collectionGrid{counter-reset:adventMini}
+.collectionAdvent .collectionGrid .toyGame{position:relative;padding-top:18px;counter-increment:adventMini}
+.collectionAdvent .collectionGrid .toyGame::before{content:"ADVENT 2026 · MINI-GAME " counter(adventMini,decimal-leading-zero);position:absolute;z-index:4;top:0;left:5px;right:5px;padding:4px 2px;border:2px solid #b78a51;border-radius:100px;background:#fff0c7;color:#6c4a31;box-shadow:0 2px 3px #092a2340;text-align:center;font:900 9px/1.15 Inter,system-ui,sans-serif;letter-spacing:.04em;pointer-events:none}
+.collectionPane .toyBox .toyGame:nth-child(5){width:100%}
+.collectionPane .toyGameMaze,.collectionPane .toyGameRelic{width:100%}
+.collectionPane .toyGame .gameTile{min-width:0}
+.collectionPane .gameTile strong{overflow-wrap:anywhere}
+.collectionPane .toyGamePizzeria .gameTile{background:linear-gradient(145deg,#e6f1d5,#faecca)}
+.collectionPane .toyGamePizzeria .gameTile strong{color:#526747;text-shadow:none}
+.collectionPane .toyGamePizzeria .gameTile small{color:#785439;text-shadow:none}
+.collectionPane .toyGameMyPlace .gameTile{background:linear-gradient(130deg,#493b59,#272c48)}
+.collectionPane .toyGameMyPlace .gameTile strong{color:#fff5da}
+.collectionChoice:focus-visible,.collectionVisit:focus-visible,.portalBack:focus-visible,.portalStart:focus-visible{outline:3px solid #f7d66d;outline-offset:4px}
+.adventPortal{background:linear-gradient(180deg,#e1f1e7,#faf3e4 60%,#dbece3)}
+.adventPortal .app{width:min(100%,1020px)}
+.portalTopBar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+.portalBack{border-radius:999px;border:2px solid #aac9b6;background:#fffdf4;padding:11px 14px;text-decoration:none;color:#225b4a;font-size:13px;font-weight:900}
+.portalBrand{font-size:13px;color:#285e4d;font-weight:1000;letter-spacing:.08em}.portalBrand b{color:#b34449}
+.portalHero{text-align:center;overflow:hidden;border-radius:28px;border:4px solid #bd8b54;background:radial-gradient(circle at 50% 4%,#42796f 0,transparent 43%),linear-gradient(145deg,#12394d,#195344 74%);color:#f9efd4;padding:32px 20px;margin-bottom:21px;box-shadow:0 10px 0 #b4d2ba,0 20px 30px #24393126}
+.portalHeroStars{font-size:24px;letter-spacing:20px;color:#ffe29c;margin-bottom:12px}
+.portalHero h1{font-size:clamp(42px,8vw,69px);line-height:.95;margin:0 0 14px;color:#fff5d3;text-shadow:0 4px 0 #0b2925}
+.portalHero h1 em{font-style:normal;color:#f5c084}
+.portalHero>p:not(.collectionEyebrow){max-width:550px;margin:0 auto 19px;font-size:14px;line-height:1.6;color:#e0ede3}
+.portalStart{display:inline-block;padding:12px 19px;border:2px solid #fff2c2;border-radius:999px;background:#f1ce85;color:#275140;text-decoration:none;font-size:13px;font-weight:900;box-shadow:0 4px 0 #ae7547}
+.portalFooter{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:24px 5px;color:#668178;font-size:11px;font-weight:800}
+.portalFooter a{color:#2b6855;text-decoration:none}
+@media(max-width:620px){.collectionWelcome{padding:19px 15px}.collectionChooser{grid-template-columns:1fr}.collectionPane{padding:14px 8px 10px;border-radius:19px}.collectionHeader{display:block;padding:1px 8px 16px}.collectionVisit{margin-top:11px}.collectionPane .collectionGrid{padding:22px 10px 18px;gap:13px}.collectionAdvent .collectionGrid .toyGame::before{font-size:8px}.portalHero{padding:24px 13px}.portalHeroStars{font-size:18px;letter-spacing:12px}.portalBrand{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.collectionChoice{transition:none}}
+
+/* Restore readable typography on every light-backed catalogue tile. */
+.collectionPane .toyBox :is(.toyGameSantaSort,.toyGameNorthPole,.toyGameGiftShooter,.toyGameAncient,.toyGameCore,.toyGameSweet,.toyGameXmasLights,.toyGamePipe,.toyGameBingo,.toyGameChristmas,.toyGameMarble) .gameTile strong{
+  color:#163b51;text-shadow:none
+}
+.collectionPane .toyBox :is(.toyGameSantaSort,.toyGameNorthPole,.toyGameGiftShooter,.toyGameAncient,.toyGameCore,.toyGameSweet,.toyGameXmasLights,.toyGamePipe,.toyGameBingo,.toyGameChristmas,.toyGameMarble) .gameTile small{
+  color:#446776;text-shadow:none
+}
+/* The previous logo referenced a file that is not in the repository.
+   Show the real brand name in text instead of a broken image icon. */
+.brandSource{display:inline-flex;align-items:center;flex-shrink:0;color:#234a74;font:900 12px/1.1 Inter,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;border:2px solid #bad8ce;border-radius:9px;padding:9px;background:#fffdf4}
+
+
+/* The twenty Advent mini-game selectors share a single Christmas bauble
+   design; this does not affect the unrelated standalone GameBox shelf. */
+.collectionAdvent .collectionGrid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ align-items:start;justify-items:center;column-gap:15px;row-gap:29px;
+ padding:26px 16px 23px;background:radial-gradient(ellipse at 50% 0%,#366a5f,#1a4247 70%,#14383e);
+ border-color:#c99c61;
+}
+.collectionAdvent .collectionGrid .adventBaubleItem{
+ display:block;grid-column:auto!important;width:100%;max-width:220px;min-width:0;
+ transform:none!important;padding:22px 0 0;counter-increment:adventMini;
+}
+.collectionAdvent .collectionGrid .adventBaubleItem::before{display:none}
+.collectionAdvent .collectionGrid .adventBaubleItem .gameGrid{display:flex;justify-content:center;width:100%}
+.collectionAdvent .collectionGrid .adventBauble{
+ --bauble-main:#b83e50;--bauble-light:#ec6774;--bauble-dark:#692b43;
+ box-sizing:border-box;display:block;position:relative;width:min(100%,210px);max-width:210px;
+ height:auto;min-height:0;aspect-ratio:1;border:0;border-radius:50%;
+ padding:0;margin:0;background:transparent;overflow:visible;
+ text-align:center;text-decoration:none;color:#fff8e5;isolation:isolate;
+ box-shadow:none;transform:none;transition:transform .18s ease,filter .18s ease;
+}
+.collectionAdvent .collectionGrid .adventBaubleItem:nth-child(4n+2) .adventBauble{--bauble-main:#308976;--bauble-light:#70c39f;--bauble-dark:#154e58}
+.collectionAdvent .collectionGrid .adventBaubleItem:nth-child(4n+3) .adventBauble{--bauble-main:#377ba8;--bauble-light:#77bdd4;--bauble-dark:#253f72}
+.collectionAdvent .collectionGrid .adventBaubleItem:nth-child(4n) .adventBauble{--bauble-main:#a35c9b;--bauble-light:#dba7ce;--bauble-dark:#593765}
+.collectionAdvent .collectionGrid .adventBauble::before,.collectionAdvent .collectionGrid .adventBauble::after{display:none}
+.collectionAdvent .collectionGrid .adventBauble .baubleCap{
+ position:absolute;left:50%;top:-20px;width:34px;height:22px;transform:translateX(-50%);
+ border:3px solid #936239;border-bottom:0;border-radius:7px 7px 2px 2px;
+ background:repeating-linear-gradient(90deg,#f5d79d 0 5px,#ad7a47 5px 8px,#e5bc7a 8px 12px);
+ box-shadow:inset 0 1px #fff4bf;z-index:3;pointer-events:none;
+}
+.collectionAdvent .collectionGrid .adventBauble .baubleCap::before{
+ content:"";position:absolute;left:5px;top:-16px;width:18px;height:16px;
+ border:4px solid #e8c78e;border-bottom:0;border-radius:12px 12px 0 0;
+}
+.collectionAdvent .collectionGrid .adventBauble .baubleGlobe{
+ box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;align-items:center;
+ position:relative;isolation:isolate;width:100%;height:100%;aspect-ratio:1;
+ border:5px solid #e9c182;border-radius:50%;overflow:hidden;padding:17px 8px 12px;
+ background:radial-gradient(ellipse at 30% 20%,#ffffff66,transparent 34%),radial-gradient(ellipse at 43% 26%,var(--bauble-light),var(--bauble-main) 46%,var(--bauble-dark) 94%);
+ box-shadow:inset 3px 5px 7px #fff4c75a,inset -12px -16px 18px #1a20345c,0 7px 1px #0b262d99,0 16px 19px #08293080;
+}
+.collectionAdvent .collectionGrid .adventBauble .baubleShine{
+ position:absolute;left:13%;top:11%;width:24%;height:13%;transform:rotate(-31deg);
+ border-top:4px solid #fff8dfa8;border-radius:80%;filter:blur(.4px);
+}
+.collectionAdvent .collectionGrid .adventBauble .baubleIcon{
+ width:37%;height:37%;flex:none;position:relative;z-index:1;margin:-1% 0 5%;
+ color:#fff4d9;filter:drop-shadow(0 3px 2px #11303e60);stroke-width:3.5;
+}
+.collectionAdvent .collectionGrid .adventBauble strong{
+ display:block;position:relative;z-index:2;max-width:100%;margin:0;color:#fff9e9;
+ font-family:Fredoka,Inter,system-ui,sans-serif;font-size:clamp(11px,1.55vw,17px);
+ font-weight:900;line-height:1.05;letter-spacing:0;text-wrap:balance;overflow-wrap:normal;
+ text-shadow:0 2px 3px #1c253aa8;
+}
+.collectionAdvent .collectionGrid .adventBauble small{
+ display:block;position:relative;z-index:2;margin:5px 0 0;color:#ffe1a8;
+ font-family:Inter,system-ui,sans-serif;font-size:clamp(7px,.85vw,10px);
+ font-weight:950;letter-spacing:.06em;line-height:1.1;text-shadow:0 1px 2px #142e449b;
+}
+.collectionAdvent .collectionGrid .adventBauble:hover,.collectionAdvent .collectionGrid .adventBauble:focus-visible{transform:translateY(-5px) rotate(-2deg);filter:brightness(1.07)}
+.collectionAdvent .collectionGrid .adventBauble:focus-visible{outline:3px solid #fff2c0;outline-offset:7px}
+.collectionAdvent .collectionGrid .adventBauble:active{transform:translateY(1px) scale(.98);box-shadow:none}
+@media(max-width:760px){
+ .collectionAdvent .collectionGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:25px 13px}
+ .collectionAdvent .collectionGrid .adventBauble strong{font-size:clamp(11px,2.25vw,16px)}
+ .collectionAdvent .collectionGrid .adventBauble small{font-size:clamp(7px,1.35vw,9px)}
+}
+@media(max-width:560px){
+ .collectionAdvent .collectionGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:23px 11px;padding:23px 8px 16px}
+ .collectionAdvent .collectionGrid .adventBaubleItem{max-width:190px;padding-top:19px}
+ .collectionAdvent .collectionGrid .adventBauble .baubleCap{top:-18px;width:30px;height:20px}
+ .collectionAdvent .collectionGrid .adventBauble .baubleCap::before{left:4px;width:16px}
+ .collectionAdvent .collectionGrid .adventBauble .baubleGlobe{border-width:4px;padding:14px 7px 9px}
+ .collectionAdvent .collectionGrid .adventBauble strong{font-size:clamp(10px,3vw,14px)}
+ .collectionAdvent .collectionGrid .adventBauble small{font-size:7px;letter-spacing:.04em;margin-top:4px}
+}
+@media(prefers-reduced-motion:reduce){.collectionAdvent .collectionGrid .adventBauble{transition:none}}

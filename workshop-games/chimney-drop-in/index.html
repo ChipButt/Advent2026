@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101923">
+<meta name="description" content="Chimney Drop-In: steer Santa down an endless procedurally generated chimney network, dodge bricks and burning embers, and collect cookies and milk.">
+<title>Chimney Drop-In · GameBox</title>
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+<main class="arcade" aria-label="Chimney Drop-In arcade game">
+ <header class="headbar">
+  <a class="square-link" href="../" aria-label="Back to GameBox"><img src="../assets/gamebox/kenney/icons/Game%20Icons/White/2x/home.png" alt=""></a>
+  <div class="brand"><span>GAMEBOX · NORTH POLE ARCADE</span><h1>CHIMNEY <b>DROP-IN</b></h1></div>
+  <button id="pauseBtn" class="square-link" aria-label="Pause game" type="button">Ⅱ</button>
+ </header>
+ <div class="stats">
+  <div class="stat score"><span>SCORE</span><strong id="score">000000</strong></div>
+  <div class="stat"><span>DEPTH</span><strong id="depth">0000m</strong></div>
+  <div class="stat"><span>COMBO</span><strong id="combo">×0</strong></div>
+  <div class="stat life"><span>HEARTS</span><strong id="hearts">♥ ♥ ♥</strong></div>
+ </div>
+ <section class="gameframe">
+  <canvas id="world" width="360" height="560" aria-label="Santa falling through procedurally generated chimneys. Steer left or right to avoid embers, bricks and hostile decorations. Pick up cookies for a shield and milk for a boost."></canvas>
+  <div class="risk-legend" aria-label="Green plus means collect; red exclamation means avoid"><span class="risk-good"><b aria-hidden="true">+</b> COLLECT</span><span class="risk-bad"><b aria-hidden="true">!</b> AVOID</span></div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+   <div class="menu">
+    <span class="menu-eyebrow" id="menuEyebrow">THE MOST DANGEROUS DELIVERY ROUTE</span>
+    <div class="menu-santa" aria-hidden="true"><div class="menu-drop-lines"><i></i><i></i><i></i></div><div class="menu-presents"><img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_red.png" alt=""><img src="../assets/gamebox/kenney/2d/Platformer%20Assets%20Holiday/present_small_green.png" alt=""></div><canvas id="heroSanta" class="menu-santa-sprite" width="60" height="68" aria-hidden="true"></canvas></div>
+    <h2 id="overlayTitle">DOWN THE<br><em>CHIMNEY!</em></h2>
+    <p id="menuText">One Santa. Endless chimneys. Dodge red-hot embers, crumbling bricks and nasty Christmas decorations on your way down.</p>
+    <div id="helpGallery" class="help-gallery" hidden aria-label="Item guide"></div>
+    <div id="helpPager" class="help-pager" hidden aria-live="polite"></div>
+    <div id="menuStats" class="menu-stats"><div><span>PERSONAL BEST</span><strong id="bestScore">0m</strong></div><div><span>COLLECT</span><strong>COOKIE · MILK</strong></div></div>
+    <button type="button" class="mainButton" id="primaryButton">START FALLING <span>➜</span></button>
+    <button type="button" class="secondaryButton" id="secondaryButton">HOW TO PLAY</button>
+    <button type="button" class="soundButton" id="soundButton" aria-pressed="true">♪ SOUND ON</button>
+    <a class="exitLink" href="../">← BACK TO GAMEBOX</a>
+   </div>
+  </div>
+ </section>
+ <div class="boost-panel" aria-label="Power-up timers">
+  <div class="power-item"><span class="power-icon shield-icon">✦</span><span class="power-caption">COOKIE SHIELD</span><div class="power-track"><i id="shieldFill"></i></div><strong id="shieldTime">—</strong></div>
+  <div class="power-item"><span class="power-icon boost-icon">↑</span><span class="power-caption">MILK BOOST</span><div class="power-track"><i id="boostFill"></i></div><strong id="boostTime">—</strong></div>
+ </div>
+ <nav class="controls" aria-label="Steering controls">
+  <button id="moveLeft" type="button" class="steer" aria-label="Steer Santa left"><span>◀</span><small>LEFT</small></button>
+  <div class="controls-mid"><span class="tip">HOLD TO STEER</span><b>OR DRAG SANTA</b></div>
+  <button id="moveRight" type="button" class="steer" aria-label="Steer Santa right"><span>▶</span><small>RIGHT</small></button>
+ </nav>
+ <p id="announce" class="sr-only" aria-live="polite"></p>
+</main>
+<script src="engine.js?v=1"></script>
+<script src="game.js?v=3"></script>
+</body>
+</html>

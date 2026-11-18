@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#102f3b">
+<meta name="description" content="Snow Shoveller: clear the North Pole, melt snow in the furnace, upgrade your shovel and rescue frozen helpers.">
+<title>Snow Shoveller · GameBox</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Nunito:wght@600;700;800;900&display=swap');
+:root{--dark:#0e2b37;--deep:#091c2b;--cream:#fff6dc;--gold:#ffd57d;--red:#b83d49;--pine:#194e49;--ice:#d8f8fb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;overflow:hidden;background:#081c26;color:var(--cream);font-family:Nunito,system-ui,sans-serif}
+button,a{font:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible{outline:3px solid #fff0b4;outline-offset:2px}
+.app{height:100svh;min-height:330px;max-width:960px;margin:auto;display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#345761,#0b2733 90%);box-shadow:0 0 45px #0009;padding:calc(env(safe-area-inset-top) + 4px) 8px calc(env(safe-area-inset-bottom) + 6px);gap:6px}
+.top{height:45px;flex:0 0 45px;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:6px;align-items:center}
+.back,.round{height:42px;width:42px;display:grid;place-items:center;border:2px solid #a4c4ba;border-bottom:5px solid #19414b;border-radius:11px;background:linear-gradient(#49716b,#244e54);color:#fff5dc;text-decoration:none;font:900 26px/1 'Barlow Condensed',sans-serif;box-shadow:inset 0 2px #ffffff43,0 2px 3px #0005}
+.back:active,.round:active,.action:active,.upgrade:active{transform:translateY(2px);border-bottom-width:2px}
+.head{text-align:center;min-width:0}.head span{display:block;color:#cadebd;font:900 9px/1.2 'Barlow Condensed',sans-serif;letter-spacing:1.5px}
+.head h1{font:900 clamp(22px,6vw,32px)/.95 'Barlow Condensed',sans-serif;margin:2px 0 0;letter-spacing:.6px;text-shadow:0 3px #091f2b;white-space:nowrap}.head h1 b{color:var(--gold)}
+.stats{display:grid;grid-template-columns:.95fr 1.2fr 1fr 1fr;gap:5px;flex:0 0 54px;min-width:0}
+.stat{min-width:0;text-align:center;border:2px solid #7da5a0;border-bottom:4px solid #183b47;border-radius:10px;background:linear-gradient(165deg,#366a67,#1c434d);box-shadow:inset 0 1px #ffffff40}
+.stat span{display:block;font:900 10px/1 'Barlow Condensed',sans-serif;letter-spacing:1.2px;color:#cadfc9;margin-top:7px}.stat strong{display:block;font:900 clamp(17px,4.6vw,25px)/1.3 'Barlow Condensed',sans-serif;color:#fff7d8;white-space:nowrap;font-variant-numeric:tabular-nums}
+.stat .coin{color:#ffd67b}
+.stage{flex:1;min-height:0;position:relative;overflow:hidden;border:3px solid #b6d0c3;border-bottom:6px solid #43646a;border-radius:14px;background:#6896a0;box-shadow:0 4px 12px #0009,inset 0 0 0 2px #ffffff55}
+#world{display:block;width:100%;height:100%;touch-action:none;outline:none}
+#world:focus-visible{outline:3px solid var(--gold);outline-offset:-5px}
+.topScrim{position:absolute;left:0;right:0;top:0;height:52px;pointer-events:none;background:linear-gradient(#0c273c99,transparent)}
+.levelBar{position:absolute;top:9px;left:9px;right:9px;display:flex;gap:9px;align-items:center;pointer-events:none;font:900 11px/1 'Barlow Condensed',sans-serif;letter-spacing:1px;color:#f7f9e8;text-shadow:0 1px #153a43}
+.track{height:10px;flex:1;overflow:hidden;border:2px solid #b5d5d8;border-radius:8px;background:#193b47b9;box-shadow:0 2px #071b28a0}.track i{display:block;width:0;height:100%;background:linear-gradient(90deg,#91d7dd,#fff6d9);border-radius:5px;transition:width .25s}
+.furnaceTag{position:absolute;top:46px;left:50%;transform:translateX(-50%);pointer-events:none;white-space:nowrap;font:900 10px 'Barlow Condensed',sans-serif;letter-spacing:1px;text-shadow:0 2px 2px #143d43;color:#fff6d4;opacity:.95}
+.toast{position:absolute;top:20%;left:50%;transform:translate(-50%,-10px);padding:8px 16px;border:2px solid #fff0c6;border-bottom:4px solid #9b7541;border-radius:12px;background:#183e4be8;color:#fff9df;white-space:nowrap;max-width:95%;overflow:hidden;text-overflow:ellipsis;text-align:center;font:900 clamp(13px,3.4vw,19px) 'Barlow Condensed',sans-serif;letter-spacing:.7px;opacity:0;transition:opacity .18s,transform .18s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+.bagBox{position:absolute;left:9px;bottom:10px;width:min(52%,270px);height:38px;padding:5px 9px 4px;border:2px solid #c1d7cb;border-bottom:4px solid #2a535b;border-radius:10px;background:#133947e8;box-shadow:0 2px 6px #061e2880;pointer-events:none}
+.bagLine{display:flex;justify-content:space-between;gap:4px;color:#e5f6e4;font:900 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.8px}.bagLine b{color:#fff6d3;font-variant-numeric:tabular-nums}
+.bagTrack{margin-top:5px;height:7px;background:#071f2e;border-radius:9px;border:1px solid #5a8590;overflow:hidden}.bagTrack i{display:block;width:0;height:100%;border-radius:9px;background:linear-gradient(90deg,#e5f8fc,#a8dcf2);transition:width .1s}.bagBox.full .bagTrack i{background:linear-gradient(90deg,#f5b76b,#f8e3a4)}
+.bottom{display:grid;grid-template-columns:1fr 144px;gap:8px;align-items:center;flex:0 0 61px}
+.controlsHint{color:#d2e6da;text-align:center;font:900 clamp(9px,2.6vw,12px)/1.5 'Barlow Condensed',sans-serif;letter-spacing:.8px}.controlsHint strong{display:block;font:900 16px/1.1 'Barlow Condensed',sans-serif;color:#ffe4a2;letter-spacing:1px}
+.action{height:54px;border:2px solid #ffe6a4;border-bottom:6px solid #94662f;border-radius:12px;background:linear-gradient(#f8d68b,#daaa57);color:#523827;font:900 21px 'Barlow Condensed',sans-serif;letter-spacing:.8px;box-shadow:inset 0 2px #fff5cd,0 3px 6px #0005}
+.action small{display:block;font:900 10px 'Barlow Condensed',sans-serif}
+.sheet{position:fixed;inset:0;z-index:10;background:#071723d6;display:none;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 14px);overflow:auto;backdrop-filter:blur(3px)}
+.sheet.open{display:flex}.panel{width:min(100%,490px);max-height:100%;overflow:auto;text-align:center;border:3px solid #b9d6c9;border-bottom:7px solid #2e5559;border-radius:19px;padding:18px 17px 19px;background:radial-gradient(ellipse at 50% 0%,#41766d,#19424d 78%);box-shadow:0 18px 55px #06171b,inset 0 0 0 2px #eff7d52e}
+.eyebrow{font:900 12px 'Barlow Condensed',sans-serif;letter-spacing:2px;color:#f2d18d}.panel h2{font:900 clamp(34px,9vw,52px)/.9 'Barlow Condensed',sans-serif;letter-spacing:1px;color:#fff4d3;margin:12px 0;text-shadow:0 4px #0a2d3a}.panel h2 em{color:#f6d087;font-style:normal}.panel p{font-size:13px;line-height:1.55;color:#f0f4df;max-width:355px;margin:10px auto 16px}.panel .mark{height:72px;margin:4px auto 12px;position:relative;width:100px}.mark .drift{position:absolute;left:4px;top:28px;width:85px;height:26px;border-radius:50%;background:#d8faff;box-shadow:0 7px #9dbdca}.mark .shovel{position:absolute;left:45px;top:2px;width:8px;height:70px;background:#e9b967;border:2px solid #684f44;border-radius:5px;transform:rotate(32deg)}.mark .shovel:after{content:"";position:absolute;left:-10px;bottom:-2px;width:24px;height:20px;border-radius:4px 4px 11px 11px;border:3px solid #385a69;background:#b3ddde}
+.primary,.secondary,.danger{display:block;width:100%;max-width:390px;height:46px;margin:8px auto 0;border:2px solid #d9ecdf;border-bottom:5px solid #285352;border-radius:11px;background:linear-gradient(#467e68,#28604f);color:#fff8d8;font:900 20px 'Barlow Condensed',sans-serif;letter-spacing:1px;box-shadow:inset 0 2px #fff3}
+.primary{background:linear-gradient(#f8db97,#d99d4f);border-color:#fff0bf;border-bottom-color:#8d602c;color:#49372b}.secondary{font-size:17px}.danger{background:linear-gradient(#b55a59,#873a46);border-bottom-color:#52232e;font-size:16px}.textLink{display:block;color:#e7f7eb;font:900 12px 'Barlow Condensed',sans-serif;letter-spacing:1px;text-decoration:none;margin:16px auto 0}
+.shopGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}.upgrade{text-align:left;min-height:116px;border:2px solid #adc9b8;border-bottom:5px solid #285456;border-radius:13px;padding:9px 10px;background:linear-gradient(#326a68,#1e4c59);color:#f8f3d8;display:flex;flex-direction:column;justify-content:space-between;gap:5px}.upgrade:disabled{filter:saturate(.55);color:#bfd0cd;cursor:default}.upgrade .itemName{font:900 19px 'Barlow Condensed',sans-serif;color:#ffe0a0}.upgrade .itemLevel{font:800 10px Nunito,sans-serif;color:#beddd5}.upgrade .price{align-self:flex-start;border-radius:7px;background:#f7d48a;color:#493824;padding:3px 8px;font:900 17px 'Barlow Condensed',sans-serif}.upgrade:disabled .price{background:#aac0b5;color:#2c4c50}
+.panel .balance{font:900 23px 'Barlow Condensed',sans-serif;color:#ffe09c}
+.menuInfo{font:900 13px 'Barlow Condensed',sans-serif;color:#e1f3db;letter-spacing:1px}
+.hidden{display:none!important}
+@media(max-width:370px){.app{padding-left:5px;padding-right:5px;gap:4px}.stat span{font-size:9px}.stat strong{font-size:17px}.bottom{grid-template-columns:1fr 120px}.action{font-size:18px}.shopGrid{gap:6px}.upgrade{min-height:108px;padding:7px}}
+@media(max-height:555px){.top{height:36px;flex-basis:36px}.back,.round{height:34px;width:36px}.head h1{font-size:23px}.stats{flex-basis:44px}.stat span{margin-top:3px}.bottom{flex-basis:47px}.action{height:42px}.bagBox{bottom:5px}.panel{padding:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+ <header class="top"><a class="back" href="../" aria-label="Back to GameBox">‹</a><div class="head"><span>CHIP IN GAMES · CHRISTMAS</span><h1>SNOW <b>SHOVELLER</b></h1></div><button class="round" id="menuBtn" aria-label="Open game menu">Ⅱ</button></header>
+ <section class="stats" aria-label="Game statistics">
+  <div class="stat"><span>DISTRICT</span><strong id="level">01</strong></div>
+  <div class="stat"><span>COINS</span><strong id="coins" class="coin">0</strong></div>
+  <div class="stat"><span>HELPERS</span><strong id="helpers">0 / 5</strong></div>
+  <div class="stat"><span>CLEARED</span><strong id="cleared">0%</strong></div>
+ </section>
+ <section class="stage" id="stage">
+  <canvas id="world" tabindex="0" role="img" aria-label="Top-down Christmas snow-clearing game. Drag to walk and shovel automatically, or use arrow keys or WASD. Return with snow to the lit furnace to earn coins."></canvas>
+  <div class="topScrim"></div>
+  <div class="levelBar"><span>SNOW REMOVED</span><div class="track"><i id="progress"></i></div><span id="percent">0%</span></div>
+  <div class="furnaceTag" id="furnaceTag">RETURN TO THE FURNACE TO CASH IN</div>
+  <div class="toast" id="toast" aria-live="polite"></div>
+  <div class="bagBox" id="bagBox"><div class="bagLine"><span>YOUR SNOW SACK</span><b id="bag">0 / 25</b></div><div class="bagTrack"><i id="bagFill"></i></div></div>
+ </section>
+ <footer class="bottom"><div class="controlsHint"><strong>DRAG TO MOVE</strong>AUTO-SHOVEL · WASD / ARROWS</div><button class="action" id="shopBtn">UPGRADES<small>SHOVELS · SACKS · HELPERS</small></button></footer>
+</main>
+<div class="sheet open" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="panel">
+ <span class="eyebrow">NORTH POLE RESCUE CREW</span><div class="mark" aria-hidden="true"><i class="drift"></i><i class="shovel"></i></div>
+ <h2 id="welcomeTitle">SNOW<br><em>SHOVELLER</em></h2>
+ <p>Dig through the drifts, rescue friends trapped in ice and build your own snow-clearing crew. <b>Only snow delivered to the furnace earns coins.</b></p>
+ <button class="primary" id="startBtn">START SHOVELLING</button>
+ <span class="menuInfo">DRAG TO MOVE · YOUR SHOVEL WORKS AUTOMATICALLY</span>
+</div></div>
+<div class="sheet" id="shop" role="dialog" aria-modal="true" aria-labelledby="shopTitle"><div class="panel">
+ <span class="eyebrow">NORTH POLE GEAR SHED</span><h2 id="shopTitle">UPGRADE<br><em>YOUR CREW</em></h2><div class="balance">★ <span id="shopBalance">0</span> COINS</div>
+ <div class="shopGrid" id="shopGrid"></div><button class="primary" id="shopClose">BACK TO THE SNOW</button>
+</div></div>
+<div class="sheet" id="menu" role="dialog" aria-modal="true" aria-labelledby="menuTitle"><div class="panel">
+ <span class="eyebrow">SNOW SHOVELLER</span><h2 id="menuTitle">TAKE A<br><em>BREAK</em></h2>
+ <p id="menuText">Your snow and helpers will be saved on this device.</p>
+ <button class="primary" id="resumeBtn">RESUME GAME</button><button class="secondary" id="guideBtn">HOW TO PLAY</button><button class="secondary" id="audioBtn">SOUND: ON</button><button class="danger" id="resetBtn">RESET PROGRESS</button><a class="textLink" href="../">BACK TO GAMEBOX</a>
+</div></div>
+<div class="sheet" id="guide" role="dialog" aria-modal="true" aria-labelledby="guideTitle"><div class="panel">
+ <span class="eyebrow">THE NORTH POLE CLEAN-UP</span><h2 id="guideTitle">DIG · MELT<br><em>UPGRADE</em></h2>
+ <p>Hold and drag in any direction to move; you shovel snow automatically as you walk. Keyboard: arrow keys or WASD.</p>
+ <p>When your sack is full, head back to the glowing furnace. It <b>melts your snow into coins</b>. Buy faster shovels and larger sacks in Upgrades.</p>
+ <p>Chop at the ice crystals to free trapped friends. Each helper gathers snow, carries a limited load and automatically returns to the furnace to earn coins for you. Upgrade their pouches and speed too.</p>
+ <button class="primary" id="guideClose">GOT IT</button>
+</div></div>
+<div class="sheet" id="victory" role="dialog" aria-modal="true" aria-labelledby="victoryTitle"><div class="panel">
+ <span class="eyebrow">THE NORTH POLE SALUTES YOU</span><h2 id="victoryTitle">DISTRICT<br><em>CLEAR!</em></h2>
+ <p id="victoryInfo">Every drift is gone and the furnace has received every load. A fresh district needs your crew.</p>
+ <button class="primary" id="nextBtn">CLEAR NEXT DISTRICT</button>
+</div></div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id),canvas=$('world'),ctx=canvas.getContext('2d',{alpha:false});
+const W=31,H=27,T=42,F={x:5.7,y:5.6},KEY='chipin-snow-shoveller-v1';
+const HEROES=[{id:'Pip',x:12,y:8,level:1,coat:'#d6504e',hat:'#e4c177'},{id:'Merry',x:23,y:10,level:1,coat:'#508f88',hat:'#dfefce'},{id:'Holly',x:11,y:21,level:2,coat:'#bb5d89',hat:'#f1cb8d'},{id:'Jingle',x:26,y:19,level:3,coat:'#d79942',hat:'#e5e8da'},{id:'Noel',x:6,y:19,level:4,coat:'#617ac3',hat:'#e7c28d'}];
+const UPGRADE=[{id:'power',name:'STEEL SHOVEL',desc:'CLEAR SNOW FASTER',base:42,scale:1.78,max:9},{id:'capacity',name:'BIG SNOW SACK',desc:'CARRY MORE SNOW',base:38,scale:1.68,max:10},{id:'pouches',name:'HELPER POUCHES',desc:'BIGGER HELPER LOADS',base:68,scale:1.78,max:8},{id:'boots',name:'ELF SNOW BOOTS',desc:'FASTER HELPERS',base:90,scale:1.86,max:7}];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b,c,d)=>Math.hypot(a-c,b-d),hash=(x,y,n)=>{const s=Math.sin(x*127.17+y*313.21+n*91.37)*43758.5453;return s-Math.floor(s);};
+const fresh=()=>({level:1,coins:0,fraction:0,up:{power:1,capacity:1,pouches:1,boots:1},saved:[],player:{x:F.x+1.4,y:F.y+1.4,dx:1,dy:0,bag:0},snow:[],ice:[]});
+let state=fresh(),helpers=[],initialSnow=1,stageDone=false,running=false,last=0,accSave=0,accHud=0,anim=0;
+let cam={x:state.player.x*T,y:state.player.y*T},zoom=1,cw=400,ch=600,dpr=1;
+let touch=null,keys={},particles=[],toastEnd=0,toastText='',audioEnabled=true,audio=null,steam=0,rounding=0;
+function blocked(x,y){return (x<1||y<1||x>=W-1||y>=H-1)||(x>=2&&x<=4&&y>=15&&y<=18)||(x>=24&&x<=28&&y>=3&&y<=6);}
+function generateSnow(){
+ state.snow=[];initialSnow=0;
+ for(let y=0;y<H;y++){for(let x=0;x<W;x++){
+  let v=blocked(x,y)?0:(1.25+hash(x,y,state.level)*2.25+Math.min(2.4,(state.level-1)*.28));
+  if(dist(x+.5,y+.5,F.x,F.y)<3.15)v=0;
+  if(hash(x+67,y+19,state.level)>.89)v=0;
+  state.snow.push(Math.round(v*100)/100);initialSnow+=v;
+ }}
+ state.ice=HEROES.filter(h=>!state.saved.includes(h.id)&&h.level<=state.level).map(h=>({id:h.id,x:h.x+.5,y:h.y+.5,hp:9+state.level*2,max:9+state.level*2}));
+ state.player.x=F.x+1.4;state.player.y=F.y+1.4;state.player.bag=0;
+ for(const h of helpers){h.x=F.x+Math.random()*1.5;h.y=F.y+Math.random()*1.5;h.bag=0;h.mode='work';h.target=null;}
+ stageDone=false;
+}
+function cap(){return 25+(state.up.capacity-1)*23;}
+function helperCap(){return 13+(state.up.pouches-1)*12;}
+function cost(u){return Math.round(u.base*Math.pow(u.scale,state.up[u.id]-1)/5)*5;}
+function read(){
+ try{const s=JSON.parse(localStorage.getItem(KEY));if(!s||!Number.isInteger(s.level)||s.level<1||!Number.isFinite(s.coins))return false;
+  state=fresh();state.level=clamp(s.level,1,999);state.coins=clamp(Math.floor(s.coins),0,999999999);state.fraction=clamp(Number(s.fraction)||0,0,.999999);
+  for(const u of UPGRADE)state.up[u.id]=clamp(Math.floor(s.up&&s.up[u.id]||1),1,u.max);
+  state.saved=Array.isArray(s.saved)?HEROES.filter(h=>s.saved.includes(h.id)).map(h=>h.id):[];
+  helpers=state.saved.map((id,i)=>makeHelper(id,F.x+i*.38,F.y+1));
+  generateSnow();
+  if(Array.isArray(s.snow)&&s.snow.length===W*H){state.snow=s.snow.map((v,i)=>blocked(i%W,Math.floor(i/W))?0:clamp(Number(v)||0,0,8));}
+  if(Array.isArray(s.ice)){for(const i of state.ice){const old=s.ice.find(o=>o.id===i.id);if(old)i.hp=clamp(Number(old.hp)||0,0,i.max);}state.ice=state.ice.filter(i=>i.hp>0);}
+  if(s.player&&Number.isFinite(s.player.x)&&Number.isFinite(s.player.y)){state.player.x=clamp(s.player.x,1,W-2);state.player.y=clamp(s.player.y,1,H-2);state.player.bag=clamp(Number(s.player.bag)||0,0,cap());}
+  if(Array.isArray(s.helpers))for(const h of helpers){const old=s.helpers.find(a=>a.id===h.id);if(old){h.x=clamp(Number(old.x)||F.x,1,W-2);h.y=clamp(Number(old.y)||F.y,1,H-2);h.bag=clamp(Number(old.bag)||0,0,helperCap());h.mode=h.bag>=helperCap()-.01?'deposit':'work';}}
+  if(s.audio===false)audioEnabled=false;
+  return true;
+ }catch{return false;}
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify({level:state.level,coins:state.coins,fraction:state.fraction,up:state.up,saved:state.saved,player:state.player,snow:state.snow.map(n=>Math.round(n*100)/100),ice:state.ice.map(i=>({id:i.id,hp:i.hp})),helpers:helpers.map(h=>({id:h.id,x:h.x,y:h.y,bag:h.bag})),audio:audioEnabled}));}catch{}
+}
+function makeHelper(id,x,y){const a=HEROES.find(h=>h.id===id);return{id,x,y,dx:1,dy:0,bag:0,mode:'work',target:null,retarget:0,coat:a.coat,hat:a.hat};}
+function remaining(){let r=0;for(const n of state.snow)r+=n;return r;}
+function progress(){return Math.min(100,Math.floor((1-remaining()/Math.max(initialSnow,1))*100));}
+function toast(s,t=1.7){toastText=s;toastEnd=performance.now()+t*1000;$('toast').textContent=s;$('toast').classList.add('show');}
+function tone(freq=450){
+ if(!audioEnabled)return;
+ try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();
+ const now=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.setValueAtTime(freq,now);o.frequency.exponentialRampToValueAtTime(freq*.65,now+.13);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.035,now+.01);g.gain.exponentialRampToValueAtTime(.0001,now+.16);o.connect(g);g.connect(audio.destination);o.start(now);o.stop(now+.17);
+ }catch{}
+}
+function sparkle(x,y,color,count=6){for(let i=0;i<count;i++)particles.push({x:x*T,y:y*T,vx:(Math.random()-.5)*110,vy:(Math.random()-.5)*110,life:.28+Math.random()*.55,max:.75,r:1.5+Math.random()*3,color});if(particles.length>140)particles.splice(0,particles.length-140);}
+function open(id){running=false;save();$(id).classList.add('open');if(id==='shop')buildShop();if(id==='menu')$('audioBtn').textContent='SOUND: '+(audioEnabled?'ON':'OFF');}
+function close(id){$(id).classList.remove('open');running=true;last=performance.now();canvas.focus({preventScroll:true});}
+function updateHud(){
+ const p=progress(),b=state.player.bag,capacity=cap();
+ $('level').textContent=String(state.level).padStart(2,'0');$('coins').textContent=state.coins.toLocaleString('en-GB');
+ $('helpers').textContent=helpers.length+' / '+HEROES.length;$('cleared').textContent=p+'%';$('progress').style.width=p+'%';$('percent').textContent=p+'%';
+ $('bag').textContent=Math.floor(b)+' / '+capacity;$('bagFill').style.width=(100*b/capacity)+'%';$('bagBox').classList.toggle('full',b>=capacity-.05);
+ $('furnaceTag').textContent=b>=capacity-.05?'SACK FULL! FIND THE GLOWING FURNACE':'RETURN TO FURNACE TO CASH IN';
+}
+function buildShop(){
+ $('shopBalance').textContent=state.coins.toLocaleString('en-GB');
+ $('shopGrid').innerHTML='';
+ for(const u of UPGRADE){
+  const lvl=state.up[u.id],c=cost(u),max=lvl>=u.max,btn=document.createElement('button');btn.type='button';btn.className='upgrade';btn.disabled=max||state.coins<c;
+  const title=document.createElement('span');title.className='itemName';title.textContent=u.name;
+  const sub=document.createElement('span');sub.className='itemLevel';sub.textContent=u.desc+' · LV '+lvl;
+  const price=document.createElement('span');price.className='price';price.textContent=max?'MAX LEVEL':'★ '+c.toLocaleString('en-GB');
+  btn.append(title,sub,price);
+  btn.addEventListener('click',()=>{if(state.up[u.id]>=u.max||state.coins<cost(u))return;state.coins-=cost(u);state.up[u.id]++;tone(720);save();buildShop();updateHud();});
+  $('shopGrid').appendChild(btn);
+ }
+}
+function tileIndex(x,y){return y*W+x;}
+function harvest(a,rate,dt,radius){
+ if(a.bag>=(a===state.player?cap():helperCap())-.005)return 0;
+ const maxBag=a===state.player?cap():helperCap(),cx=a.x+a.dx*.55,cy=a.y+a.dy*.55;
+ let best=-1,score=Infinity;
+ for(let y=Math.max(1,Math.floor(cy-radius));y<Math.min(H-1,Math.ceil(cy+radius));y++)
+  for(let x=Math.max(1,Math.floor(cx-radius));x<Math.min(W-1,Math.ceil(cx+radius));x++){
+   const k=tileIndex(x,y),v=state.snow[k];if(v<=.001)continue;
+   const d=dist(x+.5,y+.5,cx,cy);
+   if(d<radius&&d<score){score=d;best=k;}
+  }
+ if(best<0)return 0;
+ const old=state.snow[best],amount=Math.min(old,Math.max(0,rate*dt),maxBag-a.bag);
+ if(amount<=0)return 0;
+ state.snow[best]=old-amount<.005?0:old-amount;a.bag+=amount;
+ if(Math.random()<.35){const tx=(best%W)+.5,ty=Math.floor(best/W)+.5;sparkle(tx,ty,'#e0fbfe',2);}
+ return amount;
+}
+function deposit(a){
+ if(a.bag<.05||a.bag<.95&&remaining()>.05)return;
+ const amount=a.bag,raw=amount*3+state.fraction,coins=Math.floor(raw+1e-8);state.fraction=raw-coins;state.coins+=coins;a.bag=0;steam=1.3;
+ sparkle(F.x,F.y,'#ffcf75',15);
+ if(coins>0){toast((a===state.player?'FURNACE DELIVERY':a.id.toUpperCase()+' DELIVERED')+'  +'+coins+' COINS',1.35);tone(690);}save();
+}
+function findTarget(a){
+ let best=null,score=Infinity;
+ for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
+  const amount=state.snow[tileIndex(x,y)];if(amount<=.12)continue;
+  const xx=x+.5,yy=y+.5;let d=Math.hypot(xx-a.x,yy-a.y)+hash(x,y,state.level)*.7;
+  for(const h of helpers)if(h!==a&&h.target&&dist(xx,yy,h.target.x,h.target.y)<2)d+=8;
+  if(d<score){score=d;best={x:xx,y:yy};}
+ }
+ return best;
+}
+function move(a,tx,ty,speed,dt){
+ const dx=tx-a.x,dy=ty-a.y,d=Math.hypot(dx,dy);
+ if(d>.04){a.dx=dx/d;a.dy=dy/d;const step=Math.min(d,speed*dt);a.x=clamp(a.x+a.dx*step,1.2,W-1.2);a.y=clamp(a.y+a.dy*step,1.2,H-1.2);}
+ return d;
+}
+function updateHelper(a,dt){
+ const max=helperCap();
+ if(a.bag>=max-.01)a.mode='deposit';
+ if(a.mode==='deposit'){
+  if(move(a,F.x,F.y,2.45+(state.up.boots-1)*.4,dt)<1.05){deposit(a);a.mode='work';a.target=null;}
+  return;
+ }
+ if(remaining()<.05&&a.bag>.05){a.mode='deposit';return;}
+ a.retarget-=dt;
+ if(!a.target||a.retarget<=0||state.snow[tileIndex(Math.floor(a.target.x),Math.floor(a.target.y))]<.08){
+  a.target=findTarget(a);a.retarget=.8+Math.random()*.55;
+ }
+ if(!a.target){if(a.bag>.05)a.mode='deposit';return;}
+ const d=move(a,a.target.x,a.target.y,2.15+(state.up.boots-1)*.43,dt);
+ if(d<1.65){harvest(a,4.5+(state.up.boots-1)*.48,dt,1.42);if(a.bag>=max-.01)a.mode='deposit';}
+}
+function rescue(dt){
+ const p=state.player;
+ for(let n=state.ice.length-1;n>=0;n--){
+  const i=state.ice[n],d=dist(p.x,p.y,i.x,i.y);
+  if(d>1.65)continue;
+  i.hp-=dt*(6.5+(state.up.power-1)*1.8);
+  if(Math.random()<.21)sparkle(i.x,i.y,'#c6f7ff',3);
+  if(i.hp<=0){
+   state.ice.splice(n,1);state.saved.push(i.id);
+   const h=makeHelper(i.id,i.x,i.y);helpers.push(h);sparkle(i.x,i.y,'#f8e8a1',25);
+   toast(i.id.toUpperCase()+' RESCUED! NEW HELPER JOINED',3);tone(850);save();
+  }
+ }
+}
+function controller(){
+ let x=0,y=0;
+ if(keys.arrowleft||keys.a)x--;if(keys.arrowright||keys.d)x++;
+ if(keys.arrowup||keys.w)y--;if(keys.arrowdown||keys.s)y++;
+ if(touch){x+=clamp((touch.x-touch.ox)/54,-1,1);y+=clamp((touch.y-touch.oy)/54,-1,1);}
+ const n=Math.hypot(x,y);return n>1?{x:x/n,y:y/n}:{x,y};
+}
+function tick(dt){
+ anim+=dt;steam=Math.max(0,steam-dt);
+ const p=state.player,v=controller(),m=Math.hypot(v.x,v.y),filling=p.bag>=cap()-.05;
+ if(m>.08){
+  p.dx=v.x/m;p.dy=v.y/m;
+  const speed=3.55*(filling?.83:1);
+  p.x=clamp(p.x+v.x*speed*dt,1.3,W-1.3);p.y=clamp(p.y+v.y*speed*dt,1.3,H-1.3);
+ }
+ harvest(p,6.6+(state.up.power-1)*3.1,dt,1.35+(state.up.power-1)*.07);
+ rescue(dt);
+ if(dist(p.x,p.y,F.x,F.y)<1.85)deposit(p);
+ for(const h of helpers)updateHelper(h,dt);
+ for(let n=particles.length-1;n>=0;n--){const a=particles[n];a.x+=a.vx*dt;a.y+=a.vy*dt;a.vy+=30*dt;a.life-=dt;if(a.life<=0)particles.splice(n,1);}
+ cam.x+=(p.x*T-cam.x)*Math.min(1,dt*6);cam.y+=(p.y*T-cam.y)*Math.min(1,dt*6);
+ if(!stageDone&&remaining()<=.05&&p.bag<.05&&helpers.every(h=>h.bag<.05)){
+  stageDone=true;toast('DISTRICT CLEAR!',2);tone(920);save();open('victory');$('victoryInfo').textContent='District '+state.level+' is spotless! Your '+helpers.length+' rescued helpers are ready for the next snowy neighbourhood.';
+ }
+ accSave+=dt;accHud+=dt;
+ if(accHud>.22){updateHud();accHud=0;}
+ if(accSave>4){save();accSave=0;}
+}
+function resize(){
+ const rect=canvas.getBoundingClientRect();cw=Math.max(1,rect.width);ch=Math.max(1,rect.height);dpr=Math.min(window.devicePixelRatio||1,2);
+ canvas.width=Math.round(cw*dpr);canvas.height=Math.round(ch*dpr);
+ zoom=Math.min(cw/(14*T),ch/(15*T));
+}
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+function round(x,y,w,h,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
+function ellipse(x,y,rx,ry,c){ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
+function line(x1,y1,x2,y2,c,w=2){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+function drawTree(x,y,s=1){
+ ctx.save();ctx.translate(x*T,y*T);ctx.scale(s,s);
+ ellipse(4,14,20,9,'#143c42a0');rect(-4,-6,8,18,'#654a36');
+ for(const [w,yy] of [[24,-26],[20,-39],[15,-50]]){ctx.fillStyle='#123e41';ctx.beginPath();ctx.moveTo(0,yy-16);ctx.lineTo(-w,yy+20);ctx.lineTo(w,yy+20);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#2a6963';ctx.beginPath();ctx.moveTo(0,yy-16);ctx.lineTo(w-5,yy+15);ctx.lineTo(0,yy+5);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#e4f8e8';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-w+5,yy+13);ctx.quadraticCurveTo(1,yy+5,w-5,yy+13);ctx.stroke();}
+ ellipse(0,-66,5,5,'#ffd382');ctx.restore();
+}
+function drawHouse(x,y,col){
+ ctx.save();ctx.translate(x*T,y*T);ellipse(55,110,83,30,'#143f4599');round(0,20,128,95,7,col);round(9,32,110,70,5,'#e3c69f');
+ ctx.fillStyle='#693e43';ctx.beginPath();ctx.moveTo(-11,29);ctx.lineTo(65,-30);ctx.lineTo(140,29);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#f0f7eb';ctx.beginPath();ctx.moveTo(-4,18);ctx.lineTo(65,-23);ctx.lineTo(134,18);ctx.lineTo(122,16);ctx.lineTo(64,-11);ctx.lineTo(8,22);ctx.closePath();ctx.fill();
+ round(46,64,33,51,3,'#624743');round(49,67,27,48,2,'#98694d');ellipse(69,92,2,2,'#f4d38e');
+ for(const wx of [13,94]){round(wx,52,25,25,3,'#705849');round(wx+4,56,17,17,1,'#f6d786');line(wx+12,56,wx+12,72,'#fff4d5',2);line(wx+4,64,wx+21,64,'#fff4d5',2);}
+ ctx.restore();
+}
+function drawFurnace(){
+ const x=F.x*T,y=F.y*T;
+ ellipse(x+3,y+23,68,35,'#0b374482');ellipse(x,y+17,60,29,'#87a3a5');
+ round(x-42,y-22,85,68,13,'#7a4746');round(x-35,y-23,70,61,10,'#bd6353');
+ round(x-31,y-12,62,42,11,'#2a303c');round(x-27,y-8,54,34,8,'#4a2932');
+ let a=.65+Math.sin(anim*8)*.2;ellipse(x,y+9,24,15,'#f8a64a');ellipse(x,y+8,16,12,'#ffde79');
+ for(let i=0;i<3;i++){const xx=x-14+i*14,yy=y+8-7*Math.sin(anim*7+i);ctx.fillStyle=i%2?'#fff1a5':'#f98b3f';ctx.beginPath();ctx.moveTo(xx-7,y+18);ctx.quadraticCurveTo(xx-7,yy-14,xx+2,yy-24);ctx.quadraticCurveTo(xx+10,yy-8,xx+8,y+18);ctx.fill();}
+ round(x-48,y+19,96,13,5,'#483a3d');round(x-36,y+34,72,14,4,'#735e54');
+ ctx.save();ctx.globalAlpha=.35+steam*.32;
+ for(let i=0;i<4;i++){const yy=y-46-((anim*23+i*22)%97);ellipse(x+Math.sin(anim+i*2.8)*15,yy,9+i*2.2,5+i*1.7,'#e8fbfa');}
+ ctx.restore();round(x-34,y+38,68,11,3,'#9d6e4e');
+ ctx.fillStyle='#fff7d1';ctx.textAlign='center';ctx.font='900 14px Barlow Condensed, sans-serif';ctx.fillText('FURNACE',x,y+47);
+ ctx.globalAlpha=.2+Math.max(0,.19*Math.sin(anim*4));ellipse(x,y,67,57,'#ffd96b');ctx.globalAlpha=1;
+}
+function drawIce(i){
+ const x=i.x*T,y=i.y*T,h=HEROES.find(z=>z.id===i.id);
+ ellipse(x+3,y+17,26,12,'#2f788489');
+ drawPerson(x,y-4,h.coat,h.hat,.68,0);
+ ctx.save();ctx.globalAlpha=.76;ctx.fillStyle='#9cf1f6';ctx.beginPath();ctx.moveTo(x,y-42);ctx.lineTo(x+25,y-23);ctx.lineTo(x+23,y+23);ctx.lineTo(x,y+32);ctx.lineTo(x-22,y+19);ctx.lineTo(x-25,y-22);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#e8ffffa6';ctx.beginPath();ctx.moveTo(x-22,y-19);ctx.lineTo(x,y-39);ctx.lineTo(x-2,y+20);ctx.lineTo(x-17,y+17);ctx.closePath();ctx.fill();
+ line(x+9,y-30,x+14,y+8,'#efffff',3);line(x-9,y-2,x-16,y+13,'#f2ffff',3);
+ ctx.restore();
+ round(x-23,y+31,46,7,3,'#153947');round(x-21,y+32,42*i.hp/i.max,5,2,'#fff0a6');
+}
+function drawPerson(x,y,coat,hat,s=1,bag=0){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ ellipse(1,16,16,6,'#20404865');
+ const sway=Math.sin(anim*8+x*.04)*2;
+ line(-6,8+sway,-8,20,'#4c3942',6);line(7,8-sway,9,20,'#4c3942',6);
+ ellipse(0,3,13,17,coat);
+ line(-10,1,-17,10+sway,coat,7);line(10,1,17,10-sway,coat,7);
+ ellipse(0,-16,11,10,'#f0c9a1');ellipse(0,-24,14,5,'#f5f3d9');
+ ctx.fillStyle=hat;ctx.beginPath();ctx.moveTo(-14,-24);ctx.lineTo(-5,-42);ctx.lineTo(13,-27);ctx.closePath();ctx.fill();ellipse(-5,-42,5,5,'#faf8e7');
+ ellipse(-4,-16,1.5,1.8,'#3a3734');ellipse(5,-16,1.5,1.8,'#3a3734');line(-2,-10,4,-10,'#8c625b',1.5);
+ if(bag>.05){ellipse(16,1,11,15,'#d4c09c');round(7,-5,17,5,2,'#806d52');ellipse(14,-6,4,3,'#f4faf4');}
+ ctx.restore();
+}
+function drawSnow(x,y,v){
+ if(v<=.006)return;const px=x*T,py=y*T,full=Math.min(1,v/2.4),shrink=1-full*.1;
+ ctx.save();ctx.translate(px+T*.5,py+T*.5);ctx.scale(shrink,shrink);
+ round(-21,-21,42,42,7,'#a6cad0');
+ round(-20,-22,40,40,8,full>.3?'#eefbfc':'#d1e8eb');
+ ellipse(-7,-7,12,7,'#ffffffad');ellipse(10,11,8,4,'#d0e7ef');
+ if(v>2.4){ellipse(4,-10,13,5,'#ffffff');ellipse(-13,11,9,5,'#e9faff');}
+ ctx.restore();
+}
+function render(){
+ if(!canvas.width)return;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ const grad=ctx.createLinearGradient(0,0,0,ch);grad.addColorStop(0,'#6ba4a7');grad.addColorStop(1,'#2d6e6e');rect(0,0,cw,ch,grad);
+ const fullW=W*T,fullH=H*T;
+ const halfX=cw/(2*zoom),halfY=ch/(2*zoom);
+ const targetX=clamp(cam.x,halfX,Math.max(halfX,fullW-halfX));
+ const targetY=clamp(cam.y,halfY,Math.max(halfY,fullH-halfY));
+ ctx.save();ctx.translate(cw/2,ch/2);ctx.scale(zoom,zoom);ctx.translate(-targetX,-targetY);
+ rect(0,0,fullW,fullH,'#567b75');
+ const lx=Math.max(0,Math.floor((targetX-halfX)/T)-1),rx=Math.min(W,Math.ceil((targetX+halfX)/T)+1);
+ const ly=Math.max(0,Math.floor((targetY-halfY)/T)-1),ry=Math.min(H,Math.ceil((targetY+halfY)/T)+1);
+ for(let y=ly;y<ry;y++)for(let x=lx;x<rx;x++){
+  const k=tileIndex(x,y),n=hash(x,y,6);
+  rect(x*T,y*T,T,T,n>.52?'#628680':'#668a83');
+  if(n>.77)ellipse(x*T+6,y*T+32,3,2,'#85a99f');
+  if(n<.17)ellipse(x*T+31,y*T+12,3,2,'#accac0');
+  if((x+y)%7===0)ellipse(x*T+21,y*T+14,2.6,1.4,'#cfe7d7');
+  if(state.snow[k]>.006)drawSnow(x,y,state.snow[k]);
+ }
+ drawHouse(2.2,15.4,'#aa735e');drawHouse(24.2,3.2,'#bc855f');
+ for(const xy of [[2,4],[3,10],[8,24],[17,24],[20,3],[28,14],[27,24],[13,3],[3,23]])drawTree(xy[0],xy[1],.85+hash(xy[0],xy[1],1)*.45);
+ drawFurnace();
+ for(const i of state.ice)drawIce(i);
+ for(const h of helpers)drawPerson(h.x*T,h.y*T,h.coat,h.hat,.82,h.bag);
+ const p=state.player;drawPerson(p.x*T,p.y*T,'#d54b4b','#e9c775',1.08,p.bag);
+ // The steel blade gives immediate feedback for the direction of travel.
+ const sx=p.x*T+p.dx*27,sy=p.y*T+p.dy*27;
+ line(p.x*T+6,p.y*T-3,sx,sy,'#e2bf8a',5);ellipse(sx,sy,10+state.up.power*.9,7+state.up.power*.35,'#9dbcc7');ellipse(sx-2,sy-3,7,2,'#f5ffff');
+ for(const a of particles){ctx.globalAlpha=clamp(a.life/a.max,0,1);ellipse(a.x,a.y,a.r,a.r*.8,a.color);}ctx.globalAlpha=1;
+ ctx.strokeStyle='#d8f5e35b';ctx.lineWidth=6;ctx.strokeRect(3,3,fullW-6,fullH-6);
+ ctx.restore();
+ // Keep the furnace findable even when the camera leaves it behind.
+ const fx=cw/2+(F.x*T-targetX)*zoom,fy=ch/2+(F.y*T-targetY)*zoom;
+ if(fx<32||fy<68||fx>cw-32||fy>ch-65){
+  const vx=fx-cw/2,vy=fy-ch/2,edge=Math.max(1,Math.abs(vx)/(cw/2-34),Math.abs(vy)/(ch/2-72));
+  const px=cw/2+vx/edge,py=ch/2+vy/edge;
+  ctx.save();ctx.translate(px,py);
+  ellipse(0,0,23,23,state.player.bag>=cap()*.8?'#f0c978':'#123c4fda');
+  ctx.strokeStyle='#fff3d7';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,21,0,Math.PI*2);ctx.stroke();
+  ctx.rotate(Math.atan2(vy,vx));ctx.fillStyle='#fff3d7';
+  ctx.beginPath();ctx.moveTo(13,0);ctx.lineTo(-7,-10);ctx.lineTo(-4,-2);ctx.lineTo(-12,0);ctx.lineTo(-4,2);ctx.lineTo(-7,10);ctx.closePath();ctx.fill();
+  ctx.restore();
+ }
+ if(touch){ctx.save();ctx.globalAlpha=.77;ellipse(touch.ox,touch.oy,51,51,'#0e354f7d');ctx.strokeStyle='#edffef';ctx.lineWidth=3;ctx.beginPath();ctx.arc(touch.ox,touch.oy,49,0,Math.PI*2);ctx.stroke();const vx=clamp(touch.x-touch.ox,-47,47),vy=clamp(touch.y-touch.oy,-47,47);ellipse(touch.ox+vx,touch.oy+vy,22,22,'#f7e0a0');ellipse(touch.ox+vx-4,touch.oy+vy-5,10,7,'#fff4cb');ctx.restore();}
+}
+function frame(t){const dt=last?Math.min(.12,(t-last)/1000):0;last=t;if(running)tick(dt);render();if(toastEnd&&t>toastEnd){$('toast').classList.remove('show');toastEnd=0;}requestAnimationFrame(frame);}
+function inputPosition(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+canvas.addEventListener('pointerdown',e=>{if(!running||touch)return;e.preventDefault();const p=inputPosition(e);touch={id:e.pointerId,ox:p.x,oy:p.y,x:p.x,y:p.y};try{canvas.setPointerCapture(e.pointerId);}catch{}});
+canvas.addEventListener('pointermove',e=>{if(!touch||e.pointerId!==touch.id)return;e.preventDefault();const p=inputPosition(e);touch.x=p.x;touch.y=p.y;});
+function release(e){if(touch&&e.pointerId===touch.id)touch=null;}
+canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('lostpointercapture',release);
+window.addEventListener('keydown',e=>{const key=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(key))e.preventDefault();keys[key]=true;if((key==='p'||key==='escape')&&running)open('menu');else if((key==='p'||key==='escape')&&$('menu').classList.contains('open'))close('menu');});
+window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});window.addEventListener('blur',()=>{keys={};touch=null;save();});window.addEventListener('resize',resize);
+document.addEventListener('visibilitychange',()=>{if(document.hidden){keys={};touch=null;save();}});
+$('startBtn').addEventListener('click',()=>close('welcome'));
+$('shopBtn').addEventListener('click',()=>open('shop'));$('shopClose').addEventListener('click',()=>close('shop'));
+$('menuBtn').addEventListener('click',()=>open('menu'));$('resumeBtn').addEventListener('click',()=>close('menu'));
+$('guideBtn').addEventListener('click',()=>{$('menu').classList.remove('open');$('guide').classList.add('open');});
+$('guideClose').addEventListener('click',()=>{$('guide').classList.remove('open');$('menu').classList.add('open');});
+$('audioBtn').addEventListener('click',()=>{audioEnabled=!audioEnabled;$('audioBtn').textContent='SOUND: '+(audioEnabled?'ON':'OFF');save();});
+$('resetBtn').addEventListener('click',()=>{if(!confirm('Reset ALL Snow Shoveller coins, upgrades, helpers and districts?'))return;state=fresh();helpers=[];generateSnow();save();$('menu').classList.remove('open');updateHud();running=true;toast('FRESH SNOW · NEW START',2);});
+$('nextBtn').addEventListener('click',()=>{state.level++;generateSnow();cam.x=state.player.x*T;cam.y=state.player.y*T;save();updateHud();close('victory');toast('DISTRICT '+state.level+' · NEW SNOW!',2.2);});
+const resumed=read();if(!resumed){state=fresh();helpers=[];generateSnow();save();}
+$('startBtn').textContent=resumed?'CONTINUE SHOVELLING':'START SHOVELLING';
+cam.x=state.player.x*T;cam.y=state.player.y*T;resize();updateHud();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

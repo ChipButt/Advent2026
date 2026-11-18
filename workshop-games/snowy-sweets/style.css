@@ -1,0 +1,538 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@600;700;800&display=swap');
+:root{
+ --wood:url("../assets/gamebox/kenney/2d/Retro Textures Fantasy/floor_wood_planks_wide.png");
+ --frame:url("../assets/gamebox/kenney/ui/UI Pack - Adventure/Double/panel_border_grey_detail.png");
+ --red-round:url("../assets/gamebox/kenney/ui/UI Pack/Red/Double/button_round_depth_gradient.png");
+ --green-round:url("../assets/gamebox/kenney/ui/UI Pack/Green/Double/button_round_depth_gradient.png");
+ --red-button:url("../assets/gamebox/kenney/ui/UI Pack/Red/Double/button_rectangle_depth_gradient.png");
+ --green-button:url("../assets/gamebox/kenney/ui/UI Pack/Green/Double/button_rectangle_depth_gradient.png");
+ --grey-button:url("../assets/gamebox/kenney/ui/UI Pack/Grey/Double/button_rectangle_depth_gradient.png");
+ --yellow-button:url("../assets/gamebox/kenney/ui/UI Pack/Yellow/Double/button_rectangle_depth_gradient.png");
+ --gold:#ffda71;--ink:#f5f7f8;--muted:#a6bac2;--panel:#18252d
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#211a16;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img{display:block;pointer-events:none;user-select:none;-webkit-user-drag:none}
+button,a{font:inherit;-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;color:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.app{height:100dvh;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);background-color:#3e3028;background-image:var(--wood);background-size:64px 64px;background-repeat:repeat;background-blend-mode:multiply}
+.hud{display:grid;grid-template-columns:46px minmax(0,1fr) 46px;gap:7px;align-items:center;min-height:65px;padding:max(5px,env(safe-area-inset-top)) 9px 6px;background:#11191e;border-bottom:1px solid #293941}
+.roundAsset{border:0;display:grid;place-items:center;background-color:transparent;background-repeat:no-repeat;background-position:center;background-size:100% 100%;text-decoration:none;padding:0}
+.roundAsset:active,.assetAction:active{transform:translateY(2px)}
+.hudButton{width:46px;height:46px}.hudButton img{width:19px;height:19px;object-fit:contain}
+.backButtonAsset{background-image:var(--red-round)}.settingsButtonAsset{background-image:var(--green-round)}
+.titleStack{display:grid;justify-items:center;align-content:center;min-width:0;text-align:center}
+.edition{font:800 7px Inter,sans-serif;letter-spacing:.2em;color:var(--gold)}
+.titleStack h1{margin:1px 0 0;font:700 clamp(19px,5.3vw,24px)/1 Fredoka,sans-serif;letter-spacing:.07em;color:#fff}
+.titleStack strong{margin-top:4px;font:800 7px Inter,sans-serif;letter-spacing:.16em;color:#a6b6bf}
+.stage{display:grid;place-items:center;min-height:0;padding:5px 7px max(5px,env(safe-area-inset-bottom))}
+.gameFrame{width:min(100%,420px);max-height:100%;display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:11px 11px 8px;border:10px solid transparent;border-image-source:var(--frame);border-image-slice:32;border-image-width:10px;border-image-repeat:stretch;background:#18252d;box-shadow:0 12px 28px rgba(0,0,0,.32);min-height:0}
+.levelHead{display:grid;grid-template-columns:65px minmax(0,1fr) 66px;gap:8px;align-items:stretch}
+.levelBadge,.movesBadge{display:grid;place-items:center;align-content:center;min-height:58px;border:1px solid #456077;border-radius:9px;background:#263c4b;box-shadow:inset 0 -3px rgba(0,0,0,.2);padding:4px 0}
+.levelBadge:active{transform:translateY(2px)}.levelBadge small,.movesBadge small,.mission small{color:#b2c5cd;font-size:8px;font-weight:800;letter-spacing:.1em}
+.levelBadge b,.movesBadge b{font:700 24px/1.05 Fredoka,sans-serif;color:#fff}
+.movesBadge b{color:var(--gold)}
+.mission{min-width:0;display:grid;align-content:center;justify-items:center;gap:5px;padding:5px 5px;background:#11212d;border:1px solid #374a54;border-radius:9px;text-align:center}
+.mission small{font-size:clamp(7px,2.4vw,9px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mission strong{font:700 13px Fredoka,sans-serif;color:#fff}
+.missionTrack{width:100%;height:9px;border-radius:20px;background:#304855;overflow:hidden;box-shadow:inset 0 1px 2px #09141b}
+#missionFill{height:100%;width:0%;border-radius:20px;background:linear-gradient(#88e6b1,#28aa77);transition:width .23s ease}
+.scoreLine{display:flex;align-items:center;justify-content:space-between;padding:0 4px;font:800 9px Inter,sans-serif;letter-spacing:.11em;color:#94aeb9}
+.scoreLine b{color:var(--gold);font-size:11px;letter-spacing:0;font-variant-numeric:tabular-nums}
+.boardShell{position:relative;width:100%;flex:0 1 auto;aspect-ratio:1/1;min-height:0;padding:5px;border:3px solid #afc7cf;border-radius:14px;background:#8fbfce;box-shadow:inset 0 2px 0 #e7fbff,0 5px 0 #0d171d}
+.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));gap:2px;width:100%;height:100%;touch-action:none;border-radius:7px;overflow:hidden;background:#406f81;outline:none}
+.cell{position:relative;min-width:0;min-height:0;border:0;padding:0;display:grid;place-items:center;overflow:hidden;border-radius:5px;background:#c6ebf1;box-shadow:inset 0 -3px rgba(77,142,165,.16);touch-action:none;cursor:pointer;transition:background .12s}
+.cell:nth-child(16n+1),.cell:nth-child(16n+3),.cell:nth-child(16n+5),.cell:nth-child(16n+7),.cell:nth-child(16n+10),.cell:nth-child(16n+12),.cell:nth-child(16n+14),.cell:nth-child(16n+16){background:#afdde9}
+.cell.selected{z-index:1;background:#fff3b0;outline:3px solid #f6c951;outline-offset:-3px}
+.cell.hint{outline:3px solid #7fee9d;outline-offset:-3px;animation:hintPulse .7s 2 alternate}
+.cell:active{filter:brightness(1.04)}
+.candy{display:block;position:relative;width:84%;height:84%;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 3px 1px rgba(30,65,70,.25));transition:transform .13s}
+.cell.selected .candy{transform:scale(1.12)}
+.cell.swap .candy{animation:swapPop .17s ease-out}
+.cell.spawn .candy{animation:dropIn .22s cubic-bezier(.15,.92,.38,1.12) backwards}
+.cell.clearing .candy{animation:burstOut .17s ease-in forwards}
+.cell.power-row .candy,.cell.power-col .candy{filter:drop-shadow(0 1px 3px #fffc9c) drop-shadow(0 1px 2px #fff)}
+.iceOverlay{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;opacity:.55;z-index:2;filter:brightness(1.12)}
+.cell.ice2 .iceOverlay{opacity:.8}
+.iceBadge{position:absolute;right:2px;bottom:1px;z-index:3;min-width:13px;line-height:12px;border-radius:50%;background:#e8fbff;color:#366c89;font:900 9px Inter,sans-serif;pointer-events:none}
+.gameToast{position:absolute;z-index:5;left:50%;top:36%;max-width:95%;transform:translate(-50%,-10px);opacity:0;pointer-events:none;white-space:nowrap;padding:9px 15px;border:2px solid #f5d783;border-radius:13px;color:#183341;background:#fff9df;box-shadow:0 5px 0 rgba(15,44,55,.25);font:700 17px Fredoka,sans-serif;transition:opacity .14s ease,transform .14s ease}
+.gameToast.show{transform:translate(-50%,0);opacity:1}
+.bottomBar{display:grid;grid-template-columns:minmax(0,1fr) 88px 90px;align-items:center;gap:6px;padding:6px 0 0}
+.progressStars{display:flex;gap:1px;justify-content:center;color:#617581;font-size:clamp(16px,5vw,25px);text-shadow:0 2px 0 rgba(0,0,0,.2)}
+.progressStars span.earned{color:var(--gold);text-shadow:0 1px 3px #dc913f}
+.assetAction{min-height:43px;border:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px 10px;background-color:transparent;background-repeat:no-repeat;background-position:center;background-size:100% 100%;font:800 12px Fredoka,sans-serif;text-decoration:none;letter-spacing:.02em}
+.assetAction img{width:17px;height:17px;object-fit:contain}
+.hintAction{background-image:var(--yellow-button);color:#583d12}.hintAction img{filter:brightness(.4)}
+.restartAction{background-image:var(--grey-button);color:#2a3e49}.restartAction img{filter:brightness(.4)}
+.footerCaption{color:#8fa9b4;text-align:center;font:800 9px Inter,sans-serif;letter-spacing:.025em;padding-top:2px}
+.sheet{position:fixed;inset:0;z-index:15;display:none;place-items:center;background:rgba(5,10,13,.72);backdrop-filter:blur(4px);padding:10px}
+.sheet.show{display:grid}
+.panel{position:relative;max-height:calc(100dvh - 20px);overflow-y:auto;width:min(360px,calc(100vw - 20px));padding:19px 17px 17px;border:11px solid transparent;border-image-source:var(--frame);border-image-slice:32;border-image-width:11px;border-image-repeat:stretch;background:#18252d;box-shadow:0 18px 45px rgba(0,0,0,.55);text-align:center}
+.panel h2{margin:2px 0 11px;color:#fff;font:700 26px Fredoka,sans-serif}
+.eyebrow{display:block;margin-top:4px;color:var(--gold);letter-spacing:.19em;font:800 8px Inter,sans-serif}
+.panel p{margin:10px auto 15px;max-width:260px;font-size:12px;line-height:1.4;font-weight:600;color:#b5c5cd}
+.christmasMark,.resultMark{width:79px;height:76px;object-fit:contain;margin:-4px auto 0}
+.panelMark{position:absolute;top:8px;left:10px;width:49px;height:49px;object-fit:contain}
+.closeButton{position:absolute;right:9px;top:9px;width:40px;height:40px}.closeButton img{width:17px;height:17px}
+#menuSheet .panel h2{margin-bottom:15px}
+.splashPieces{display:flex;justify-content:center;align-items:center;gap:7px;height:66px;padding:3px 0}
+.splashPieces img{width:60px;height:60px;object-fit:contain}
+.primaryAction{width:100%;margin-top:8px;background-image:var(--green-button);color:#fff}
+.secondaryAction{width:100%;margin-top:7px;background-image:var(--grey-button);color:#273f4c}
+.dangerAction{width:100%;margin-top:7px;background-image:var(--red-button);color:#fff}
+.testNote{display:block;margin-top:14px;color:#899ea8;font:800 8px Inter,sans-serif;letter-spacing:.1em}
+.menuStat{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;margin:0 0 11px;background:#101c23;border-radius:10px;font-size:9px;color:#93adba;font-weight:800;letter-spacing:.12em}
+.menuStat strong{font:700 19px Fredoka,sans-serif;color:var(--gold)}
+.howSteps{display:grid;gap:9px;text-align:left}
+.howSteps p{margin:0;max-width:none;display:flex;gap:9px;align-items:start;border-radius:8px;background:#10212b;padding:9px;color:#bacbd3}
+.howSteps p>b{flex:0 0 24px;display:grid;place-items:center;height:24px;border-radius:50%;background:#bf424e;color:#fff;font:700 14px Fredoka,sans-serif}
+.howSteps strong{color:#fff}
+.levelsCaption{margin:2px auto 9px!important}
+.levelsGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0 13px}
+.levelChoice{position:relative;display:grid;place-items:center;gap:2px;min-height:59px;border:2px solid #526b78;border-radius:11px;background:#223d4d;box-shadow:0 4px 0 #0d1b24;color:#fff;font:700 19px Fredoka,sans-serif}
+.levelChoice.current{border-color:var(--gold);background:#38586a}
+.levelChoice:active{transform:translateY(3px)}
+.levelChoice small{font:900 8px Inter,sans-serif;color:var(--gold);letter-spacing:-.04em}
+.resultStars{margin:4px 0 12px;font-size:32px;letter-spacing:7px;color:var(--gold);text-shadow:0 2px 3px #a56a20}
+.resultFigures{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.resultFigures div{background:#101e28;border-radius:9px;padding:12px 5px;display:grid;gap:4px}
+.resultFigures small{font-size:9px;color:#90acba;font-weight:800;letter-spacing:.12em}
+.resultFigures strong{font:700 24px Fredoka,sans-serif;color:#fff}
+@keyframes dropIn{from{transform:translateY(-42%) scale(.85);opacity:.4}to{transform:translateY(0) scale(1);opacity:1}}
+@keyframes burstOut{to{transform:scale(.15);opacity:0}}
+@keyframes swapPop{50%{transform:scale(1.15)}}
+@keyframes hintPulse{to{filter:brightness(1.15)}}
+@keyframes burstGlow{to{transform:scale(1.09)}}
+@media(max-width:390px){
+ .stage{padding:3px}.gameFrame{padding:8px 7px 6px;border-width:8px;border-image-width:8px;gap:5px}
+ .hud{grid-template-columns:42px minmax(0,1fr) 42px;min-height:62px}
+ .hudButton{width:42px;height:42px}
+ .levelHead{grid-template-columns:55px minmax(0,1fr) 56px;gap:5px}
+ .levelBadge,.movesBadge{min-height:51px}.levelBadge b,.movesBadge b{font-size:21px}
+ .bottomBar{grid-template-columns:minmax(0,1fr) 82px 87px;gap:4px}
+ .assetAction{font-size:11px}.boardShell{padding:4px}
+}
+@media(max-height:710px){
+ .hud{min-height:57px;padding-top:4px;padding-bottom:4px}.hudButton{width:40px;height:40px}
+ .stage{padding:2px}.gameFrame{gap:4px;padding-top:6px;padding-bottom:5px}
+ .levelBadge,.movesBadge{min-height:47px}.mission{gap:3px}.scoreLine{font-size:8px}
+ .bottomBar{padding-top:2px}.bottomBar .assetAction{min-height:36px;padding-top:4px;padding-bottom:5px}
+ .footerCaption{font-size:8px}.boardShell{max-width:min(100%,calc((100dvh - 220px) * 1));align-self:center}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+
+/* Pixel-art edition: all game pieces, ice, floor and power marks are actual
+   bundled Kenney image sprites. CSS here handles placement and movement only. */
+.boardShell{
+ background:#93c6d5;border:10px solid transparent;
+ border-image-source:var(--frame);border-image-slice:32;
+ border-image-width:10px;border-image-repeat:stretch;
+ border-radius:1px;box-shadow:0 7px 0 rgba(2,12,18,.32);
+ padding:3px;overflow:hidden;isolation:isolate;
+}
+.board{gap:0;border-radius:0;background:#e9f8ff;overflow:hidden}
+.cell,.cell:nth-child(16n+1),.cell:nth-child(16n+3),
+.cell:nth-child(16n+5),.cell:nth-child(16n+7),
+.cell:nth-child(16n+10),.cell:nth-child(16n+12),
+.cell:nth-child(16n+14),.cell:nth-child(16n+16){
+ background:#e6f6ff url("assets/snow_base.png") center / 100% 100% no-repeat;
+ border-radius:0;box-shadow:none;overflow:visible;
+}
+.cell:nth-child(3n+2){
+ background-image:url("assets/snow_flecks.png");
+}
+.cell:focus-visible{outline:3px solid #ffda71;outline-offset:-3px;z-index:6}
+.cell.selected{outline:3px solid #ffcb48;outline-offset:-3px;background-color:#fff5ce}
+.cell.selected,.cell.hint{z-index:8}
+.cell .piece{
+ position:relative;display:grid;place-items:center;
+ width:100%;height:100%;pointer-events:none;
+ will-change:transform;transform:translateZ(0);
+}
+.cell .candy{
+ position:relative;width:97%;height:97%;object-fit:contain;
+ image-rendering:pixelated;filter:drop-shadow(0 3px 0 rgba(38,87,99,.3));
+ transform:none;transition:none;
+}
+.cell.selected .candy{transform:scale(1.08)}
+.cell.swap .candy{animation:none}
+.cell.spawn .candy{animation:none}
+.cell.clearing .piece{
+ z-index:9;animation:piecePop .19s cubic-bezier(.31,0,.8,.33) forwards;
+}
+.cell.power-row .candy,.cell.power-col .candy{
+ filter:drop-shadow(0 0 4px #ffdf5b) drop-shadow(0 2px 0 #654a17)
+}
+.iceOverlay{
+ z-index:3;inset:0;width:100%;height:100%;object-fit:fill;
+ image-rendering:pixelated;opacity:.64;filter:none;
+ pointer-events:none;
+}
+.cell.ice2 .iceOverlay{opacity:.9}
+.iceBadge{z-index:4;right:0;bottom:0;border-radius:2px;box-shadow:0 1px 0 #3b7895}
+.popParticle{
+ position:absolute;z-index:12;top:50%;left:50%;width:24%;height:24%;
+ image-rendering:pixelated;pointer-events:none;
+ animation:pixelConfetti .31s ease-out var(--delay,0ms) both;
+}
+.levelBadge,.movesBadge,.mission{
+ border:0;box-shadow:none;border-radius:0;
+ background:transparent var(--grey-button) center / 100% 100% no-repeat;
+}
+.levelBadge small,.movesBadge small,.mission small{color:#314755;text-shadow:0 1px rgba(255,255,255,.35)}
+.levelBadge b{color:#273f4d}.movesBadge b{color:#8d4800}
+.mission strong{color:#243e4d}
+.missionTrack{width:88%;height:9px;background:#8faebd;box-shadow:inset 0 1px 2px #647d88;border:1px solid #aec1c9}
+#missionFill{background:#36a976}
+.gameFrame{
+ background:#1b2a33 url("../assets/gamebox/kenney/2d/Retro Textures Fantasy/floor_wood_planks_wide.png") center / 90px 90px repeat;
+ background-blend-mode:multiply;
+}
+.scoreLine{color:#dceff5}
+.scoreLine b{color:#fff3a4}
+.footerCaption{color:#e2edf2;text-shadow:0 1px 2px #0d2531}
+.progressStars{color:#8b9ba1}
+.progressStars span.earned{color:#ffde60}
+@keyframes piecePop{
+ 0%{transform:scale(1);opacity:1;filter:brightness(1)}
+ 45%{transform:scale(1.24);opacity:1;filter:brightness(1.6)}
+ 100%{transform:scale(.13);opacity:0;filter:brightness(2)}
+}
+@keyframes pixelConfetti{
+ from{transform:translate(-50%,-50%) rotate(var(--direction,0deg)) translateY(0) scale(.6);opacity:1}
+ to{transform:translate(-50%,-50%) rotate(var(--direction,0deg)) translateY(calc(-1 * var(--distance,24px))) scale(.2);opacity:0}
+}
+@keyframes powerPulse{to{transform:scale(1.12)}}
+@media(max-width:390px){.boardShell{border-width:7px;border-image-width:7px;padding:2px}}
+
+
+/* v3: phone-first puzzle presentation. The snow/candy/frame textures below are
+   all existing PNG assets. Remove the surrounding card and give sprites space. */
+.app{
+ background-color:#d4f1fb;
+ background-image:url("assets/snow_base.png");
+ background-size:64px 64px;
+ background-repeat:repeat;
+ background-blend-mode:normal;
+}
+.stage{
+ display:flex;justify-content:center;align-items:stretch;
+ padding:0;min-width:0;overflow:hidden;
+}
+.gameFrame{
+ width:min(100%,460px);height:100%;max-height:none;
+ min-height:0;padding:clamp(8px,1.9vh,16px) 8px max(8px,env(safe-area-inset-bottom));
+ border:0;box-shadow:none;
+ background:none;
+ justify-content:center;gap:clamp(8px,1.5vh,15px);
+}
+.levelHead{
+ grid-template-columns:61px minmax(0,1fr) 68px;
+ gap:6px;
+}
+.levelBadge,.movesBadge,.mission{
+ min-height:53px;padding:5px 1px;
+ background-color:transparent;
+}
+.levelBadge b,.movesBadge b{font-size:23px}
+.levelBadge small,.movesBadge small,.mission small{font-size:8px}
+.mission{gap:4px}
+.mission strong{font-size:12px}
+.missionTrack{height:8px}
+.scoreLine{
+ margin:0 5px;padding:2px 4px 0;
+ color:#23485e;text-shadow:0 1px #fff;
+ font-size:9px;
+}
+.scoreLine b{color:#8b4912;text-shadow:none;font-size:13px}
+.boardShell{
+ flex:0 0 auto;width:min(100%,calc(100dvh - 237px));
+ align-self:center;aspect-ratio:1/1;
+ min-height:0;max-height:none;
+ padding:4px;border:7px solid transparent;
+ border-image-source:var(--frame);border-image-slice:32;
+ border-image-width:7px;border-image-repeat:stretch;
+ background:#456d82;box-shadow:0 5px 0 #97c8d8;
+ overflow:hidden;
+}
+.board{
+ display:grid;gap:2px;
+ background:#4c839a;border-radius:2px;
+ overflow:hidden;
+}
+.cell,.cell:nth-child(16n+1),.cell:nth-child(16n+3),
+.cell:nth-child(16n+5),.cell:nth-child(16n+7),
+.cell:nth-child(16n+10),.cell:nth-child(16n+12),
+.cell:nth-child(16n+14),.cell:nth-child(16n+16){
+ background:#d5effb url("assets/snow_base.png") center / cover no-repeat;
+ border-radius:3px;overflow:visible;
+}
+.cell:nth-child(even){background-image:url("assets/snow_flecks.png")}
+.cell .candy{
+ width:76%;height:76%;
+ filter:drop-shadow(0 2px 0 rgba(21,69,88,.35));
+}
+.cell .piece{
+ width:100%;height:100%;
+ backface-visibility:hidden;
+}
+.cell.selected{
+ background-color:#fff1a9;
+ outline:3px solid #f3be3e;
+ outline-offset:-3px;
+}
+.cell.selected .candy{transform:scale(1.06)}
+.cell.hint{outline:3px solid #42c48d;outline-offset:-3px}
+.cell .iceOverlay{
+ position:absolute;inset:0;
+ width:100%;height:100%;
+ opacity:.68;
+}
+.cell.power-row .candy,.cell.power-col .candy{
+ filter:drop-shadow(0 0 5px #ffd456) drop-shadow(0 2px 0 #99702b);
+}
+.boardShell:has(.cell.clearing){
+ box-shadow:0 5px 0 #97c8d8,0 0 13px rgba(255,239,165,.65);
+}
+.bottomBar{
+ grid-template-columns:minmax(0,1fr) 91px 94px;
+ gap:7px;padding:3px 0 0;
+}
+.progressStars{gap:2px;color:#678da0;font-size:26px;text-shadow:0 1px #fff}
+.progressStars span.earned{color:#eaaa24}
+.bottomBar .assetAction{min-height:46px;font-size:12px}
+.footerCaption{
+ color:#35617a;text-shadow:0 1px #fff;
+ font-size:10px;
+}
+.gameToast{
+ border-image-source:none;box-shadow:0 4px 0 rgba(26,69,91,.3);
+}
+@media(max-height:680px){
+ .gameFrame{gap:5px;padding-top:5px;padding-bottom:5px}
+ .levelBadge,.movesBadge,.mission{min-height:43px}
+ .levelBadge b,.movesBadge b{font-size:20px}
+ .bottomBar .assetAction{min-height:38px}
+ .boardShell{width:min(100%,calc(100dvh - 214px))}
+ .footerCaption{font-size:9px}
+}
+@media(max-width:360px){
+ .gameFrame{padding-left:4px;padding-right:4px}
+ .boardShell{padding:3px;border-width:5px;border-image-width:5px}
+ .levelHead{grid-template-columns:53px minmax(0,1fr) 55px}
+ .bottomBar{grid-template-columns:minmax(0,1fr) 77px 84px}
+ .bottomBar .assetAction{font-size:11px}
+}
+
+
+/* In-grid goal artwork and compact, non-blocking match feedback. */
+.missionHeading{
+ width:100%;min-width:0;
+ display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.missionHeading img{
+ display:block;flex:0 0 19px;width:19px;height:19px;
+ object-fit:contain;image-rendering:pixelated;
+}
+.missionHeading small{
+ display:block;min-width:0;overflow:hidden;
+ text-overflow:ellipsis;white-space:nowrap;
+}
+#movesValue.lowMoves{color:#c33d40}
+.scoreFloat{
+ position:absolute;z-index:11;pointer-events:none;white-space:nowrap;
+ font:700 17px/1 Fredoka,system-ui,sans-serif;
+ letter-spacing:.01em;text-shadow:0 2px #26576c,1px 0 #26576c,-1px 0 #26576c;
+ transform:translateX(-50%);
+ animation:pointsRise .67s cubic-bezier(.17,.73,.3,1) both;
+}
+@keyframes pointsRise{
+ from{opacity:0;transform:translate(-50%,4px) scale(.78)}
+ 18%{opacity:1;transform:translate(-50%,-6px) scale(1.12)}
+ 65%{opacity:1;transform:translate(-50%,-22px) scale(1)}
+ to{opacity:0;transform:translate(-50%,-37px) scale(.95)}
+}
+.boardShell{width:min(100%,calc(100dvh - 275px))}
+@media(max-height:680px){
+ .boardShell{width:min(100%,calc(100dvh - 258px))}
+}
+@media(prefers-reduced-motion:reduce){.scoreFloat{display:none}}
+
+
+/* Complete joined sprites: show both halves, centred and uncropped.
+   Both images are 32×32 true-alpha PNGs built from the existing pixel tiles. */
+.cell .candy.fullLengthCandy{
+ width:94%;height:94%;
+ object-fit:contain;object-position:center;
+ image-rendering:pixelated;
+}
+.cell.selected .candy.fullLengthCandy{transform:scale(1.025)}
+
+
+/* v7: Specials have no extra DOM markers. Their highlights are baked into
+   transparent sprite images from power-art.js, clipped to the candy pixels. */
+.cell.power-row .candy,.cell.power-col .candy,.cell.power-burst .candy{
+ filter:drop-shadow(0 2px 0 rgba(19,62,88,.33));
+ animation:none;
+}
+.cell.power-burst .piece{animation:powerBreathe 1.25s steps(3,end) infinite alternate}
+@keyframes powerBreathe{
+ from{filter:drop-shadow(0 0 1px rgba(255,206,116,.45))}
+ to{filter:drop-shadow(0 0 5px rgba(255,212,110,.9))}
+}
+/* Compact asset-backed announcements; no large floating boxes obscuring play. */
+.gameToast{
+ top:6px;z-index:8;
+ max-width:88%;padding:10px 18px 12px;
+ border:0;border-radius:0;box-shadow:none;
+ background:transparent var(--yellow-button) center / 100% 100% no-repeat;
+ font:800 12px/1 Fredoka,system-ui,sans-serif;
+ letter-spacing:.075em;color:#70500f;text-shadow:0 1px rgba(255,255,255,.45);
+ transform:translate(-50%,-8px) scale(.94);
+ transition:transform .12s ease-out,opacity .12s ease-out;
+}
+.gameToast.show{transform:translate(-50%,0) scale(1)}
+/* Match feedback is reserved for bigger clears; it does not cover every match. */
+.scoreFloat{
+ z-index:9;padding:4px 7px 5px;
+ font:800 13px/1 Fredoka,system-ui,sans-serif;letter-spacing:.035em;
+ color:#fff4bd!important;
+ text-shadow:-1px -1px 0 #38536b,1px -1px 0 #38536b,-1px 1px 0 #38536b,1px 1px 0 #38536b,0 2px 0 #264658;
+ animation:cleanPoints .53s cubic-bezier(.15,.65,.22,1) both;
+}
+@keyframes cleanPoints{
+ from{opacity:0;transform:translate(-50%,5px) scale(.88)}
+ 18%{opacity:1;transform:translate(-50%,-4px) scale(1.03)}
+ 70%{opacity:1;transform:translate(-50%,-16px) scale(1)}
+ to{opacity:0;transform:translate(-50%,-23px) scale(.95)}
+}
+@media(prefers-reduced-motion:reduce){
+ .cell.power-burst .piece{animation:none}
+ .scoreFloat{display:none}
+ .gameToast,.gameToast.show{transition:none;transform:translate(-50%,0)}
+}
+
+
+/* v8: animate stable candy nodes rather than rebuilding a board every step.
+   Promote only moving sprites to compositor layers (not all 64 every frame). */
+.cell .piece{will-change:auto;touch-action:none}
+.cell.is-falling{z-index:6}
+.cell.is-dragging{z-index:9}
+.cell.is-falling .piece,.cell.is-dragging .piece{will-change:transform}
+.cell .piece{transform:translate3d(0,0,0)}
+.cell .candy{pointer-events:none}
+.board{touch-action:none}
+@media(prefers-reduced-motion:reduce){
+ .cell.is-falling .piece,.cell.is-dragging .piece{will-change:auto}
+}
+
+/* v9: fixed, self-contained special sprites (row/gold, column/ice, burst/pink).
+   Only motion is CSS; the sweets and the activated beams are actual image files. */
+.cell.power-row .candy,
+.cell.power-col .candy,
+.cell.power-burst .candy{
+  width:96%;
+  height:96%;
+  image-rendering:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 2px 0 rgba(18,53,71,.26));
+  animation:none;
+}
+.cell.power-row .candy.fullLengthCandy,
+.cell.power-col .candy.fullLengthCandy,
+.cell.power-burst .candy.fullLengthCandy{
+  width:100%;height:100%;
+}
+.cell.power-burst .piece{animation:none}
+.power-effect{
+  display:block;position:absolute;z-index:20;pointer-events:none;
+  max-width:none;object-fit:fill;image-rendering:pixelated;
+  transform-origin:center center;
+  user-select:none;
+}
+.boardShell{position:relative;isolation:isolate;overflow:hidden}
+.cell.is-falling .piece,.cell.is-dragging .piece{
+  will-change:transform;
+}
+
+
+/* v11: image-backed star pings on EVERY consumed candy and a larger burst
+   precisely where four/five sweets converge to form a new power-up. */
+.cell.sweet-ping{z-index:7}
+.cell.is-merging{z-index:13}
+.cell.is-merging .piece{will-change:transform,opacity}
+.cell.sweet-ping::after{
+  content:"";pointer-events:none;position:absolute;
+  z-index:16;left:-20%;top:-20%;width:140%;height:140%;
+  background:url("assets/fx/ping.svg") center center / contain no-repeat;
+  image-rendering:pixelated;opacity:0;
+  transform-origin:center;
+  animation:sweetDestructionPing 260ms cubic-bezier(.19,.68,.28,1) both;
+}
+.cell.special-born{z-index:12}
+.cell.special-born::before{
+  content:"";pointer-events:none;position:absolute;
+  z-index:17;left:-48%;top:-48%;width:196%;height:196%;
+  background:url("assets/fx/ping.svg") center / contain no-repeat;
+  image-rendering:pixelated;transform-origin:center;
+  animation:specialMergePing 275ms cubic-bezier(.14,.77,.24,1) both;
+}
+@keyframes sweetDestructionPing{
+  0%{transform:scale(.3) rotate(-9deg);opacity:0}
+  22%{transform:scale(.85) rotate(-3deg);opacity:.82}
+  46%{transform:scale(1.22) rotate(1deg);opacity:1}
+  70%{transform:scale(1.42) rotate(4deg);opacity:.8}
+  100%{transform:scale(1.65) rotate(7deg);opacity:0}
+}
+@keyframes specialMergePing{
+  0%{transform:scale(.25) rotate(-10deg);opacity:0}
+  22%{transform:scale(.88) rotate(-4deg);opacity:.92}
+  42%{transform:scale(1.18) rotate(0deg);opacity:1}
+  72%{transform:scale(1.31) rotate(5deg);opacity:.96}
+  100%{transform:scale(1.56) rotate(11deg);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .cell.sweet-ping::after,.cell.special-born::before{animation:none;opacity:0}
+}
+
+/* v12: complete RGBA pixel sprites and no snap-back during FLIP motion. */
+.cell.power-row .candy,.cell.power-col .candy,.cell.power-burst .candy{
+  image-rendering:pixelated;
+  filter:drop-shadow(0 1px 0 rgba(30,68,88,.30));
+}
+.cell.special-born::before{display:none!important}
+.piece.special-born{position:relative;z-index:11}
+.piece.special-born::after{
+  content:"";position:absolute;inset:-38%;z-index:12;pointer-events:none;
+  background:url("assets/fx/ping.svg") center / contain no-repeat;
+  image-rendering:pixelated;
+  animation:specialMergePing 340ms cubic-bezier(.2,.75,.24,1) both;
+}
+@media(prefers-reduced-motion:reduce){
+ .piece.special-born::after{display:none}
+}
+
+
+/* v13: small, satisfying HUD feedback, aligned with the longer match cadence. */
+.scoreLine #scoreValue{display:inline-block;transform-origin:center bottom}
+.scoreLine #scoreValue.score-tick{animation:scoreTick 390ms cubic-bezier(.17,.76,.27,1)}
+.progressStars span{display:inline-block;transform-origin:center}
+.progressStars span.star-award{animation:starEarned 520ms cubic-bezier(.15,.79,.22,1)}
+@keyframes scoreTick{
+  0%{transform:translateY(1px) scale(.94)}
+  42%{transform:translateY(-2px) scale(1.17)}
+  75%{transform:translateY(0) scale(1.04)}
+  100%{transform:translateY(0) scale(1)}
+}
+@keyframes starEarned{
+  0%{transform:scale(.5) rotate(-17deg);opacity:.5}
+  37%{transform:scale(1.36) rotate(8deg);opacity:1}
+  67%{transform:scale(.94) rotate(-3deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .scoreLine #scoreValue.score-tick,.progressStars span.star-award{animation:none}
+}
