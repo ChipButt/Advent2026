@@ -35,6 +35,15 @@ for game in GAMES:
     game_dir = copy_dir(game["id"])
     assert (game_dir / "index.html").is_file(), f"Missing playable page: {game['id']}"
 
+# Navigation-only adaptation: the source Ice Links page points back to the
+# GameBox Advent portal (which is not in this isolated Workshop bundle).
+# Keep game logic identical but return to the local Workshop test launcher.
+ice_file = DEST / "bridgebound" / "index.html"
+ice_html = ice_file.read_text(encoding="utf-8")
+assert "../advent-2026/" in ice_html, "Original Ice Links return link changed upstream"
+ice_file.write_text(ice_html.replace("../advent-2026/", "../"), encoding="utf-8")
+
+
 # GameBox's relative ../assets, ../shared and ../hub links remain valid because
 # its original directory layout is preserved inside workshop-games/.
 copy_dir("assets")
