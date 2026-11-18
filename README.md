@@ -2,7 +2,7 @@
 
 **Status: V1 foundation, awaiting dedicated Supabase project connection, event assignments and end-to-end verification.**
 
-This is a replacement for Advent2026's old village/decorating UI. The original is saved in branch `archive-advent2026-before-elflympics` for rollback. The original games remain in `games/`. Ice Links is now included as a scored Advent event candidate (`games/ice-links/`).
+This is a replacement for Advent2026's old village/decorating UI. The original is saved in branch `archive-advent2026-before-elflympics` for rollback. The bundled game copies have been removed from the live code on 18 November 2026. Original GameBox versions are preserved in `ChipButt/GameBox`; a pre-removal snapshot is in `backup/pre-workshop-2026-11-18`. Workshop candidate imports are kept separate until approved.
 
 ## Rules
 - 24 daily events, 1–24 December 2026, based on Europe/London dates
@@ -15,7 +15,7 @@ This is a replacement for Advent2026's old village/decorating UI. The original i
 
 ## What's included
 - Responsive, premium North Pole winter sports front end with events, leaderboard, profile and modals
-- Existing six GameBox games retained, prepared for practice mode and score reporting
+- Live event launcher has no bundled games; approved games are promoted from the Workshop
 - Supabase Auth email/password registration, confirmation and sign-in code
 - SQL schema in `supabase/schema.sql` for users, event schedule, race reservations, standings
 - Server-side atomic uniqueness preventing extra daily official race starts
@@ -57,5 +57,5 @@ The existing GitHub Pages path `https://chipbutt.github.io/Advent2026/` can cont
 - `app.js`: events, registration and race UI, leaderboards
 - `config.js`: public Supabase connection values (initially empty)
 - `assets/crest.svg`, `assets/mountains.svg`: new branding illustration
-- `games/`: six retained games, with new result message bridge
+- `games/`: added only when approved Workshop releases are promoted
 - `supabase/schema.sql`: database schema and server-side attempt enforcement

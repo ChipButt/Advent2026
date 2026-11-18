@@ -1,15 +1,8 @@
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
-const games=[
- {key:"tiny-ski-run",name:"Tiny Ski Run",short:"Downhill arcade race",mark:"↘",measure:"points",higher:true,desc:"Race down the course, clear gates and build your score."},
- {key:"workshop-watch",name:"Workshop Watch",short:"Workshop defence",mark:"✦",measure:"points",higher:true,desc:"Protect the workshop from waves of Christmas invaders."},
- {key:"block-breaker",name:"Block Breaker",short:"Precision challenge",mark:"◆",measure:"points",higher:true,desc:"Keep the ball alive and clear the winter blocks."},
- {key:"santa-invaders",name:"Santa Invaders",short:"Arcade survival",mark:"✧",measure:"points",higher:true,desc:"Hold the line against the North Pole invasion."},
- {key:"festive-blocks",name:"Festive Blocks",short:"Puzzle competition",mark:"▦",measure:"points",higher:true,desc:"Arrange blocks to clear lines and set your score."},
- {key:"jigsaw",name:"Jigsaw",short:"Puzzle training",mark:"◇",measure:"seconds",higher:false,desc:"Complete the festive puzzle. Official rules need a standardised image and grid."},
- {key:"ice-links",name:"Ice Links",short:"Elflympics ice-bridge logic",mark:"❄",measure:"points",higher:true,desc:"Choose a difficulty and complete five consecutive ice-bridge puzzles. Fast, clean solves earn more points; the final total is ranked against other competitors."}
-];
+const games=[]; // Live has no bundled games until Workshop versions are approved.
+
 const conf=window.ELFLYMPICS_CONFIG||{};
 const ready=!!(conf.supabaseUrl&&conf.publishableKey);
 const base=String(conf.supabaseUrl||"").replace(/\/$/,"");
